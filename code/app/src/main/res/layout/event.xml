@@ -11,13 +11,20 @@
         android:padding="16dp">
 
         <TextView
+            android:id="@+id/event_name_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Event 1"
+            android:text="Event Name"
             android:textSize="24sp"
             android:layout_gravity="center_horizontal" />
 
-        <!-- Number of Attendees and QR Code Icons -->
+        <ImageView
+            android:id="@+id/qrCodeImageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,7 +52,7 @@
 
         </LinearLayout>
 
-        <!-- Buttons -->
+
         <Button
             android:id="@+id/btn_view_edit_details"
             android:layout_width="match_parent"
@@ -105,6 +112,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Check in Map"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Back"
             android:background="#4CAF50"
             android:textColor="#FFFFFF"
             android:layout_marginTop="8dp" />
