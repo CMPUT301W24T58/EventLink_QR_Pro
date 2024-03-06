@@ -31,6 +31,17 @@
             android:name=".EventDetailActivity">
         </activity>
 
+        <activity
+            android:name=".ViewEditEventDetailsActivity">
+        </activity>
+
+        <activity
+            android:name=".SendNotificationActivity">
+        </activity>
+
+        <activity
+            android:name=".AttendeeList">
+        </activity>
     </application>
 
 </manifest>
