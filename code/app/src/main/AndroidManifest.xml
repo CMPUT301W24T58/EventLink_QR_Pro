@@ -42,6 +42,12 @@
         <activity
             android:name=".AttendeeList">
         </activity>
+
+        <activity
+            android:name=".UploadImage">
+        </activity>
     </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
 </manifest>

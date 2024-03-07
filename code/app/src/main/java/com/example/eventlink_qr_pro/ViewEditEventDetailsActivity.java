@@ -1,5 +1,6 @@
 package com.example.eventlink_qr_pro;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +23,8 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
     private Button updateButton;
     private Button cancelButton;
 
+    private Button uploadButton;
+
     private FirebaseFirestore db;
     private String eventName;
     @Override
@@ -37,6 +40,7 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
         eventDescriptionEditText = findViewById(R.id.event_description_edit_text);
         updateButton = findViewById(R.id.update_button);
         cancelButton = findViewById(R.id.cancel_button);
+        uploadButton = findViewById(R.id.upload_poster_button);
 
         // Retrieve the event name from the intent
         eventName = getIntent().getStringExtra("eventName");
@@ -54,6 +58,14 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
             // Close this activity and go back to the previous one
             finish();
         });
+
+        uploadButton.setOnClickListener(view -> {
+            // Intent to start EventListActivity
+            Intent intent = new Intent(ViewEditEventDetailsActivity.this, UploadImage.class);
+            startActivity(intent);
+        });
+
+
     }
 
     private void loadEventData(String eventName) {
