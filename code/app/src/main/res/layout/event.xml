@@ -18,40 +18,35 @@
             android:textSize="24sp"
             android:layout_gravity="center_horizontal" />
 
-        <ImageView
-            android:id="@+id/qrCodeImageView"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp" />
-
+        <!-- Container for QR codes -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Number of Attendees : 0"
-                android:layout_marginEnd="16dp"/>
-
-            <!-- Assuming have QR code icons in drawable -->
-            <!-- android:src="@drawable/ic_qr_code" -->
+            <!-- Original QR code ImageView -->
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/qrCodeImageView"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginRight="16dp" />
 
-                android:layout_marginEnd="8dp"/>
-
+            <!-- Promotional QR code ImageView -->
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:id="@+id/promoQrCodeImageView"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
 
         </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Number of Attendees : 0"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"/>
 
         <Button
             android:id="@+id/btn_view_edit_details"

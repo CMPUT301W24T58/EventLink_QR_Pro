@@ -6,6 +6,9 @@ public class Event {
     private String time;
     private String location;
     private String description;
+    private String posterUrl;
+    private String checkInQrData; // For check-in QR code data
+    private String promoQrData;
 
     public Event() {}
     public Event(String name, String date, String time, String location, String description) {
@@ -56,5 +59,20 @@ public class Event {
     public void setDescription(String description) {
         this.description = description;
     }
+    public String getPosterUrl() {
+        return posterUrl;
+    }
+
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
+    }
+    public String getPromoQrData() {
+        return promoQrData;
+    }
+
+    public void setPromoQrData(String promoQrData) {
+        this.promoQrData = promoQrData;
+    }
+
 }
 
