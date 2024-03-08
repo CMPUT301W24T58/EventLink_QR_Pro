@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +22,13 @@ import com.google.zxing.Reader;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -32,13 +40,14 @@ public class QRCodeScannerActivity extends AppCompatActivity {
     private Button takePictureButton;
     private String qrCodeData; // Attribute to store QR code data
     private  Button backbutton;
+    private Attendee attendee;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.scan_code_attendee);
         Intent intent = getIntent();
-        Attendee attendee = (Attendee) intent.getSerializableExtra("attendee");
+        this.attendee = (Attendee) intent.getSerializableExtra("attendee");
 
         uploadImageButton = findViewById(R.id.upload_image_button);
         takePictureButton = findViewById(R.id.take_picture_button);
@@ -82,7 +91,29 @@ public class QRCodeScannerActivity extends AppCompatActivity {
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                 qrCodeData = decodeQRCode(bitmap); // Store decoded QR code data
                 if (qrCodeData != null) {
-                    Toast.makeText(this, "QR Code Data: " + qrCodeData, Toast.LENGTH_LONG).show();
+
+                    // Query Firestore to find the event with the matching qrCodeData
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db.collection("events")
+                            .whereEqualTo("checkinqrdata", qrCodeData)
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (DocumentSnapshot document : task.getResult()) {
+                                            // Get the ID of the event document
+                                            String eventId = document.getId();
+                                            // Update or create the attendees collection within the event
+                                            DocumentReference eventRef = db.collection("events").document(eventId);
+                                            eventRef.collection("attendees").document(attendee.getId()).set(attendee);
+
+                                        }
+                                    } else {
+                                        Toast.makeText(QRCodeScannerActivity.this, "Failed to find event with matching QR code data", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                 } else {
                     Toast.makeText(this, "Failed to decode QR code", Toast.LENGTH_SHORT).show();
                 }
