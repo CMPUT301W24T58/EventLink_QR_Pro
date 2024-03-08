@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Event Attendees title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Event Attendees"
+        android:textSize="24sp"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Search bar -->
+    <EditText
+        android:id="@+id/search_attendees"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Search Attendees"
+        android:inputType="text"
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:drawablePadding="10dp"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- ListView for displaying attendees -->
+    <ListView
+        android:id="@+id/listview_attendees"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_weight="1"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:text="Back"
+        android:id="@+id/back" />
+
+</LinearLayout>

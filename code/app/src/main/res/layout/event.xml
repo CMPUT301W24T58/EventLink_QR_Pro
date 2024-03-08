@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/event_name_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event Name"
+            android:textSize="24sp"
+            android:layout_gravity="center_horizontal" />
+
+        <ImageView
+            android:id="@+id/qrCodeImageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Number of Attendees : 0"
+                android:layout_marginEnd="16dp"/>
+
+            <!-- Assuming have QR code icons in drawable -->
+            <!-- android:src="@drawable/ic_qr_code" -->
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginEnd="8dp"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/btn_view_edit_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View/Edit Details"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="16dp" />
+
+        <Button
+            android:id="@+id/btn_register_qr_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register Existing QR code"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/btn_share_qr_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Share QR code"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/btn_view_attendees"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View Attendees"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/btn_send_notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send Notification"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/btn_alerts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Alerts"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/btn_check_in_map"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Check in Map"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+</ScrollView>
