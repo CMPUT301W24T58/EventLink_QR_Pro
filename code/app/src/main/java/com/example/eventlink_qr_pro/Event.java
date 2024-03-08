@@ -7,6 +7,7 @@ public class Event {
     private String location;
     private String description;
 
+
     public Event() {}
     public Event(String name, String date, String time, String location, String description) {
         this.name = name;
@@ -14,6 +15,9 @@ public class Event {
         this.time = time;
         this.location = location;
         this.description = description;
+
+
+
     }
 
     // Getters and setters
@@ -56,5 +60,7 @@ public class Event {
     public void setDescription(String description) {
         this.description = description;
     }
+
+
 }
 

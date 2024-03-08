@@ -24,8 +24,7 @@ import java.util.Map;
 
 public class EventDetailActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private ImageView qrCodeImageView;
-    private String qrDataString;
+    private ImageView qrCodeImageView, promoQrCodeImageView; // Added for the promotional QR code
     private String eventName;
 
     @Override
@@ -33,6 +32,7 @@ public class EventDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event);
         qrCodeImageView = findViewById(R.id.qrCodeImageView);
+        promoQrCodeImageView = findViewById(R.id.promoQrCodeImageView); // Ensure this ID exists in your layout
         TextView textView = findViewById(R.id.event_name_text_view);
         Button btnRegisterQRCode = findViewById(R.id.btn_register_qr_code);
         Button backButton = findViewById(R.id.btn_back);
@@ -42,115 +42,103 @@ public class EventDetailActivity extends AppCompatActivity {
 
         eventName = getIntent().getStringExtra("eventName");
 
-        db.collection("events").document(eventName).get().addOnSuccessListener(documentSnapshot -> {
-            try {
-                JSONObject qrDataJson = new JSONObject();
-                qrDataJson.put("name", documentSnapshot.getString("name"));
-                qrDataJson.put("date", documentSnapshot.getString("date"));
-                qrDataJson.put("time", documentSnapshot.getString("time"));
-                qrDataJson.put("location", documentSnapshot.getString("location"));
-                qrDataJson.put("description", documentSnapshot.getString("description"));
-                qrDataString = qrDataJson.toString();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }).addOnFailureListener(e -> e.printStackTrace());
-        btnViewEditDetails.setOnClickListener(view -> {
-            // Create an Intent to start ViewEditEventDetailsActivity
-            Intent intent = new Intent(EventDetailActivity.this, ViewEditEventDetailsActivity.class);
-            intent.putExtra("eventName", eventName); // Optional: Pass data if needed
-            startActivity(intent);
-
-        });
+        fetchAndGenerateQRCode(eventName);
 
         textView.setText(eventName);
 
-
-        fetchAndGenerateQRCode(eventName);
+        btnViewEditDetails.setOnClickListener(view -> {
+            Intent intent = new Intent(EventDetailActivity.this, ViewEditEventDetailsActivity.class);
+            intent.putExtra("eventName", eventName);
+            startActivity(intent);
+        });
 
         btnRegisterQRCode.setOnClickListener(view -> {
-                uploadQRCodeToFirestore(eventName, qrDataString);
-                fetchAndGenerateQRCode(eventName);
+            uploadQRCodeToFirestore(eventName);
+            fetchAndGenerateQRCode(eventName);
         });
 
         btnSendNotification.setOnClickListener(view -> {
-            // Create an Intent to start SendNotificationActivity
             Intent intent = new Intent(EventDetailActivity.this, SendNotificationActivity.class);
             startActivity(intent);
         });
 
         btnViewAttendees.setOnClickListener(view -> {
-            // Create an Intent to start SendNotificationActivity
             Intent intent = new Intent(EventDetailActivity.this, AttendeeList.class);
             startActivity(intent);
         });
 
         backButton.setOnClickListener(view -> {
-            // Intent to start EventListActivity
             Intent intent = new Intent(this, EventListActivity.class);
             startActivity(intent);
         });
-
-
     }
+
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh data each time the activity resumes
         fetchAndGenerateQRCode(eventName);
     }
 
     private void fetchAndGenerateQRCode(String eventName) {
         db.collection("events").document(eventName).get().addOnSuccessListener(documentSnapshot -> {
-            try {
-                JSONObject qrDataJson = new JSONObject();
-                qrDataJson.put("name", documentSnapshot.getString("name"));
-                qrDataJson.put("date", documentSnapshot.getString("date"));
-                qrDataJson.put("time", documentSnapshot.getString("time"));
-                qrDataJson.put("location", documentSnapshot.getString("location"));
-                qrDataJson.put("description", documentSnapshot.getString("description"));
-                qrDataString = qrDataJson.toString();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }).addOnFailureListener(e -> e.printStackTrace());
-        db.collection("events").document(eventName).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
+                String name = documentSnapshot.getString("name");
+                String date = documentSnapshot.getString("date");
+                String time = documentSnapshot.getString("time");
+                String location = documentSnapshot.getString("location");
+                String description = documentSnapshot.getString("description");
+                String imageUrl = documentSnapshot.contains("imageUrl") ? documentSnapshot.getString("imageUrl") : ""; // Check if imageUrl exists
 
-                String qrData = documentSnapshot.getString("qrData");
-                if (qrData != null && !qrData.isEmpty()) {
-                    generateQRCode(qrData);
-                }else{
-                    generateQRCode(qrDataString);
+                JSONObject qrDataJson = new JSONObject();
+                try {
+                    qrDataJson.put("name", name);
+                    qrDataJson.put("date", date);
+                    qrDataJson.put("time", time);
+                    qrDataJson.put("location", location);
+                    // Generate the first QR code with event details
+                    generateQRCode(qrDataJson.toString(), qrCodeImageView);
+
+                    // Generate the second QR code with the event description
+                    JSONObject promoQrDataJson = new JSONObject();
+                    promoQrDataJson.put("description", description);
+                    // Include the image URL in the QR code only if it exists
+                    if (!imageUrl.isEmpty()) {
+                        promoQrDataJson.put("imageUri", imageUrl);
+                    }
+                    // Always generate the promotional QR code, even if there is no image URL yet
+                    generateQRCode(promoQrDataJson.toString(), promoQrCodeImageView);
+
+                } catch (JSONException | WriterException e) {
+                    e.printStackTrace();
                 }
             }
-        }).addOnFailureListener(e -> e.printStackTrace());
+        }).addOnFailureListener(e -> {
+            // Handle failure
+        });
+    }
+
+    private void generateQRCode(String data, ImageView targetImageView) throws WriterException {
+        BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+        Bitmap bitmap = barcodeEncoder.encodeBitmap(data, BarcodeFormat.QR_CODE, 300, 300);
+        runOnUiThread(() -> targetImageView.setImageBitmap(bitmap));
     }
 
 
-    private void generateQRCode(String eventData) {
-        try {
-            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            Bitmap bitmap = barcodeEncoder.encodeBitmap(eventData, BarcodeFormat.QR_CODE, 300, 300);
-            qrCodeImageView.setImageBitmap(bitmap);
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
+    private void uploadQRCodeToFirestore(String eventName) {
+        // Assuming you want to upload both QR codes' data, you might store them in different fields
+        db.collection("events").document(eventName).get().addOnSuccessListener(documentSnapshot -> {
+            try {
+                // You could potentially update the document with QR code data here if necessary
+                // For example, if you generate a new QR code string that includes a timestamp or other dynamic data
+                // DocumentReference eventDocRef = db.collection("events").document(eventName);
+                // Map<String, Object> qrDataMap = new HashMap<>();
+                // qrDataMap.put("qrData", qrDataString); // Your existing QR data
+                // Optional: add additional QR data fields as needed
+                // eventDocRef.set(qrDataMap, SetOptions.merge());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
-
-    private void uploadQRCodeToFirestore(String eventName, String qrData) {
-        DocumentReference eventDocRef = db.collection("events").document(eventName);
-        Map<String, Object> qrDataMap = new HashMap<>();
-        qrDataMap.put("qrData", qrData);
-
-        eventDocRef.set(qrDataMap, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> {
-                    // Handle success
-                })
-                .addOnFailureListener(e -> {
-                    // Handle failure
-                });
-    }
-
 }
 
