@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.util.Log;
+
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class Attendee implements Serializable {
     private String id;
@@ -12,6 +15,8 @@ public class Attendee implements Serializable {
     private String email;
     private double latitude;
     private double longitude;
+    private String fmctoken;
+
     public Attendee(String id, String name, String phoneNumber, String email) {
         this.id = id;
         this.name = name;
@@ -51,6 +56,14 @@ public class Attendee implements Serializable {
         this.email = email;
     }
 
+    public String getEtoken() {
+        return fmctoken;
+    }
+
+    public void setEtoken(String fmctoken) {
+        this.fmctoken = fmctoken;
+    }
+
     public void find_location(Context context){
 
         // Get the location service
@@ -72,6 +85,16 @@ public class Attendee implements Serializable {
             this.longitude = lastKnownLocation.getLongitude();
 
         }
+
+    }
+
+    void getFMCToken(){
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                String token = task.getResult();
+                setEtoken(token);
+            }
+        });
 
     }
 

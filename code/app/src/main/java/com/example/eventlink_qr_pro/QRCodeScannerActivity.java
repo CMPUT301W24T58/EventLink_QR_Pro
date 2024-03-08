@@ -91,6 +91,7 @@ public class QRCodeScannerActivity extends AppCompatActivity {
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                 qrCodeData = decodeQRCode(bitmap); // Store decoded QR code data
                 attendee.find_location(getApplicationContext());
+                attendee.getFMCToken();
                 if (qrCodeData != null) {
 
                     // Query Firestore to find the event with the matching qrCodeData
