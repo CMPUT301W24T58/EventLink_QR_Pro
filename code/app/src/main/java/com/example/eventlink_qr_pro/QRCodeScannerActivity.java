@@ -31,6 +31,7 @@ public class QRCodeScannerActivity extends AppCompatActivity {
     private Button uploadImageButton;
     private Button takePictureButton;
     private String qrCodeData; // Attribute to store QR code data
+    private  Button backbutton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class QRCodeScannerActivity extends AppCompatActivity {
 
         uploadImageButton = findViewById(R.id.upload_image_button);
         takePictureButton = findViewById(R.id.take_picture_button);
+        backbutton = findViewById(R.id.back_to_attendee_menu_button);
 
         uploadImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,6 +55,13 @@ public class QRCodeScannerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(QRCodeScannerActivity.this, "Take Picture clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Finish the current AttendeeActivity and return to the previous menu
+                finish();
             }
         });
     }
