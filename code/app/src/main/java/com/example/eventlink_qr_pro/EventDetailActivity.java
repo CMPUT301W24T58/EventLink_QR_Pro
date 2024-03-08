@@ -25,6 +25,7 @@ import java.util.Map;
 public class EventDetailActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ImageView qrCodeImageView;
+    private ImageView promotionImageView;
     private String qrDataString;
     private String eventName;
 
@@ -33,6 +34,7 @@ public class EventDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event);
         qrCodeImageView = findViewById(R.id.qrCodeImageView);
+        promotionImageView = findViewById(R.id.promoQrCodeImageView);
         TextView textView = findViewById(R.id.event_name_text_view);
         Button btnRegisterQRCode = findViewById(R.id.btn_register_qr_code);
         Button backButton = findViewById(R.id.btn_back);
@@ -67,6 +69,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
 
         fetchAndGenerateQRCode(eventName);
+        fetchAndGenerateQRCode2(eventName);
 
         btnRegisterQRCode.setOnClickListener(view -> {
                 uploadQRCodeToFirestore(eventName, qrDataString);
@@ -82,6 +85,7 @@ public class EventDetailActivity extends AppCompatActivity {
         btnViewAttendees.setOnClickListener(view -> {
             // Create an Intent to start SendNotificationActivity
             Intent intent = new Intent(EventDetailActivity.this, AttendeeList.class);
+            intent.putExtra("eventName", eventName);
             startActivity(intent);
         });
 
@@ -136,6 +140,36 @@ public class EventDetailActivity extends AppCompatActivity {
         } catch (WriterException e) {
             e.printStackTrace();
         }
+    }
+
+    private void generateQRCode2(String eventData) {
+        try {
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmap = barcodeEncoder.encodeBitmap(eventData, BarcodeFormat.QR_CODE, 300, 300);
+            promotionImageView.setImageBitmap(bitmap);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void fetchAndGenerateQRCode2(String eventName) {
+        db.collection("events").document(eventName).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String description = documentSnapshot.getString("description");
+                String posterUrl = documentSnapshot.getString("imageUrl"); // Assuming 'imageUrl' is the field name
+
+                JSONObject qrDataJson = new JSONObject();
+                try {
+                    qrDataJson.put("description", description);
+                    qrDataJson.put("posterUrl", posterUrl);
+                    // Include any other details as needed
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String qrContent = qrDataJson.toString();
+                generateQRCode2(qrContent); // Your existing method to generate and display QR code
+            }
+        }).addOnFailureListener(e -> e.printStackTrace());
     }
 
     private void uploadQRCodeToFirestore(String eventName, String qrData) {

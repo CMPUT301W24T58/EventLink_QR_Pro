@@ -71,6 +71,15 @@ public class AttendeeActivity extends AppCompatActivity {
             }
         });
 
+        attendeeAlertsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AttendeeActivity.this, AttendeeAlerts.class); // Assuming AttendeeActivity is the appropriate activity for attendees
+                intent.putExtra("attendee", attendee);
+                startActivity(intent);
+            }
+        });
+
     }
     private void addAttendeeToFirestore(Attendee attendee) {
         // Add attendee data to Firestore

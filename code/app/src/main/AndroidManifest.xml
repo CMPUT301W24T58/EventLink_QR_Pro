@@ -50,7 +50,9 @@
         </activity>
         <activity
             android:name=".QRCodeScannerActivity">
-
+        </activity>
+        <activity
+            android:name=".AttendeeAlerts">
         </activity>
         <service
             android:name=".MyFirebaseMessagingService"
