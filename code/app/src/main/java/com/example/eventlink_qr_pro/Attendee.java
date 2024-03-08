@@ -1,12 +1,17 @@
 package com.example.eventlink_qr_pro;
 import java.io.Serializable;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 
 public class Attendee implements Serializable {
     private String id;
     private String name;
     private String phoneNumber;
     private String email;
-
+    private double latitude;
+    private double longitude;
     public Attendee(String id, String name, String phoneNumber, String email) {
         this.id = id;
         this.name = name;
@@ -45,4 +50,38 @@ public class Attendee implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public void find_location(Context context){
+
+        // Get the location service
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        // Check if location permission is granted
+        if (context.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                context.checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Handle the case where location permission is not granted
+            return;
+        }
+
+        // Get the last known location from the network provider
+        Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+        // Check if the last known location is available
+        if (lastKnownLocation != null) {
+            this.latitude = lastKnownLocation.getLatitude();
+            this.longitude = lastKnownLocation.getLongitude();
+
+        }
+
+    }
+
+    public double getLatitude() { return latitude; }
+
+    public double getLongitude() { return longitude; }
+
 }
+
+
+
+
+
