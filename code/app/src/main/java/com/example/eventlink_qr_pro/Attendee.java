@@ -16,6 +16,7 @@ public class Attendee implements Serializable {
     private double latitude;
     private double longitude;
     private String fmctoken;
+    private int checkInCount;
 
     public Attendee(String id, String name, String phoneNumber, String email) {
         this.id = id;
@@ -58,6 +59,13 @@ public class Attendee implements Serializable {
 
     public String getEtoken() {
         return fmctoken;
+    }
+    public int getCheckInCount() {
+        return checkInCount;
+    }
+
+    public void setCheckInCount(int checkInCount) {
+        this.checkInCount = checkInCount;
     }
 
     public void setEtoken(String fmctoken) {

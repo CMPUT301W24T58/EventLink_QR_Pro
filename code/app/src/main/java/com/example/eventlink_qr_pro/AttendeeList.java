@@ -35,7 +35,7 @@ public class AttendeeList extends AppCompatActivity {
     }
 
     private void fetchAttendees(String eventName) {
-        ListView listView = findViewById(R.id.listview_attendees); // Adjust the ID as per your layout
+        ListView listView = findViewById(R.id.listview_attendees);
         ArrayList<String> attendeeDetails = new ArrayList<>();
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, attendeeDetails);
         listView.setAdapter(arrayAdapter);
@@ -46,13 +46,14 @@ public class AttendeeList extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            String name = document.getString("name"); // Assuming there's a 'name' field
-                            String email = document.getString("email"); // Assuming there's an 'email' field
-                            // Combine or format the details as needed for display
-                            String detail = "Name: " + name;
+                            String name = document.getString("name");
+                            String email = document.getString("email");
+                            // Now fetch the check-in count from the document
+                            Long checkInCount = document.contains("checkInCount") ? document.getLong("checkInCount") : 0; // Default to 0 if not present
+                            String detail = "Name: " + name + ", Check-ins: " + checkInCount;
                             attendeeDetails.add(detail);
                         }
-                        arrayAdapter.notifyDataSetChanged();
+                        arrayAdapter.notifyDataSetChanged(); // Update the ListView with the new data
                     } else {
                         Log.w(TAG, "Error getting documents.", task.getException());
                     }

@@ -93,27 +93,40 @@ public class QRCodeScannerActivity extends AppCompatActivity {
                 attendee.find_location(getApplicationContext());
                 attendee.getFMCToken();
                 if (qrCodeData != null) {
-
                     // Query Firestore to find the event with the matching qrCodeData
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
                     db.collection("events")
                             .whereEqualTo("checkinqrdata", qrCodeData)
                             .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (DocumentSnapshot document : task.getResult()) {
-                                            // Get the ID of the event document
-                                            String eventId = document.getId();
-                                            // Update or create the attendees collection within the event
-                                            DocumentReference eventRef = db.collection("events").document(eventId);
-                                            eventRef.collection("attendees").document(attendee.getId()).set(attendee);
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                                    for (DocumentSnapshot document : task.getResult()) {
+                                        // Get the ID of the event document
+                                        String eventId = document.getId();
 
-                                        }
-                                    } else {
-                                        Toast.makeText(QRCodeScannerActivity.this, "Failed to find event with matching QR code data", Toast.LENGTH_SHORT).show();
+                                        DocumentReference attendeeRef = db.collection("events").document(eventId)
+                                                .collection("attendees").document(attendee.getId());
+
+                                        attendeeRef.get().addOnCompleteListener(attendeeTask -> {
+                                            if (attendeeTask.isSuccessful() && attendeeTask.getResult() != null) {
+                                                DocumentSnapshot attendeeDocument = attendeeTask.getResult();
+                                                if (attendeeDocument.exists()) {
+                                                    // Document exists, increment check-in count
+                                                    long currentCheckInCount = attendeeDocument.getLong("checkInCount") != null ? attendeeDocument.getLong("checkInCount") : 0;
+                                                    attendeeRef.update("checkInCount", currentCheckInCount + 1);
+                                                } else {
+                                                    // Document does not exist, create it with check-in count set to 1
+                                                    attendee.setCheckInCount(1);
+                                                    attendeeRef.set(attendee);
+                                                }
+                                            } else {
+                                                // Handle errors or document does not exist scenarios
+                                                Toast.makeText(QRCodeScannerActivity.this, "Error fetching attendee data", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                                     }
+                                } else {
+                                    Toast.makeText(QRCodeScannerActivity.this, "Failed to find event with matching QR code data", Toast.LENGTH_SHORT).show();
                                 }
                             });
                 } else {
@@ -124,6 +137,7 @@ public class QRCodeScannerActivity extends AppCompatActivity {
             }
         }
     }
+
 
     private String decodeQRCode(Bitmap bitmap) {
         try {
