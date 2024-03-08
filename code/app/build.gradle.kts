@@ -44,4 +44,5 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx")
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics:20.0.2")
+    implementation ("com.google.android.gms:play-services-maps:17.0.1")
 }

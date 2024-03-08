@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tv_check_in_map"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Check in Map"
+        android:drawableEnd="@android:drawable/ic_dialog_map"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:layout_alignParentTop="true" />
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/tv_check_in_map"
+        android:layout_above="@+id/layout_tracking_buttons"
+        android:layout_marginTop="8dp" />
+
+    <LinearLayout
+        android:id="@+id/layout_tracking_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/btn_enable_tracking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enable tracking"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btn_disable_tracking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Disable tracking"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+</RelativeLayout>

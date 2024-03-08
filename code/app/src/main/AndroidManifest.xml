@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EventLink_QR_Pro"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAd6a0Giw6TvbL-QClYGaLhFzI4S79hIQM"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -53,6 +56,9 @@
         </activity>
         <activity
             android:name=".AttendeeAlerts">
+        </activity>
+        <activity
+            android:name=".MapActivity">
         </activity>
         <service
             android:name=".MyFirebaseMessagingService"

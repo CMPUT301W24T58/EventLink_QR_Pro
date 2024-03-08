@@ -21,6 +21,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class EventDetailActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -41,6 +42,7 @@ public class EventDetailActivity extends AppCompatActivity {
         Button btnViewEditDetails = findViewById(R.id.btn_view_edit_details);
         Button btnViewAttendees = findViewById(R.id.btn_view_attendees);
         Button btnSendNotification = findViewById(R.id.btn_send_notification);
+        Button btnCheckInMap = findViewById(R.id.btn_check_in_map);
 
         eventName = getIntent().getStringExtra("eventName");
 
@@ -92,6 +94,15 @@ public class EventDetailActivity extends AppCompatActivity {
         backButton.setOnClickListener(view -> {
             // Intent to start EventListActivity
             Intent intent = new Intent(this, EventListActivity.class);
+            startActivity(intent);
+        });
+
+
+        btnCheckInMap.setOnClickListener(view -> {
+            Intent intent = new Intent(EventDetailActivity.this, MapActivity.class);
+            intent.putExtra("eventName", eventName);
+            // You can add extra data to intent if needed, for example:
+            // intent.putExtra("location", location); // where location is a variable containing location data.
             startActivity(intent);
         });
 
