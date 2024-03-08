@@ -27,6 +27,7 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private String eventName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,8 +61,8 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
         });
 
         uploadButton.setOnClickListener(view -> {
-            // Intent to start EventListActivity
             Intent intent = new Intent(ViewEditEventDetailsActivity.this, UploadImage.class);
+            intent.putExtra("eventName", eventName); // Ensure 'eventName' is the correct key and value you want to pass
             startActivity(intent);
         });
 

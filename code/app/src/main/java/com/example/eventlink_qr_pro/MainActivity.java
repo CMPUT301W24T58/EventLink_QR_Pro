@@ -1,5 +1,6 @@
 package com.example.eventlink_qr_pro;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -7,6 +8,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -34,11 +40,15 @@ public class MainActivity extends AppCompatActivity {
                     Attendee attendee = new Attendee(attendeeId, "","","");
                     intent.putExtra("attendee", attendee);
 
+
                 }
                 attendeeCreated = true;
                 startActivity(intent);
             }
         });
+
+
+
         Button organizerButton = findViewById(R.id.organizer_button);
 
         // Set an OnClickListener for the Organizer button
@@ -53,6 +63,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        getFMCToken();
+
+    }
+    void getFMCToken(){
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                String token = task. getResult();
+                Log.i( "My token", token);
+            }
+        });
 
     }
 
