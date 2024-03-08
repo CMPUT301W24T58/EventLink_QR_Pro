@@ -60,6 +60,10 @@
         <activity
             android:name=".MapActivity">
         </activity>
+        <activity
+            android:name=".EditProfileActivity">
+
+        </activity>
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">

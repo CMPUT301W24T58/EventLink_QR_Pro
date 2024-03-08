@@ -1,5 +1,7 @@
 package com.example.eventlink_qr_pro;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,7 +16,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AttendeeActivity extends AppCompatActivity {
     private FirebaseFirestore db;
+    private static final int EDIT_PROFILE_REQUEST_CODE = 100;
+    private Attendee attendee;
 
+
+    ImageView profilePicImageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +28,7 @@ public class AttendeeActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         // Initialize views
-        ImageView profilePicImageView = findViewById(R.id.profilePicImageView);
+        profilePicImageView = findViewById(R.id.profilePicImageView);
         TextView attendeeNameTextView = findViewById(R.id.attendee_name_text_view);
         Button scanCodeButton = findViewById(R.id.btn_scan_code);
         Button viewEventsButton = findViewById(R.id.btn_view_events_joined);
@@ -32,18 +38,14 @@ public class AttendeeActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
 
-        Attendee attendee = (Attendee) intent.getSerializableExtra("attendee");
-
-        // Display the attendee details
-        if (attendee != null) {
-            // Set the attendee name in the TextView
-            attendeeNameTextView.setText(attendee.getName());
-            addAttendeeToFirestore(attendee);
-        }
-
+        this.attendee = (Attendee) intent.getSerializableExtra("attendee");
+        addAttendeeToFirestore(attendee);
 
         // Set text for the welcome message
-        //attendeeNameTextView.setText("Welcome Attendee");
+        attendeeNameTextView.setText("Welcome Attendee");
+
+
+
 
         // Set click listener for the back button to return to the previous menu
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +61,9 @@ public class AttendeeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Handle "Edit Profile" action here
+                Intent intent = new Intent(AttendeeActivity.this, EditProfileActivity.class); // Assuming AttendeeActivity is the appropriate activity for attendees
+                intent.putExtra("attendee", attendee);
+                startActivityForResult(intent, EDIT_PROFILE_REQUEST_CODE);
             }
         });
 
@@ -80,6 +85,26 @@ public class AttendeeActivity extends AppCompatActivity {
             }
         });
 
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == EDIT_PROFILE_REQUEST_CODE && resultCode == RESULT_OK) {
+            if (data != null) {
+                Log.d("AttendeeActivity", "onActivityResult called");
+                this.attendee = (Attendee) data.getSerializableExtra("updatedAttendee");
+                if (attendee.getImageByteArray() != null){
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(attendee.getImageByteArray(), 0, attendee.getImageByteArray().length);
+                    profilePicImageView.setImageBitmap(bitmap);
+                } else if (attendee.getImageByteArray() == null) {
+                    profilePicImageView.setImageDrawable(null);
+
+                }
+
+
+            }
+        }
     }
     private void addAttendeeToFirestore(Attendee attendee) {
         // Add attendee data to Firestore

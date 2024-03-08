@@ -1,4 +1,5 @@
 package com.example.eventlink_qr_pro;
+
 import java.io.Serializable;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -17,6 +18,7 @@ public class Attendee implements Serializable {
     private double longitude;
     private String fmctoken;
     private int checkInCount;
+    private byte[] imageByteArray; // New attribute for storing image as byte array
 
     public Attendee(String id, String name, String phoneNumber, String email) {
         this.id = id;
@@ -72,6 +74,16 @@ public class Attendee implements Serializable {
         this.fmctoken = fmctoken;
     }
 
+    public byte[] getImageByteArray() {
+        return imageByteArray;
+    }
+
+    public void setImageByteArray(byte[] imageByteArray) {
+        this.imageByteArray = imageByteArray;
+    }
+    public void clearImageByteArray() {
+        this.imageByteArray = null;
+    }
     public void find_location(Context context){
 
         // Get the location service
@@ -111,8 +123,3 @@ public class Attendee implements Serializable {
     public double getLongitude() { return longitude; }
 
 }
-
-
-
-
-
