@@ -3,6 +3,8 @@ package com.example.eventlink_qr_pro;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,6 +32,8 @@ public class EventDetailActivity extends AppCompatActivity {
     private String qrDataString;
     private String eventName;
 
+    public Bitmap bitmap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +47,7 @@ public class EventDetailActivity extends AppCompatActivity {
         Button btnViewAttendees = findViewById(R.id.btn_view_attendees);
         Button btnSendNotification = findViewById(R.id.btn_send_notification);
         Button btnCheckInMap = findViewById(R.id.btn_check_in_map);
+        Button btn_share_qr_code = findViewById(R.id. btn_share_qr_code);
 
         eventName = getIntent().getStringExtra("eventName");
 
@@ -106,6 +111,17 @@ public class EventDetailActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        btn_share_qr_code.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                generateQRCode(qrDataString);
+
+                Intent intent = new Intent(EventDetailActivity.this, ShareQRCodeActivity.class);
+                intent.putExtra("qrCodeBitmap", bitmap);
+                startActivity(intent);
+            }
+        });
+
 
     }
     @Override
@@ -146,7 +162,7 @@ public class EventDetailActivity extends AppCompatActivity {
     private void generateQRCode(String eventData) {
         try {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            Bitmap bitmap = barcodeEncoder.encodeBitmap(eventData, BarcodeFormat.QR_CODE, 300, 300);
+            bitmap = barcodeEncoder.encodeBitmap(eventData, BarcodeFormat.QR_CODE, 300, 300);
             qrCodeImageView.setImageBitmap(bitmap);
         } catch (WriterException e) {
             e.printStackTrace();

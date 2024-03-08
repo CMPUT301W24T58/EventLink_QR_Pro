@@ -64,6 +64,9 @@
             android:name=".EditProfileActivity">
 
         </activity>
+        <activity
+            android:name=".ShareQRCodeActivity">
+        </activity>
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
