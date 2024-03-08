@@ -95,7 +95,7 @@ public class QRCodeScannerActivity extends AppCompatActivity {
                     // Query Firestore to find the event with the matching qrCodeData
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
                     db.collection("events")
-                            .whereEqualTo("checkinqrData", qrCodeData)
+                            .whereEqualTo("checkinqrdata", qrCodeData)
                             .get()
                             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
@@ -106,17 +106,8 @@ public class QRCodeScannerActivity extends AppCompatActivity {
                                             String eventId = document.getId();
                                             // Update or create the attendees collection within the event
                                             DocumentReference eventRef = db.collection("events").document(eventId);
-                                            eventRef.collection("attendees").add(attendee)
-                                                    .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                            if (task.isSuccessful()) {
-                                                                Toast.makeText(QRCodeScannerActivity.this, "Attendee added to event", Toast.LENGTH_SHORT).show();
-                                                            } else {
-                                                                Toast.makeText(QRCodeScannerActivity.this, "Failed to add attendee to event", Toast.LENGTH_SHORT).show();
-                                                            }
-                                                        }
-                                                    });
+                                            eventRef.collection("attendees").document(attendee.getId()).set(attendee);
+
                                         }
                                     } else {
                                         Toast.makeText(QRCodeScannerActivity.this, "Failed to find event with matching QR code data", Toast.LENGTH_SHORT).show();
