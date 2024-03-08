@@ -45,6 +45,13 @@
         <activity
             android:name=".UploadImage">
         </activity>
+        <activity
+            android:name=".AttendeeActivity">
+        </activity>
+        <activity
+            android:name=".QRCodeScannerActivity">
+
+        </activity>
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">

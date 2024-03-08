@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#FFFFFF">
+
+    <Button
+        android:id="@+id/back_to_attendee_menu_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:layout_gravity="start"
+        android:layout_marginBottom="16dp" />
+
+
+    <TextView
+        android:id="@+id/ScanQRcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:text="Scan QR Code"
+        android:textSize="24sp"
+        android:textColor="#000000" />
+
+    <Button
+        android:id="@+id/upload_image_button"
+        android:layout_width="383dp"
+        android:layout_height="131dp"
+        android:layout_below="@id/ScanQRcode"
+        android:layout_marginTop="72dp"
+        android:background="@color/button_color"
+        android:text="upload Image"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/take_picture_button"
+        android:layout_width="385dp"
+        android:layout_height="128dp"
+        android:layout_below="@id/upload_image_button"
+        android:layout_marginTop="16dp"
+        android:background="@color/button_color"
+        android:text="Open Camera"
+        android:textColor="#FFFFFF" />
+
+</RelativeLayout>
+
