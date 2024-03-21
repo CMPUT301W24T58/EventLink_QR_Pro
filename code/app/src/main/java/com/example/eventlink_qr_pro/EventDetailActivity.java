@@ -48,6 +48,7 @@ public class EventDetailActivity extends AppCompatActivity {
         Button btnSendNotification = findViewById(R.id.btn_send_notification);
         Button btnCheckInMap = findViewById(R.id.btn_check_in_map);
         Button btn_share_qr_code = findViewById(R.id. btn_share_qr_code);
+        Button btn_alerts = findViewById(R.id.btn_alerts);
 
         eventName = getIntent().getStringExtra("eventName");
 
@@ -77,6 +78,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
         fetchAndGenerateQRCode(eventName);
         fetchAndGenerateQRCode2(eventName);
+        updateNumberOfAttendees(eventName);
 
         btnRegisterQRCode.setOnClickListener(view -> {
                 uploadQRCodeToFirestore(eventName, qrDataString);
@@ -86,6 +88,12 @@ public class EventDetailActivity extends AppCompatActivity {
         btnSendNotification.setOnClickListener(view -> {
             // Create an Intent to start SendNotificationActivity
             Intent intent = new Intent(EventDetailActivity.this, SendNotificationActivity.class);
+            startActivity(intent);
+        });
+
+        btn_alerts.setOnClickListener(view -> {
+            Intent intent = new Intent(EventDetailActivity.this, OrganizerAlerts.class);
+            intent.putExtra("eventName", eventName);
             startActivity(intent);
         });
 
@@ -129,6 +137,7 @@ public class EventDetailActivity extends AppCompatActivity {
         super.onResume();
         // Refresh data each time the activity resumes
         fetchAndGenerateQRCode(eventName);
+        updateNumberOfAttendees(eventName);
     }
 
     private void fetchAndGenerateQRCode(String eventName) {
@@ -210,6 +219,22 @@ public class EventDetailActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     // Handle failure
+                });
+    }
+
+    private void updateNumberOfAttendees(String eventName) {
+        db.collection("events").document(eventName).collection("attendees")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    // The number of attendees is the size of the returned documents in the snapshot
+                    int numberOfAttendees = queryDocumentSnapshots.size();
+                    TextView tvNumberOfAttendees = findViewById(R.id.tv_number_of_attendees);
+                    String attendeesText = "Number of Attendees: " + numberOfAttendees;
+                    tvNumberOfAttendees.setText(attendeesText);
+                })
+                .addOnFailureListener(e -> {
+                    // Handle any errors here
+                    e.printStackTrace();
                 });
     }
 

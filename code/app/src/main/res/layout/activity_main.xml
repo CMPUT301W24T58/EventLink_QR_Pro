@@ -27,7 +27,7 @@
     <Button
         android:id="@+id/attendee_button"
         android:layout_width="383dp"
-        android:layout_height="131dp"
+        android:layout_height="100dp"
         android:layout_below="@id/welcome_text"
         android:layout_marginTop="72dp"
         android:background="@color/button_color"
@@ -37,11 +37,21 @@
     <Button
         android:id="@+id/organizer_button"
         android:layout_width="385dp"
-        android:layout_height="128dp"
+        android:layout_height="100dp"
         android:layout_below="@id/attendee_button"
         android:layout_marginTop="16dp"
         android:background="@color/button_color"
         android:text="Organizer"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/administrator_button"
+        android:layout_width="383dp"
+        android:layout_height="100dp"
+        android:layout_below="@id/organizer_button"
+        android:layout_marginTop="16dp"
+        android:background="@color/button_color"
+        android:text="Administrator"
         android:textColor="#FFFFFF" />
 
 </RelativeLayout>

@@ -15,6 +15,7 @@ import androidx.fragment.app.DialogFragment;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,6 +48,17 @@ public class CreateEventDialogFragment extends DialogFragment {
                     String location = eventLocationEditText.getText().toString().trim();
                     String description = eventDescriptionEditText.getText().toString().trim();
 
+                    FirebaseMessaging.getInstance().getToken()
+                            .addOnCompleteListener(task -> {
+                                if (!task.isSuccessful()) {
+                                    Log.w("FCMToken", "Fetching FCM registration token failed", task.getException());
+                                    return;
+                                }
+                                // Once the event is created and we have the token
+                                String token = task.getResult();
+                                // Save the token to the event document
+                                saveTokenToEvent(name, token);
+                            });
 
                     // Simple validation
                     if (name.isEmpty() || date.isEmpty() || time.isEmpty() || location.isEmpty() || description.isEmpty()) {
@@ -109,6 +121,14 @@ public class CreateEventDialogFragment extends DialogFragment {
                 });
     }
 
+    private void saveTokenToEvent(String eventId, String token) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference eventRef = db.collection("events").document(eventId);
+
+        eventRef.update("organizerToken", token)
+                .addOnSuccessListener(aVoid -> Log.d("SaveToken", "Token updated successfully"))
+                .addOnFailureListener(e -> Log.e("SaveToken", "Error updating token", e));
+    }
 
 }
 

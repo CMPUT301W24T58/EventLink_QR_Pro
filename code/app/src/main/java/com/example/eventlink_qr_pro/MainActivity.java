@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button attendeeButton = findViewById(R.id.attendee_button); // Changed from organizerButton to attendeeButton
-
+        Button adminButton = findViewById(R.id.administrator_button);
         // Set an OnClickListener for the Attendee button
         attendeeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +59,15 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(MainActivity.this, EventListActivity.class);
 
+                startActivity(intent);
+            }
+        });
+
+        adminButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an Intent to start AdminActivity
+                Intent intent = new Intent(MainActivity.this, AdminActivity.class);
                 startActivity(intent);
             }
         });
