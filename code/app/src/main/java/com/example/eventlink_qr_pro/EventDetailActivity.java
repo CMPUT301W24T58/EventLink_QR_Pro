@@ -48,6 +48,7 @@ public class EventDetailActivity extends AppCompatActivity {
         Button btnSendNotification = findViewById(R.id.btn_send_notification);
         Button btnCheckInMap = findViewById(R.id.btn_check_in_map);
         Button btn_share_qr_code = findViewById(R.id. btn_share_qr_code);
+        Button btn_alerts = findViewById(R.id.btn_alerts);
 
         eventName = getIntent().getStringExtra("eventName");
 
@@ -87,6 +88,12 @@ public class EventDetailActivity extends AppCompatActivity {
         btnSendNotification.setOnClickListener(view -> {
             // Create an Intent to start SendNotificationActivity
             Intent intent = new Intent(EventDetailActivity.this, SendNotificationActivity.class);
+            startActivity(intent);
+        });
+
+        btn_alerts.setOnClickListener(view -> {
+            Intent intent = new Intent(EventDetailActivity.this, OrganizerAlerts.class);
+            intent.putExtra("eventName", eventName);
             startActivity(intent);
         });
 

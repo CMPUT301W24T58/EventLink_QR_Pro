@@ -69,6 +69,9 @@
         <activity
             android:name=".AdminActivity">
         </activity>
+        <activity
+            android:name=".OrganizerAlerts">
+        </activity>
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
