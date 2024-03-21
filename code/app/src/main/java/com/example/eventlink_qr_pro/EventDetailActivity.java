@@ -77,6 +77,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
         fetchAndGenerateQRCode(eventName);
         fetchAndGenerateQRCode2(eventName);
+        updateNumberOfAttendees(eventName);
 
         btnRegisterQRCode.setOnClickListener(view -> {
                 uploadQRCodeToFirestore(eventName, qrDataString);
@@ -129,6 +130,7 @@ public class EventDetailActivity extends AppCompatActivity {
         super.onResume();
         // Refresh data each time the activity resumes
         fetchAndGenerateQRCode(eventName);
+        updateNumberOfAttendees(eventName);
     }
 
     private void fetchAndGenerateQRCode(String eventName) {
@@ -210,6 +212,22 @@ public class EventDetailActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     // Handle failure
+                });
+    }
+
+    private void updateNumberOfAttendees(String eventName) {
+        db.collection("events").document(eventName).collection("attendees")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    // The number of attendees is the size of the returned documents in the snapshot
+                    int numberOfAttendees = queryDocumentSnapshots.size();
+                    TextView tvNumberOfAttendees = findViewById(R.id.tv_number_of_attendees);
+                    String attendeesText = "Number of Attendees: " + numberOfAttendees;
+                    tvNumberOfAttendees.setText(attendeesText);
+                })
+                .addOnFailureListener(e -> {
+                    // Handle any errors here
+                    e.printStackTrace();
                 });
     }
 
