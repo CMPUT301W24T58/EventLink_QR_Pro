@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.firestore.FieldValue;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.FormatException;
@@ -118,6 +119,7 @@ public class QRCodeScannerActivity extends AppCompatActivity {
                                                     // Document does not exist, create it with check-in count set to 1
                                                     attendee.setCheckInCount(1);
                                                     attendeeRef.set(attendee);
+                                                    attendeeRef.update("timestamp", FieldValue.serverTimestamp());
                                                 }
                                             } else {
                                                 // Handle errors or document does not exist scenarios
