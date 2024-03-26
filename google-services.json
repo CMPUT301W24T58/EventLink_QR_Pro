@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "658432079642",
-    "project_id": "lab5-42149",
-    "storage_bucket": "lab5-42149.appspot.com"
+    "project_number": "584956004695",
+    "project_id": "eventlinkqrpro",
+    "storage_bucket": "eventlinkqrpro.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:658432079642:android:806126502a6d99ece71ea3",
+        "mobilesdk_app_id": "1:584956004695:android:0c2bc786985790254ed612",
         "android_client_info": {
-          "package_name": "com.example.listycity5"
+          "package_name": "com.example.eventlink_qr_pro"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAIY2veio749sseUlxsotq6KmfGuJ9OOeo"
+          "current_key": "AIzaSyApfUcz1qm3GoIMrPSNNyt3KbVRKYPlIas"
         }
       ],
       "services": {
