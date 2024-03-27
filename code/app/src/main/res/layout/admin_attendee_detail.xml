@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/attendeeProfileImageView"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_centerInParent="true"
+        android:contentDescription="Attendee Profile Photo"
+        android:scaleType="centerCrop" />
+
+    <Button
+        android:id="@+id/deleteProfileImageButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/attendeeProfileImageView"
+        android:layout_marginTop="24dp"
+        android:text="Delete Profile Image" />
+
+    <Button
+        android:id="@+id/back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/attendeeProfileImageView"
+        android:layout_marginTop="74dp"
+        android:text="Back" />
+
+</RelativeLayout>

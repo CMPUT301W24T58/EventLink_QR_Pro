@@ -72,6 +72,15 @@
         <activity
             android:name=".OrganizerAlerts">
         </activity>
+        <activity
+            android:name=".EventListForAdminImage">
+        </activity>
+        <activity
+            android:name=".EventDetailAdmin">
+        </activity>
+        <activity
+            android:name=".AdminAttendeeDetailActivity">
+        </activity>
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
