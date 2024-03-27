@@ -11,7 +11,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrganizerAlerts extends AppCompatActivity {
 
@@ -43,43 +45,41 @@ public class OrganizerAlerts extends AppCompatActivity {
         setTitle("Alerts for " + eventName);
 
         // Listen for changes in the number of attendees for the given event
-        setupAttendeeListener(eventName);
+        setupMilestoneListener(eventName);
     }
 
-    private void setupAttendeeListener(String eventName) {
-        db.collection("events").document(eventName).collection("attendees")
-                .orderBy("timestamp")
-                .addSnapshotListener((snapshots, e) -> {
-                    if (e != null) {
-                        Toast.makeText(OrganizerAlerts.this, "Error listening to event updates.", Toast.LENGTH_SHORT).show();
+
+    private void setupMilestoneListener(String eventName) {
+        db.collection("events").document(eventName).collection("milestones")
+                .orderBy("timestamp") // Assuming you have a timestamp field to order by
+                .addSnapshotListener((queryDocumentSnapshots, error) -> {
+                    if (error != null) {
+                        Toast.makeText(OrganizerAlerts.this, "Error loading milestones.", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    if (snapshots != null && !snapshots.isEmpty()) {
-                        int currentCount = snapshots.size();
+                    List<Alert> newAlerts = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        if (doc.get("count") != null && doc.get("timestamp") != null) {
+                            long count = doc.getLong("count");
+                            com.google.firebase.Timestamp timestamp = doc.getTimestamp("timestamp");
+                            String formattedDate = new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(timestamp.toDate());
 
-                        // Only show alerts for every 5 attendees (5, 10, 15, 20, ...)
-                        if (currentCount % 5 == 0) {
-                            // Get the timestamp of the last attendee to determine the milestone time
-                            DocumentSnapshot lastAttendee = snapshots.getDocuments().get(snapshots.size() - 1);
-                            com.google.firebase.Timestamp timestamp = lastAttendee.getTimestamp("timestamp");
-                            String formattedDate = "Just now"; // Default message in case of null
-                            if (timestamp != null) {
-                                // Format the timestamp to a more readable form
-                                formattedDate = new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(timestamp.toDate());
-                            }
-
-                            String message = "Congratulations! Milestone reached with " + currentCount + " attendees!";
-                            // Use the formattedDate as the time when the milestone was reached
-                            alertsList.add(0, new Alert(message, formattedDate));
-                            adapter.notifyDataSetChanged();
+                            String message = "Milestone reached with " + count + " attendees!";
+                            newAlerts.add(new Alert(message, formattedDate));
                         }
                     }
+
+                    // Update the list and notify the adapter
+                    alertsList.clear();
+                    alertsList.addAll(newAlerts);
+                    adapter.notifyDataSetChanged();
                 });
     }
 
 
 
 }
+
 
 
