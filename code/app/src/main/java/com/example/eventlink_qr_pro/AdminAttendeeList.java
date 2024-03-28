@@ -58,9 +58,9 @@ public class AdminAttendeeList extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String userId = attendeeDetails.get(position).substring(attendeeDetails.get(position).length() - 36);
                 Intent intent = new Intent(AdminAttendeeList.this, ViewProfileActivity.class);
-                DocumentReference ref =  db.collection("attendees")
-                        .document(userId);
-                ref.get()
+                db.collection("attendees")
+                        .document(userId)
+                        .get()
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
