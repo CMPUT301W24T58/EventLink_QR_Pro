@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,47 +12,77 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="CREATE NEW EVENT"
+            android:text="VIEW EVENT"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-        <EditText
-            android:id="@+id/event_name_edit_text"
+        <TextView
+            android:id="@+id/header_event_name_attendee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="Event Name" />
+            android:text="Event Name" />
 
         <EditText
-            android:id="@+id/event_date_edit_text"
+            android:id="@+id/event_name_edit_text_attendee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Event Name"
+            android:inputType="none"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
+
+        <TextView
+            android:id="@+id/header_event_date_attendee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Date" />
+
+        <EditText
+            android:id="@+id/event_date_edit_text_attendee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="Date"
-            android:inputType="date" />
-
-        <EditText
-            android:id="@+id/event_location_edit_text"
+            android:inputType="none"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            />
+        <TextView
+            android:id="@+id/header_event_location_attendee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="Location" />
-
-        <Button
-            android:id="@+id/upload_poster_button"
-            android:layout_width="match_parent"
-            android:layout_height="66dp"
-            android:layout_marginTop="16dp"
-
-            android:text="Upload Event Poster" />
+            android:text="Location" />
 
         <EditText
-            android:id="@+id/event_description_edit_text"
+            android:id="@+id/event_location_edit_text_attendee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Location"
+            android:inputType="none"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
+
+        <TextView
+            android:id="@+id/header_event_description_attendee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Description" />
+
+        <EditText
+            android:id="@+id/event_description_edit_text_attendee"
             android:layout_width="match_parent"
             android:layout_height="163dp"
             android:layout_marginTop="16dp"
             android:gravity="top"
             android:hint="Description"
-            android:inputType="textMultiLine" />
+            android:inputType="none"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -62,21 +91,21 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/cancel_button"
+                android:id="@+id/cancel_button_attendee"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_weight="1"
-                android:text="Cancel" />
+                android:text="back" />
 
             <Button
-                android:id="@+id/update_button"
+                android:id="@+id/update_button_attendee"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:text="Update" />
+                android:text="sign up" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
