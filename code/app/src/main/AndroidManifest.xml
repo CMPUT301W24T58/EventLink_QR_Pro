@@ -70,6 +70,12 @@
             android:name=".AdminActivity">
         </activity>
         <activity
+            android:name=".AdminAttendeeList">
+        </activity>
+        <activity
+            android:name=".ViewProfileActivity">
+        </activity>
+        <activity
             android:name=".OrganizerAlerts">
         </activity>
         <service
