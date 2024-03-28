@@ -81,6 +81,12 @@
         <activity
             android:name=".AdminAttendeeDetailActivity">
         </activity>
+        <activity
+            android:name=".BrowseEventsActivity">
+        </activity>
+        <activity
+            android:name=".ViewEventAttendeeActivity">
+        </activity>
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
