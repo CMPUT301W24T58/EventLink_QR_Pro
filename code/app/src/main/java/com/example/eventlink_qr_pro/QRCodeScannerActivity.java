@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -31,11 +32,17 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class QRCodeScannerActivity extends AppCompatActivity {
 
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final int REQUEST_IMAGE_PICK = 1;
     private Button uploadImageButton;
     private Button takePictureButton;
@@ -91,6 +98,20 @@ public class QRCodeScannerActivity extends AppCompatActivity {
                 InputStream inputStream = getContentResolver().openInputStream(data.getData());
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                 qrCodeData = decodeQRCode(bitmap); // Store decoded QR code data
+
+                if (qrCodeData != null) {
+                    try {
+                        JSONObject qrJson = new JSONObject(qrCodeData);
+                        String eventName = qrJson.getString("name"); // Extract the event name
+                        setupAttendeeListener(eventName);
+                    } catch (JSONException e) {
+                        Toast.makeText(this, "Failed to parse QR code data", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(this, "Failed to decode QR code", Toast.LENGTH_SHORT).show();
+                }
+
                 attendee.find_location(getApplicationContext());
                 attendee.getFMCToken();
                 if (qrCodeData != null) {
@@ -155,5 +176,53 @@ public class QRCodeScannerActivity extends AppCompatActivity {
             return null;
         }
     }
+    private void setupAttendeeListener(String eventName) {
+        db.collection("events").document(eventName).collection("attendees")
+                .orderBy("timestamp")
+                .addSnapshotListener((snapshots, error) -> {
+                    if (error != null) {
+                        Toast.makeText(QRCodeScannerActivity.this, "Error listening to event updates.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (snapshots != null && !snapshots.isEmpty()) {
+                        int currentCount = snapshots.size();
+
+                        // Only proceed if the attendee count is a multiple of 5
+                        if (currentCount % 5 == 0) {
+                            db.collection("events").document(eventName).collection("milestones")
+                                    .whereEqualTo("count", currentCount)
+                                    .get()
+                                    .addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            // Check if the query returned any documents
+                                            if (task.getResult().isEmpty()) {
+                                                // No existing milestone found, so we can create a new one
+                                                DocumentSnapshot lastAttendee = snapshots.getDocuments().get(snapshots.size() - 1);
+                                                com.google.firebase.Timestamp timestamp = lastAttendee.getTimestamp("timestamp");
+                                                if (timestamp == null) {
+                                                    timestamp = com.google.firebase.Timestamp.now(); // Set to current time if null
+                                                }
+
+                                                Map<String, Object> milestone = new HashMap<>();
+                                                milestone.put("count", currentCount);
+                                                milestone.put("timestamp", timestamp);
+
+                                                db.collection("events").document(eventName).collection("milestones")
+                                                        .add(milestone)
+                                                        .addOnFailureListener(e -> Toast.makeText(QRCodeScannerActivity.this, "Error saving milestone.", Toast.LENGTH_SHORT).show());
+                                            } else {
+                                                // Milestone for this count already exists, handle accordingly (e.g., log a message)
+                                                Log.d("OrganizerAlerts", "Milestone for " + currentCount + " attendees already exists.");
+                                            }
+                                        } else {
+                                            Log.e("OrganizerAlerts", "Error querying for existing milestones", task.getException());
+                                        }
+                                    });
+                        }
+                    }
+                });
+    }
+
 }
 

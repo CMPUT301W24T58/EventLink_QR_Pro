@@ -73,6 +73,15 @@
             android:name=".OrganizerAlerts">
         </activity>
         <activity
+            android:name=".EventListForAdminImage">
+        </activity>
+        <activity
+            android:name=".EventDetailAdmin">
+        </activity>
+        <activity
+            android:name=".AdminAttendeeDetailActivity">
+        </activity>
+        <activity
             android:name=".BrowseEventsActivity">
         </activity>
         <activity

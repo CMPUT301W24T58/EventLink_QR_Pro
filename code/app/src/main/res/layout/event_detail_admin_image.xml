@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".EventDetailActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Event Poster ImageView -->
+            <ImageView
+                android:id="@+id/eventPosterImageView"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:scaleType="fitCenter" />
+
+            <!-- Attendees List Title -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Choose Attendees"
+                android:textAppearance="?attr/textAppearanceHeadline6" />
+
+            <!-- Attendees ListView -->
+            <ListView
+                android:id="@+id/attendeesListView"
+                android:layout_width="match_parent"
+                android:layout_height="348dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Delete Button at the Bottom -->
+    <Button
+        android:id="@+id/deleteEventPosterButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete Event Poster"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:focusable="true"/>
+    <Button
+        android:id="@+id/back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:focusable="true"/>
+</LinearLayout>
+
