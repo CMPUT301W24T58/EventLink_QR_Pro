@@ -61,20 +61,30 @@ public class AdminAttendeeList extends AppCompatActivity {
                 DocumentReference ref =  db.collection("attendees")
                         .document(userId);
                 ref.get()
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+//                                Log.d("debug", "task faileded");
+                            }
+                        })
                         .addOnCompleteListener(task -> {
 
-                            if (task.isSuccessful()) {
-                    String name = task.getResult().getString("name");
-                    String email = task.getResult().getString("email");
-                    String phone = task.getResult().getString("phone");
-                    intent.putExtra("name", name);
-                    intent.putExtra("email", email);
-                    intent.putExtra("phone", phone);
-                    Log.d("USERINFO", "Name: " + name);
-                    intent.putExtra("ID", userId);
-                    startActivity(intent);
-                }
-            });
+                                if (task.isSuccessful()) {
+                                    String name = task.getResult().getString("name");
+                                    String email = task.getResult().getString("email");
+                                    String phone = task.getResult().getString("phone");
+                                    Object imageBytes = task.getResult().get("imageByteArray");
+                                    Attendee attendee = new Attendee(userId, name, email, phone);
+                                    attendee.setImageByteArray((byte[]) imageBytes);
+                                    intent.putExtra("attendee", attendee);
+//                                    intent.putExtra("name", name);
+//                                    intent.putExtra("email", email);
+//                                    intent.putExtra("phone", phone);
+//                                    Log.d("USERINFO", "Name: " + name);
+//                                    intent.putExtra("ID", userId);
+                                    startActivity(intent);
+                                }
+                        });
             }
         });
 
