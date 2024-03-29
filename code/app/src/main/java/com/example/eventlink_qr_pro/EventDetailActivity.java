@@ -88,6 +88,7 @@ public class EventDetailActivity extends AppCompatActivity {
         btnSendNotification.setOnClickListener(view -> {
             // Create an Intent to start SendNotificationActivity
             Intent intent = new Intent(EventDetailActivity.this, SendNotificationActivity.class);
+            intent.putExtra("eventName", eventName);
             startActivity(intent);
         });
 

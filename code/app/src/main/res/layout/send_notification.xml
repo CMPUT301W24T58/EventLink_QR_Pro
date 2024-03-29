@@ -13,6 +13,7 @@
         android:textStyle="bold"/>
 
     <EditText
+        android:id="@+id/notificationTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Notification Title"
@@ -51,6 +52,7 @@
 
 
         <Button
+            android:id="@+id/push"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"

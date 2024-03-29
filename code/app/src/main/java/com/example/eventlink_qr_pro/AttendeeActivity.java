@@ -44,6 +44,14 @@ public class AttendeeActivity extends AppCompatActivity {
         // Set text for the welcome message
         attendeeNameTextView.setText("Welcome Attendee");
 
+        viewEventsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AttendeeActivity.this, BrowseEventsActivity.class); // Assuming AttendeeActivity is the appropriate activity for attendees
+                startActivity(intent);
+            }
+        });
+
 
 
 
