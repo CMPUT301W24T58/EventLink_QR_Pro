@@ -59,6 +59,11 @@ public class AdminActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        viewEventsAdminButton.setOnClickListener(view -> {
+            // Intent to start the ViewImagesActivity
+            Intent intent = new Intent(AdminActivity.this, BrowseDeleteEventAdmin.class);
+            startActivity(intent);
+        });
 
     }
 }
