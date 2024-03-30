@@ -46,4 +46,11 @@
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp"/>
 
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:layout_gravity="bottom"/>
+
 </LinearLayout>

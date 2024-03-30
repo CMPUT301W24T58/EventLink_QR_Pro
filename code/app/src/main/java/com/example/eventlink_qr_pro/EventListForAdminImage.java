@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,9 +23,10 @@ public class EventListForAdminImage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.event_list_admin); // Ensure this is the correct layout file
+        setContentView(R.layout.event_list_admin);
 
-        listView = findViewById(R.id.events_list_view); // Make sure this ID matches your layout
+        listView = findViewById(R.id.events_list_view);
+        Button btn_back = findViewById(R.id.btn_back);
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, eventNameList);
         listView.setAdapter(adapter);
 
@@ -35,6 +37,10 @@ public class EventListForAdminImage extends AppCompatActivity {
             Intent intent = new Intent(EventListForAdminImage.this, EventDetailAdmin.class);
             intent.putExtra("EVENT_NAME", eventName); // Pass the event name to the detail activity
             startActivity(intent);
+        });
+
+        btn_back.setOnClickListener(view -> {
+            finish();
         });
 
     }
