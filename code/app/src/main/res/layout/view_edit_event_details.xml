@@ -6,36 +6,51 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="CREATE NEW EVENT"
+            android:text="EVENT"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <EditText
             android:id="@+id/event_name_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:hint="Event Name" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <EditText
             android:id="@+id/event_date_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="Date"
+            android:hint="DD/MM/YYYY"
             android:inputType="date" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <EditText
             android:id="@+id/event_location_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:hint="Location" />
 
         <Button
@@ -43,21 +58,61 @@
             android:layout_width="match_parent"
             android:layout_height="66dp"
             android:layout_marginTop="16dp"
-
             android:text="Upload Event Poster" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <EditText
             android:id="@+id/event_description_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="163dp"
+            android:layout_height="100dp"
             android:layout_marginTop="16dp"
             android:gravity="top"
-            android:hint="Description"
+            android:hint="Event Description"
             android:inputType="textMultiLine" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Limit Number of Attendees:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+        <Switch
+            android:id="@+id/limit_attendees_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textOff="No Limit"
+            android:textOn="Limit"
+            android:checked="false"/>
+
+        <TextView
+            android:id="@+id/maximum_attendees_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Maximum Attendees:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/maximum_attendees_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter max number"
+            android:inputType="number"
+            android:enabled="false"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:orientation="horizontal">
 
@@ -80,3 +135,4 @@
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
+
