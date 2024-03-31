@@ -2,8 +2,11 @@ package com.example.eventlink_qr_pro;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,6 +30,9 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private String eventName;
+    private Switch limitAttendeesSwitch;
+    private TextView maximumAttendeesLabel;
+    private EditText maximumAttendeesEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +48,10 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
         updateButton = findViewById(R.id.update_button);
         cancelButton = findViewById(R.id.cancel_button);
         uploadButton = findViewById(R.id.upload_poster_button);
+        limitAttendeesSwitch = findViewById(R.id.limit_attendees_switch);
+        maximumAttendeesLabel = findViewById(R.id.maximum_attendees_label);
+        maximumAttendeesEditText = findViewById(R.id.maximum_attendees_edit_text);
+
 
         // Retrieve the event name from the intent
         eventName = getIntent().getStringExtra("eventName");
@@ -66,6 +76,13 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        limitAttendeesSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            maximumAttendeesEditText.setEnabled(isChecked);
+            maximumAttendeesEditText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            if (!isChecked) {
+                maximumAttendeesEditText.setText(""); // Clear the field when the limit is disabled
+            }
+        });
 
     }
 
@@ -78,9 +95,19 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
                 eventDateEditText.setText(documentSnapshot.getString("date"));
                 eventLocationEditText.setText(documentSnapshot.getString("location"));
                 eventDescriptionEditText.setText(documentSnapshot.getString("description"));
+
+                Number maxAttendees = documentSnapshot.getLong("maxAttendees");
+                if (maxAttendees != null) {
+                    limitAttendeesSwitch.setChecked(true);
+                    maximumAttendeesEditText.setText(maxAttendees.toString());
+                    maximumAttendeesEditText.setVisibility(View.VISIBLE);
+                    maximumAttendeesEditText.setEnabled(true);
+                } else {
+                    limitAttendeesSwitch.setChecked(false);
+                }
             }
         }).addOnFailureListener(e -> {
-            // Handle the error here
+            // Handle the error
         });
     }
 
@@ -97,19 +124,26 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
         eventDetails.put("location", location);
         eventDetails.put("description", description);
 
+        if (limitAttendeesSwitch.isChecked()) {
+            String maxAttendeesStr = maximumAttendeesEditText.getText().toString();
+            if (!maxAttendeesStr.isEmpty()) {
+                int maxAttendees = Integer.parseInt(maxAttendeesStr);
+                eventDetails.put("maxAttendees", maxAttendees);
+            }
+        } else {
+            eventDetails.put("maxAttendees", null); // Remove the limit
+        }
+
         // Update the event details in Firestore using update method
         DocumentReference eventDocRef = db.collection("events").document(eventName);
         eventDocRef.update(eventDetails)
                 .addOnSuccessListener(aVoid -> {
                     // Successfully updated the details
-                    // You can close this activity or inform the user of success
                 })
                 .addOnFailureListener(e -> {
                     // Failed to update the details
-                    // Inform the user and possibly retry or log the error
                 });
     }
 
 
 }
-
