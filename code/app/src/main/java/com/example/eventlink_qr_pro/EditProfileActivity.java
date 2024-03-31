@@ -17,11 +17,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.eventlink_qr_pro.Attendee;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
+import java.util.Objects;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -50,13 +54,13 @@ public class EditProfileActivity extends AppCompatActivity {
         chooseImageButton = findViewById(R.id.chooseImageButton);
         saveButton = findViewById(R.id.saveButton);
         cancelButton = findViewById(R.id.cancelButton);
-        removeButton =findViewById(R.id.removeImageButton);
+        removeButton = findViewById(R.id.removeImageButton);
 
         // Retrieve Attendee object from intent
         attendee = (Attendee) getIntent().getSerializableExtra("attendee");
 
         if (attendee.getImageByteArray() != null){
-            Bitmap bitmap = BitmapFactory.decodeByteArray(attendee.getImageByteArray(), 0, attendee.getImageByteArray().length);
+            bitmap = BitmapFactory.decodeByteArray(attendee.getImageByteArray(), 0, attendee.getImageByteArray().length);
             imageView.setImageBitmap(bitmap);
         }
 
@@ -77,12 +81,16 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 imageView.setImageDrawable(null);
                 attendee.clearImageByteArray();
+                attendee.setImageUrl("");
             }
         });
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!(attendee.getImageByteArray() == null)){
+                    uploadImageToStorage();
+                }
                 saveProfile();
             }
         });
@@ -118,6 +126,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+
     }
 
     private void saveProfile() {
@@ -140,8 +149,43 @@ public class EditProfileActivity extends AppCompatActivity {
         attendee.setEmail(email);
         attendee.setPhoneNumber(phone);
 
+
+
+        saveOrUpdateAttendee(attendee);
+        // Return updated Attendee object to calling activity
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("updatedAttendee", attendee);
+        setResult(RESULT_OK, resultIntent);
+        finish();
+
+    }
+
+    private void uploadImageToStorage() {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference imageRef = storageRef.child("images/" + attendee.getId() + ".jpg");
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+
+        UploadTask uploadTask = imageRef.putBytes(byteArray);
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+            // Image uploaded successfully, get the download URL
+            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                String imageUrl = uri.toString();
+                attendee.setImageUrl(imageUrl);
+                saveOrUpdateAttendee(attendee);
+
+            });
+        }).addOnFailureListener(exception -> {
+            // Handle failed upload
+            Toast.makeText(EditProfileActivity.this, "Failed to upload image: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void saveOrUpdateAttendee(Attendee attendee) {
         db.collection("attendees").document(attendee.getId())
-                .update("name", attendee.getName(), "email", attendee.getEmail(), "phone", attendee.getPhoneNumber())
+                .update("name", attendee.getName(), "email", attendee.getEmail(), "phone", attendee.getPhoneNumber(), "imageUrl", attendee.getImageUrl())
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(EditProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
                     finish();
@@ -149,12 +193,5 @@ public class EditProfileActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Toast.makeText(EditProfileActivity.this, "Failed to update profile: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
-
-        // Return updated Attendee object to calling activity
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("updatedAttendee", attendee);
-        setResult(RESULT_OK, resultIntent);
-        finish();
     }
 }
-
