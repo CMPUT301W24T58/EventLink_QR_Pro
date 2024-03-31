@@ -19,12 +19,14 @@ public class Attendee implements Serializable {
     private String fmctoken;
     private int checkInCount;
     private byte[] imageByteArray; // New attribute for storing image as byte array
+    private String imageUrl; // New attribute for storing image URL
 
     public Attendee(String id, String name, String phoneNumber, String email) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
+        this.imageUrl = "";
     }
 
     public String getId() {
@@ -62,6 +64,7 @@ public class Attendee implements Serializable {
     public String getEtoken() {
         return fmctoken;
     }
+
     public int getCheckInCount() {
         return checkInCount;
     }
@@ -81,10 +84,20 @@ public class Attendee implements Serializable {
     public void setImageByteArray(byte[] imageByteArray) {
         this.imageByteArray = imageByteArray;
     }
+
     public void clearImageByteArray() {
         this.imageByteArray = null;
     }
-    public void find_location(Context context){
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void find_location(Context context) {
 
         // Get the location service
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -108,9 +121,9 @@ public class Attendee implements Serializable {
 
     }
 
-    void getFMCToken(){
+    void getFMCToken() {
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
+            if (task.isSuccessful()) {
                 String token = task.getResult();
                 setEtoken(token);
             }
@@ -118,8 +131,11 @@ public class Attendee implements Serializable {
 
     }
 
-    public double getLatitude() { return latitude; }
+    public double getLatitude() {
+        return latitude;
+    }
 
-    public double getLongitude() { return longitude; }
-
+    public double getLongitude() {
+        return longitude;
+    }
 }

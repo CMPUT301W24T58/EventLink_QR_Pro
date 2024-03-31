@@ -47,7 +47,7 @@
             android:id="@+id/btn_view_events_joined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="View Events Joined"
+            android:text="Browse Eventsx"
             android:background="#4CAF50"
             android:textColor="#FFFFFF"
             android:layout_marginTop="8dp" />
