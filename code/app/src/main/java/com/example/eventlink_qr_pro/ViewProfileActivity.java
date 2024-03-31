@@ -19,9 +19,13 @@ package com.example.eventlink_qr_pro;
         import androidx.annotation.Nullable;
         import androidx.appcompat.app.AppCompatActivity;
 
+        import com.google.android.gms.tasks.OnCompleteListener;
         import com.google.android.gms.tasks.OnFailureListener;
         import com.google.android.gms.tasks.OnSuccessListener;
+        import com.google.android.gms.tasks.Task;
         import com.google.firebase.firestore.FirebaseFirestore;
+        import com.google.firebase.firestore.QueryDocumentSnapshot;
+        import com.google.firebase.firestore.QuerySnapshot;
 
         import java.io.ByteArrayOutputStream;
         import java.io.IOException;
@@ -91,6 +95,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void unused) {
                                 Toast.makeText(ViewProfileActivity.this, "Profile deleted successfully", Toast.LENGTH_SHORT).show();
+                                deleteAttendeeFromEvents(attendee.getId());
                                 finish();
                             }
                         })
@@ -105,5 +110,34 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         }));
     }
+    private void deleteAttendeeFromEvents(String attendeeId) {
+        db.collection("events").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot eventDocument : task.getResult()) {
+                        String eventName = eventDocument.getId();
+                        db.collection("events").document(eventName).collection("attendees")
+                                .whereEqualTo("id", attendeeId) // Assuming you store the attendee ID in the subcollection documents
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> attendeesTask) {
+                                        if (attendeesTask.isSuccessful()) {
+                                            for (QueryDocumentSnapshot attendeeDocument : attendeesTask.getResult()) {
+                                                // Delete each found attendee document
+                                                attendeeDocument.getReference().delete();
+                                            }
+                                        }
+                                    }
+                                });
+                    }
+                } else {
+                    Log.d("Event Fetch", "Error getting documents: ", task.getException());
+                }
+            }
+        });
+    }
+
 }
 

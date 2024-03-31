@@ -13,7 +13,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventListForAdminImage extends AppCompatActivity {
+public class BrowseDeleteEventAdmin extends AppCompatActivity {
 
     private List<String> eventNameList = new ArrayList<>();
     private ArrayAdapter<String> adapter;
@@ -34,7 +34,7 @@ public class EventListForAdminImage extends AppCompatActivity {
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             String eventName = eventNameList.get(position); // Get the clicked event's name
-            Intent intent = new Intent(EventListForAdminImage.this, EventDetailAdmin.class);
+            Intent intent = new Intent(BrowseDeleteEventAdmin.this, BrowseDeleteEventAdminDetail.class);
             intent.putExtra("EVENT_NAME", eventName); // Pass the event name to the detail activity
             startActivity(intent);
         });
@@ -65,4 +65,3 @@ public class EventListForAdminImage extends AppCompatActivity {
         });
     }
 }
-
