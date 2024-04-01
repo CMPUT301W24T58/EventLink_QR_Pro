@@ -57,10 +57,12 @@ public class AdminAttendeeList extends AppCompatActivity {
                                 String name = task.getResult().getString("name");
                                 String email = task.getResult().getString("email");
                                 String phone = task.getResult().getString("phone");
+                                String imageUrl = task.getResult().getString("imageUrl");
                                 Object imageBytes = task.getResult().get("imageByteArray");
                                 Attendee attendee = new Attendee(userId, name, email, phone);
                                 attendee.setImageByteArray((byte[]) imageBytes);
                                 intent.putExtra("attendee", attendee);
+                                intent.putExtra("imageUrl", imageUrl);
 //                                    intent.putExtra("name", name);
 //                                    intent.putExtra("email", email);
 //                                    intent.putExtra("phone", phone);

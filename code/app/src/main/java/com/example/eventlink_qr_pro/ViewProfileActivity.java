@@ -4,6 +4,7 @@ package com.example.eventlink_qr_pro;
         import android.graphics.Bitmap;
         import android.graphics.BitmapFactory;
         import android.net.Uri;
+        import android.os.AsyncTask;
         import android.os.Bundle;
         import android.provider.MediaStore;
         import android.text.TextUtils;
@@ -19,6 +20,7 @@ package com.example.eventlink_qr_pro;
         import androidx.annotation.Nullable;
         import androidx.appcompat.app.AppCompatActivity;
 
+        import com.bumptech.glide.Glide;
         import com.google.android.gms.tasks.OnCompleteListener;
         import com.google.android.gms.tasks.OnFailureListener;
         import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,6 +31,7 @@ package com.example.eventlink_qr_pro;
 
         import java.io.ByteArrayOutputStream;
         import java.io.IOException;
+        import java.io.InputStream;
         import java.io.Serializable;
 
 /**
@@ -46,6 +49,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private Bitmap bitmap;
     private Attendee attendee;
+    private String imageUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,18 +67,16 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         // Retrieve Attendee object from intent
         attendee = (Attendee) getIntent().getSerializableExtra("attendee");
+        imageUrl = getIntent().getStringExtra("imageUrl");
 
         // Populate fields with Intent data
-        nameTextView.setText(attendee.getName());
-        emailTextView.setText(attendee.getEmail());
-        phoneTextView.setText(attendee.getPhoneNumber());
+        nameTextView.setText("Name: " + attendee.getName());
+        emailTextView.setText("Email: " + attendee.getEmail());
+        phoneTextView.setText("Phone Number: " + attendee.getPhoneNumber());
 
-        // TODO: re-integrate (uncomment) once this has been confirmed as a viable method
-//        if (attendee.getImageByteArray() != null){
-//            Bitmap bitmap = BitmapFactory.decodeByteArray(attendee.getImageByteArray(), 0, attendee.getImageByteArray().length);
-//            imageView.setImageBitmap(bitmap);
-//        }
-
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            new DownloadImageTask(imageView).execute(imageUrl);
+        }
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +140,32 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         });
     }
+
+    public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
+    }
+
 
 }
 
