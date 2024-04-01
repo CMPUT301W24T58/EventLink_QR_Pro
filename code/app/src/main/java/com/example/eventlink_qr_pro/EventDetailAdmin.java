@@ -1,5 +1,6 @@
 package com.example.eventlink_qr_pro;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -71,6 +72,8 @@ public class EventDetailAdmin extends AppCompatActivity {
     private void fetchAttendees(String eventName) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         List<String> attendeeNames = new ArrayList<>();
+        List<String> attendeeImageUrls = new ArrayList<>();
+        List<String> attendeeIds = new ArrayList<>();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, attendeeNames);
         ListView attendeesListView = findViewById(R.id.attendeesListView);
         attendeesListView.setAdapter(adapter);
@@ -78,15 +81,42 @@ public class EventDetailAdmin extends AppCompatActivity {
         // Fetching attendees for the given event
         db.collection("events/" + eventName + "/attendees").get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                // Assuming each attendee document contains a field named 'name'
-                String attendeeName = document.getString("name"); // Retrieve the name field
-                if (attendeeName != null && !attendeeName.isEmpty()) {
+                String attendeeName = document.getString("name");
+                String imageUrl = document.getString("imageUrl");
+                String attendeeId = document.getId();
+                if (attendeeName == null || attendeeName.isEmpty()) {
+                    attendeeName = "No name provided";
+                    String displayText = attendeeName + " (ID: " + attendeeId + ")"; // Combine name and ID
+                    attendeeNames.add(displayText);
+                    attendeeImageUrls.add(imageUrl);
+                    attendeeIds.add(document.getId());
+                }else {
+                    if (attendeeName != null && !attendeeName.isEmpty()) {
                     attendeeNames.add(attendeeName);
+                    attendeeImageUrls.add(imageUrl);
+                    attendeeIds.add(document.getId());
+                    }
                 }
+
             }
+
             adapter.notifyDataSetChanged();
+
+            // Making list items clickable
+            attendeesListView.setOnItemClickListener((parent, view, position, id) -> {
+                Intent intent = new Intent(EventDetailAdmin.this, AdminAttendeeDetailActivity.class);
+                intent.putExtra("IMAGE_URL", attendeeImageUrls.get(position)); // Already doing this
+                intent.putExtra("ATTENDEE_ID", attendeeIds.get(position)); // Add this
+                intent.putExtra("EVENT_NAME", eventName); // And this
+                startActivity(intent);
+            });
+
+
+
+
         }).addOnFailureListener(e -> Log.e("EventDetailAdmin", "Error fetching attendees", e));
     }
+
 
 
     private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
