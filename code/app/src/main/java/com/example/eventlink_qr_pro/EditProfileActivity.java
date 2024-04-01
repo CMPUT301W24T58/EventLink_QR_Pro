@@ -17,6 +17,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.Target;
 import com.example.eventlink_qr_pro.Attendee;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -59,9 +63,19 @@ public class EditProfileActivity extends AppCompatActivity {
         // Retrieve Attendee object from intent
         attendee = (Attendee) getIntent().getSerializableExtra("attendee");
 
-        if (attendee.getImageByteArray() != null){
-            bitmap = BitmapFactory.decodeByteArray(attendee.getImageByteArray(), 0, attendee.getImageByteArray().length);
-            imageView.setImageBitmap(bitmap);
+        if (attendee.getImageUrl() != null){
+            Glide.with(this)
+                    .asBitmap()
+                    .load(attendee.getImageUrl())
+                    .apply(RequestOptions.overrideOf(Target.SIZE_ORIGINAL)) // Set the size of the loaded image
+                    .into(new BitmapImageViewTarget(imageView) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            // Use the Bitmap resource here
+                            imageView.setImageBitmap(resource);
+                            bitmap = resource;
+                        }
+                    });
         }
 
         // Populate fields with Attendee data
@@ -81,16 +95,16 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 imageView.setImageDrawable(null);
                 attendee.clearImageByteArray();
-                attendee.setImageUrl("");
+                attendee.setImageUrl(null);
             }
         });
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!(attendee.getImageByteArray() == null)){
-                    uploadImageToStorage();
-                }
+                //if ((attendee.getImageUrl()) != null){
+                 //   uploadImageToStorage();
+                //}
                 saveProfile();
             }
         });
@@ -118,10 +132,8 @@ public class EditProfileActivity extends AppCompatActivity {
             try {
                 this.bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 imageView.setImageBitmap(bitmap);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] byteArray = stream.toByteArray();
-                attendee.setImageByteArray(byteArray);
+                uploadImageToStorage();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -151,6 +163,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
 
+
         saveOrUpdateAttendee(attendee);
         // Return updated Attendee object to calling activity
         Intent resultIntent = new Intent();
@@ -174,7 +187,7 @@ public class EditProfileActivity extends AppCompatActivity {
             imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                 String imageUrl = uri.toString();
                 attendee.setImageUrl(imageUrl);
-                saveOrUpdateAttendee(attendee);
+                Toast.makeText(EditProfileActivity.this, "uploaded image", Toast.LENGTH_SHORT).show();
 
             });
         }).addOnFailureListener(exception -> {
@@ -188,7 +201,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 .update("name", attendee.getName(), "email", attendee.getEmail(), "phone", attendee.getPhoneNumber(), "imageUrl", attendee.getImageUrl())
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(EditProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                    finish();
+
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(EditProfileActivity.this, "Failed to update profile: " + e.getMessage(), Toast.LENGTH_SHORT).show();
