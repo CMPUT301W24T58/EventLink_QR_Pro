@@ -26,7 +26,7 @@ public class Attendee implements Serializable {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
-        this.imageUrl = "";
+        this.imageUrl = null;
     }
 
     public String getId() {
