@@ -51,7 +51,8 @@ public class AttendeeActivity extends AppCompatActivity {
         viewEventsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AttendeeActivity.this, BrowseEventsActivity.class); // Assuming AttendeeActivity is the appropriate activity for attendees
+                Intent intent = new Intent(AttendeeActivity.this, BrowseEventsActivity.class);
+                intent.putExtra("attendee", attendee);// Assuming AttendeeActivity is the appropriate activity for attendees
                 startActivity(intent);
             }
         });
