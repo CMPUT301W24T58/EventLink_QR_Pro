@@ -79,23 +79,45 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     }
 
     private void fetchAttendeesAndMarkThem(String eventName) {
-        db.collection("events").document(eventName).collection("attendees")
+        // First, check if geolocation is enabled for the event.
+        db.collection("events").document(eventName)
                 .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            if (document.contains("latitude") && document.contains("longitude")) {
-                                double lat = document.getDouble("latitude");
-                                double lng = document.getDouble("longitude");
-                                LatLng location = new LatLng(lat, lng);
-                                mMap.addMarker(new MarkerOptions().position(location).title(document.getString("name")));
+                .addOnSuccessListener(eventDocument -> {
+                    if (eventDocument.exists()) {
+                        Boolean eventGeolocationEnabled = eventDocument.getBoolean("geolocationEnabled");
+                        if (Boolean.TRUE.equals(eventGeolocationEnabled)) {
+                            // If geolocation is enabled for the event, proceed to fetch and show attendees based on their tracking preference.
+                            db.collection("events").document(eventName).collection("attendees")
+                                    .get()
+                                    .addOnCompleteListener(task -> {
+                                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                Boolean attendeeTrackingEnabled = document.getBoolean("attendeeEnableTrackingOrNot");
+                                                if (Boolean.TRUE.equals(attendeeTrackingEnabled)) {
+                                                    // Only add marker if both event geolocation and attendee tracking are enabled.
+                                                    if (document.contains("latitude") && document.contains("longitude")) {
+                                                        double lat = document.getDouble("latitude");
+                                                        double lng = document.getDouble("longitude");
+                                                        LatLng location = new LatLng(lat, lng);
+                                                        mMap.addMarker(new MarkerOptions().position(location).title(document.getString("name")));
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            Log.w("MapActivity", "Error getting attendee documents: ", task.getException());
+                                        }
+                                    });
+                        } else {
+                            // Clear the map if geolocation is disabled for the event
+                            if (mMap != null) {
+                                mMap.clear();
                             }
                         }
-                    } else {
-                        Log.w("MapActivity", "Error getting attendee documents: ", task.getException());
                     }
-                });
+                })
+                .addOnFailureListener(e -> Log.e("MapActivity", "Error fetching event document", e));
     }
+
 
     private void disableGeolocation() {
         // Update Firestore to set geolocationEnabled to false for the current event
