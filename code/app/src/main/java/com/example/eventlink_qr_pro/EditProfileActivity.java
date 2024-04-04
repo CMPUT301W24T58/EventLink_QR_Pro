@@ -47,7 +47,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private ImageView imageView;
     private EditText nameEditText, emailEditText, phoneEditText;
-    private Button chooseImageButton, saveButton, cancelButton, removeButton;
+    private Button chooseImageButton, saveButton, cancelButton, removeButton, generateButton;
     private Uri filePath;
 
     private FirebaseFirestore db;
@@ -69,6 +69,7 @@ public class EditProfileActivity extends AppCompatActivity {
         saveButton = findViewById(R.id.saveButton);
         cancelButton = findViewById(R.id.cancelButton);
         removeButton = findViewById(R.id.removeImageButton);
+        generateButton = findViewById(R.id.createImageButton);
 
         // Retrieve Attendee object from intent
         attendee = (Attendee) getIntent().getSerializableExtra("attendee");
@@ -130,6 +131,21 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
+        generateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Generate SHA-256 hash
+                String hash = generateSHA256(attendee.getId() + ":" + attendee.getName());
+                // Generate the shape based image from hash
+                Bitmap defaultImage = generateShapeBasedImageFromHash(hash);
+                // Upload the bitmap to storage
+                imageView.setImageBitmap(defaultImage);
+                Toast.makeText(EditProfileActivity.this, "please wait, uploading to database", Toast.LENGTH_SHORT).show();
+                uploadBitmapToStorage(defaultImage, attendee.getId());
+            }
+        });
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,7 +179,7 @@ public class EditProfileActivity extends AppCompatActivity {
             try {
                 this.bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 imageView.setImageBitmap(bitmap);
-                Toast.makeText(EditProfileActivity.this, "please wait,uploading to database", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditProfileActivity.this, "please wait, uploading to database", Toast.LENGTH_SHORT).show();
                 uploadImageToStorage();
 
             } catch (IOException e) {
@@ -193,31 +209,7 @@ public class EditProfileActivity extends AppCompatActivity {
         attendee.setEmail(email);
         attendee.setPhoneNumber(phone);
 
-        // Fetch the attendee document from Firestore by ID
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference attendeeRef = db.collection("attendees").document(attendee.getId());
 
-        String finalName = name;
-        attendeeRef.get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                // Check if imageUrl is null or empty
-                String imageUrl = documentSnapshot.getString("imageUrl");
-                if (imageUrl == null || imageUrl.isEmpty()) {
-                    // Generate SHA-256 hash
-                    String hash = generateSHA256(attendee.getId() + ":" + finalName);
-                    // Generate the shape based image from hash
-                    Bitmap defaultImage = generateShapeBasedImageFromHash(hash);
-                    // Upload the bitmap to storage
-                    uploadBitmapToStorage(defaultImage, attendee.getId());
-                }
-            } else {
-                // Handle the case where the attendee does not exist in Firestore
-                Log.d("Firestore", "No such attendee!");
-            }
-        }).addOnFailureListener(e -> {
-            // Handle any errors that occur during the fetching process
-            Log.e("Firestore", "Error fetching attendee", e);
-        });
 
         updateEventsCollection(attendee);
         saveOrUpdateAttendee(attendee);
@@ -449,21 +441,15 @@ public class EditProfileActivity extends AppCompatActivity {
             imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                 String imageUrl = uri.toString();
                 attendee.setImageUrl(imageUrl);
-                // Update attendee's imageUrl field in Firestore
-                updateAttendeeImageUrl(attendeeId, imageUrl);
+                Toast.makeText(EditProfileActivity.this, "uploaded image", Toast.LENGTH_SHORT).show();
+
+
 
             });
         }).addOnFailureListener(exception -> {
             // Handle failed upload
             Toast.makeText(EditProfileActivity.this, "Failed to upload image: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
         });
-    }
-
-    private void updateAttendeeImageUrl(String attendeeId, String imageUrl) {
-        db.collection("attendees").document(attendeeId)
-                .update("imageUrl", imageUrl)
-                .addOnSuccessListener(aVoid -> Toast.makeText(EditProfileActivity.this, "Image URL updated successfully", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(EditProfileActivity.this, "Failed to update image URL: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
 

@@ -16,13 +16,19 @@
         android:id="@+id/chooseImageButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Choose Image"
+        android:text="Choose Profile Picture"
+        android:layout_marginBottom="16dp"/>
+    <Button
+        android:id="@+id/createImageButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Generate Profile Picture"
         android:layout_marginBottom="16dp"/>
     <Button
         android:id="@+id/removeImageButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Remove Picture"
+        android:text="Remove profile Picture"
         android:onClick="removeImage" />
 
     <EditText
