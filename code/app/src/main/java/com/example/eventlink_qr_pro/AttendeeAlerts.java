@@ -2,6 +2,7 @@ package com.example.eventlink_qr_pro;
 
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,7 @@ public class AttendeeAlerts extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     private ArrayList<String> messageTitles;
     private String attendeeId;
+    private Button back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +29,17 @@ public class AttendeeAlerts extends AppCompatActivity {
 
         attendeeId = getIntent().getStringExtra("attendeeId");
         alertsListView = findViewById(R.id.alertsListView);
+        back = findViewById(R.id.back_button);
         messageTitles = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, messageTitles);
         alertsListView.setAdapter(adapter);
 
         db = FirebaseFirestore.getInstance();
         fetchEventMessagesForAttendee();
+
+        back.setOnClickListener(view -> {
+            finish();
+        });
     }
 
     private void fetchEventMessagesForAttendee() {
