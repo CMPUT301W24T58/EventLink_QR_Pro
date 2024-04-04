@@ -40,4 +40,12 @@
         android:minHeight="48dp"
         android:hint="Description" />
 
+    <Switch
+        android:id="@+id/switchGeolocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enable Geolocation"
+        android:checked="false" />
+
+
 </LinearLayout>

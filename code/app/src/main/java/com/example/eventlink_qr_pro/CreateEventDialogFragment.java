@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,6 +40,7 @@ public class CreateEventDialogFragment extends DialogFragment {
         final EditText eventTimeEditText = view.findViewById(R.id.eventTime);
         final EditText eventLocationEditText = view.findViewById(R.id.eventLocation);
         final EditText eventDescriptionEditText = view.findViewById(R.id.eventDescription);
+        final Switch switchGeolocation = view.findViewById(R.id.switchGeolocation);
 
         builder.setView(view)
                 .setPositiveButton("OK", (dialog, id) -> {
@@ -47,6 +49,7 @@ public class CreateEventDialogFragment extends DialogFragment {
                     String time = eventTimeEditText.getText().toString().trim();
                     String location = eventLocationEditText.getText().toString().trim();
                     String description = eventDescriptionEditText.getText().toString().trim();
+                    boolean geolocationEnabled = switchGeolocation.isChecked();
 
                     FirebaseMessaging.getInstance().getToken()
                             .addOnCompleteListener(task -> {
@@ -66,7 +69,7 @@ public class CreateEventDialogFragment extends DialogFragment {
                         return; // Optionally, show a message to the user
                     }
 
-                    Event event = new Event(name, date, time, location, description);
+                    Event event = new Event(name, date, time, location, description, geolocationEnabled);
                     uploadEvent(name, event);
 
                     JSONObject qrDataJson = new JSONObject();

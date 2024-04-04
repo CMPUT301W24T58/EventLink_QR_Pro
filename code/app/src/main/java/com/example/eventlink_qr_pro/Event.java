@@ -6,14 +6,16 @@ public class Event {
     private String time;
     private String location;
     private String description;
+    private boolean geolocationEnabled;
 
     public Event() {}
-    public Event(String name, String date, String time, String location, String description) {
+    public Event(String name, String date, String time, String location, String description, boolean geolocationEnabled) {
         this.name = name;
         this.date = date;
         this.time = time;
         this.location = location;
         this.description = description;
+        this.geolocationEnabled = geolocationEnabled;
     }
 
     // Getters and setters
@@ -55,6 +57,13 @@ public class Event {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    public boolean isGeolocationEnabled() {
+        return geolocationEnabled;
+    }
+
+    public void setGeolocationEnabled(boolean geolocationEnabled) {
+        this.geolocationEnabled = geolocationEnabled;
     }
 }
 
