@@ -120,7 +120,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot eventDocument : task.getResult()) {
                         String eventName = eventDocument.getId();
                         db.collection("events").document(eventName).collection("attendees")
-                                .whereEqualTo("id", attendeeId) // Assuming you store the attendee ID in the subcollection documents
+                                .whereEqualTo("id", attendeeId)
                                 .get()
                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
@@ -130,6 +130,18 @@ public class ViewProfileActivity extends AppCompatActivity {
                                                 // Delete each found attendee document
                                                 attendeeDocument.getReference().delete();
                                             }
+                                        }
+                                    }
+                                });
+                        db.collection("events").document(eventName).collection("Signed Up")
+                                .whereEqualTo("id", attendeeId)
+                                .get()
+                                .addOnCompleteListener(signedUpTask -> {
+                                    if (signedUpTask.isSuccessful()) {
+                                        for (QueryDocumentSnapshot signedUpDocument : signedUpTask.getResult()) {
+                                            signedUpDocument.getReference().delete()
+                                                    .addOnSuccessListener(aVoid -> Log.d("DeleteAttendee", "Successfully deleted attendee from Signed Up in " + eventName))
+                                                    .addOnFailureListener(e -> Log.e("DeleteAttendee", "Error deleting attendee from Signed Up in " + eventName, e));
                                         }
                                     }
                                 });
