@@ -113,6 +113,7 @@ public class AttendeeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AttendeeActivity.this, MyEventsActivity.class);
+                intent.putExtra("ATTENDEE_ID", attendee.getId());
                 startActivity(intent);
             }
         });
