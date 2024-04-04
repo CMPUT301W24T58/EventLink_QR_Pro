@@ -48,6 +48,8 @@ public class AttendeeActivity extends AppCompatActivity {
         Button attendeeAlertsButton = findViewById(R.id.btn_attendee_alerts);
         Button editProfileButton = findViewById(R.id.btn_edit_profile);
         Button backButton = findViewById(R.id.back_button);
+        Button viewMyEventsButton = findViewById(R.id.btn_view_my_events);
+        Intent intent = getIntent();
 
         getDeviceId(getApplicationContext());
         checkAttendeeExists(DeviceID);
@@ -107,6 +109,13 @@ public class AttendeeActivity extends AppCompatActivity {
             }
         });
 
+        viewMyEventsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AttendeeActivity.this, MyEventsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

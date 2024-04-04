@@ -47,7 +47,16 @@
             android:id="@+id/btn_view_events_joined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Browse Eventsx"
+            android:text="Browse Events"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/btn_view_my_events"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View My Events"
             android:background="#4CAF50"
             android:textColor="#FFFFFF"
             android:layout_marginTop="8dp" />

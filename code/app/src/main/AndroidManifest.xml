@@ -99,6 +99,9 @@
         <activity
             android:name=".BrowseDeleteEventAdminDetail">
         </activity>
+        <activity
+            android:name=".MyEventsActivity">
+        </activity>
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
