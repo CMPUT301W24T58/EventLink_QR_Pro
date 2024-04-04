@@ -22,6 +22,7 @@ import java.util.Objects;
 public class ShareQRCodeActivity extends AppCompatActivity {
     private ImageView qrCodeImageView;
     private Bitmap qrCodeBitmap;
+    private Button back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,7 @@ public class ShareQRCodeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_share_qr_code);
 
         qrCodeImageView = findViewById(R.id.qrCodeImageView);
-
+        back = findViewById(R.id.back);
         // Retrieve QR code bitmap from intent
         qrCodeBitmap = getIntent().getParcelableExtra("qrCodeBitmap");
 
@@ -50,6 +51,9 @@ public class ShareQRCodeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 shareQRCodeImage(); // Call the method to share the QR code image
             }
+        });
+        back.setOnClickListener(view -> {
+            finish();
         });
     }
 
