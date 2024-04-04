@@ -188,6 +188,7 @@ public class AttendeeActivity extends AppCompatActivity {
                             // Attendee does not exist, create a new attendee and add to the database
                             String attendeeId = UUID.randomUUID().toString();
                             Attendee attendee = new Attendee(attendeeId, "", "", "");
+                            attendee.setAttendeeEnableTrackingOrNot(true);
                             attendee.setDeviceId(DeviceID);
                             addAttendeeToFirestore(attendee);
                         }
