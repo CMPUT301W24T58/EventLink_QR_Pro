@@ -132,6 +132,7 @@ public class EditProfileActivity extends AppCompatActivity {
             try {
                 this.bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 imageView.setImageBitmap(bitmap);
+                Toast.makeText(EditProfileActivity.this, "please wait,uploading to database", Toast.LENGTH_SHORT).show();
                 uploadImageToStorage();
 
             } catch (IOException e) {
@@ -187,6 +188,7 @@ public class EditProfileActivity extends AppCompatActivity {
             imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                 String imageUrl = uri.toString();
                 attendee.setImageUrl(imageUrl);
+
                 Toast.makeText(EditProfileActivity.this, "uploaded image", Toast.LENGTH_SHORT).show();
 
             });
@@ -198,7 +200,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void saveOrUpdateAttendee(Attendee attendee) {
         db.collection("attendees").document(attendee.getId())
-                .update("name", attendee.getName(), "email", attendee.getEmail(), "phone", attendee.getPhoneNumber(), "imageUrl", attendee.getImageUrl())
+                .update("name", attendee.getName(), "email", attendee.getEmail(), "phoneNumber", attendee.getPhoneNumber(), "imageUrl", attendee.getImageUrl())
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(EditProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
 
