@@ -32,6 +32,7 @@ public class NotificationHelper {
      * Sets up the notification channel for the notifications to go through for the android os
      * Based heavily on the Android docs "Create and manage notification channels" page at:
      *     <a href="https://developer.android.com/develop/ui/views/notifications/channels#java">...</a>
+     * @param context The context to be used for within the NotificationManager to push to the device
      */
     public static void setUpNotificationChannels(Context context) {
         // Create the NotificationChannel, but only on API 26+ because
