@@ -138,6 +138,7 @@ public class EventDetailActivity extends AppCompatActivity {
         super.onResume();
         // Refresh data each time the activity resumes
         fetchAndGenerateQRCode(eventName);
+        fetchAndGenerateQRCode2(eventName);
         updateNumberOfAttendees(eventName);
     }
 
