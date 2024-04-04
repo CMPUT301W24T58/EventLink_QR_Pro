@@ -27,6 +27,8 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.Target;
 import com.example.eventlink_qr_pro.Attendee;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -217,8 +219,10 @@ public class EditProfileActivity extends AppCompatActivity {
             Log.e("Firestore", "Error fetching attendee", e);
         });
 
-
+        updateEventsCollection(attendee);
         saveOrUpdateAttendee(attendee);
+        updateSignupEventsCollection(attendee);
+
         // Return updated Attendee object to calling activity
         Intent resultIntent = new Intent();
         resultIntent.putExtra("updatedAttendee", attendee);
@@ -262,6 +266,122 @@ public class EditProfileActivity extends AppCompatActivity {
                     Toast.makeText(EditProfileActivity.this, "Failed to update profile: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+    private void updateEventsCollection(Attendee attendee) {
+        // Query events collection to find events where the attendee is registered
+        db.collection("events")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        String eventId = documentSnapshot.getId();
+                        // Check if the attendee exists in the attendees subcollection of the event
+                        checkAndUpdateAttendeeInEvent(eventId, attendee);
+                    }
+                    Toast.makeText(EditProfileActivity.this, "Profile updated successfully in all events", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("EditProfileActivity", "Failed to query events: " + e.getMessage());
+                    Toast.makeText(EditProfileActivity.this, "Failed to update profile: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void checkAndUpdateAttendeeInEvent(String eventId, Attendee attendee) {
+        DocumentReference attendeeRef = db.collection("events").document(eventId)
+                .collection("attendees")
+                .document(attendee.getId());
+
+        attendeeRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Attendee exists in the subcollection, update the data
+                        updateAttendeeInEvent(eventId, attendee);
+                    } else {
+                        // Attendee does not exist in the subcollection
+
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("EditProfileActivity", "Failed to check attendee in event " + eventId + ": " + e.getMessage());
+                    // Handle failure
+                });
+    }
+
+    private void updateAttendeeInEvent(String eventId, Attendee attendee) {
+        db.collection("events").document(eventId)
+                .collection("attendees")
+                .document(attendee.getId())
+                .update(
+                        "name", attendee.getName(),
+                        "email", attendee.getEmail(),
+                        "phoneNumber", attendee.getPhoneNumber(),
+                        "imageUrl", attendee.getImageUrl()
+                )
+                .addOnSuccessListener(aVoid -> {
+                    // Handle success if needed
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("EditProfileActivity", "Failed to update profile in event " + eventId + ": " + e.getMessage());
+                    // Handle failure
+                });
+    }
+    private void updateSignupEventsCollection(Attendee attendee) {
+        // Query events collection to find events where the attendee is registered
+        db.collection("events")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        String eventId = documentSnapshot.getId();
+                        // Check if the attendee exists in the attendees subcollection of the event
+                        checkAndUpdateAttendeeInEventSignup(eventId, attendee);
+                    }
+
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("EditProfileActivity", "Failed to query events: " + e.getMessage());
+                    Toast.makeText(EditProfileActivity.this, "Failed to update profile: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void checkAndUpdateAttendeeInEventSignup(String eventId, Attendee attendee) {
+        DocumentReference attendeeRef = db.collection("events").document(eventId)
+                .collection("Signed Up")
+                .document(attendee.getId());
+
+        attendeeRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Attendee exists in the subcollection, update the data
+                        updateAttendeeInEventSignup(eventId, attendee);
+                    } else {
+                        // Attendee does not exist in the subcollection
+
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("EditProfileActivity", "Failed to check attendee in event " + eventId + ": " + e.getMessage());
+                    // Handle failure
+                });
+    }
+
+    private void updateAttendeeInEventSignup(String eventId, Attendee attendee) {
+        db.collection("events").document(eventId)
+                .collection("Signed Up")
+                .document(attendee.getId())
+                .update(
+                        "name", attendee.getName(),
+                        "email", attendee.getEmail(),
+                        "phoneNumber", attendee.getPhoneNumber(),
+                        "imageUrl", attendee.getImageUrl()
+                )
+                .addOnSuccessListener(aVoid -> {
+                    // Handle success if needed
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("EditProfileActivity", "Failed to update profile in event " + eventId + ": " + e.getMessage());
+                    // Handle failure
+                });
+    }
+
+
 
     private String generateSHA256(String text) {
         try {
