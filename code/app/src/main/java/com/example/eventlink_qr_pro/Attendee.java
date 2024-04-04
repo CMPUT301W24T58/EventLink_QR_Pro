@@ -21,6 +21,7 @@ public class Attendee implements Serializable {
     private byte[] imageByteArray; // New attribute for storing image as byte array
     private String imageUrl; // New attribute for storing image URL
     private String deviceId; // New attribute for storing device ID
+    private boolean attendeeEnableTrackingOrNot = true;
 
     public Attendee() {
         // Required empty constructor for Firestore deserialization
@@ -108,6 +109,13 @@ public class Attendee implements Serializable {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+    public boolean isAttendeeEnableTrackingOrNot() {
+        return attendeeEnableTrackingOrNot;
+    }
+
+    public void setAttendeeEnableTrackingOrNot(boolean attendeeEnableTrackingOrNot) {
+        this.attendeeEnableTrackingOrNot = attendeeEnableTrackingOrNot;
     }
 
     public void find_location(Context context) {

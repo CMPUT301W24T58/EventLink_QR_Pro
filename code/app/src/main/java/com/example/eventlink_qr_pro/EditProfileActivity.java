@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -49,7 +50,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText nameEditText, emailEditText, phoneEditText;
     private Button chooseImageButton, saveButton, cancelButton, removeButton, generateButton;
     private Uri filePath;
-
+    private Switch enableTrackingSwitch;
     private FirebaseFirestore db;
     private Bitmap bitmap;
     private Attendee attendee;
@@ -70,6 +71,7 @@ public class EditProfileActivity extends AppCompatActivity {
         cancelButton = findViewById(R.id.cancelButton);
         removeButton = findViewById(R.id.removeImageButton);
         generateButton = findViewById(R.id.createImageButton);
+        enableTrackingSwitch = findViewById(R.id.trackingSwitch);
 
         // Retrieve Attendee object from intent
         attendee = (Attendee) getIntent().getSerializableExtra("attendee");
@@ -115,6 +117,11 @@ public class EditProfileActivity extends AppCompatActivity {
         emailEditText.setText(attendee.getEmail());
         phoneEditText.setText(attendee.getPhoneNumber());
 
+        enableTrackingSwitch.setChecked(attendee.isAttendeeEnableTrackingOrNot());
+        enableTrackingSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Update the Attendee's tracking preference
+            attendee.setAttendeeEnableTrackingOrNot(isChecked);
+        });
         chooseImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,6 +200,7 @@ public class EditProfileActivity extends AppCompatActivity {
         String name = nameEditText.getText().toString().trim();
         String email = emailEditText.getText().toString().trim();
         String phone = phoneEditText.getText().toString().trim();
+        boolean enableTracking = enableTrackingSwitch.isChecked();
 
         if (TextUtils.isEmpty(name)) {
             name = "";
@@ -208,10 +216,11 @@ public class EditProfileActivity extends AppCompatActivity {
         attendee.setName(name);
         attendee.setEmail(email);
         attendee.setPhoneNumber(phone);
-
+        attendee.setAttendeeEnableTrackingOrNot(enableTracking);
 
 
         updateEventsCollection(attendee);
+        updateAttendeeTrackingPreferenceAcrossEvents(attendee.getId(), enableTracking);
         saveOrUpdateAttendee(attendee);
         updateSignupEventsCollection(attendee);
 
@@ -249,7 +258,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void saveOrUpdateAttendee(Attendee attendee) {
         db.collection("attendees").document(attendee.getId())
-                .update("name", attendee.getName(), "email", attendee.getEmail(), "phoneNumber", attendee.getPhoneNumber(), "imageUrl", attendee.getImageUrl())
+                .update("name", attendee.getName(), "email", attendee.getEmail(), "phoneNumber", attendee.getPhoneNumber(), "imageUrl", attendee.getImageUrl(), "attendeeEnableTrackingOrNot", attendee.isAttendeeEnableTrackingOrNot())
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(EditProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
 
@@ -449,6 +458,38 @@ public class EditProfileActivity extends AppCompatActivity {
         }).addOnFailureListener(exception -> {
             // Handle failed upload
             Toast.makeText(EditProfileActivity.this, "Failed to upload image: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void updateAttendeeTrackingPreferenceAcrossEvents(String attendeeId, boolean enableTracking) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Fetch all events
+        db.collection("events").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // Loop through all events
+                for (DocumentSnapshot eventDocument : task.getResult()) {
+                    // Retrieve the event's name
+                    String eventName = eventDocument.getString("name");
+                    if (eventName == null || eventName.isEmpty()) {
+                        Log.e("UpdateTracking", "Event name is missing for document: " + eventDocument.getId());
+                        continue; // Skip this iteration if the name is missing
+                    }
+
+                    // Reference to the specific attendee in the current event
+                    DocumentReference attendeeRef = db.collection("events")
+                            .document(eventName)
+                            .collection("attendees")
+                            .document(attendeeId);
+
+                    // Update the attendeeEnableTrackingOrNot field for the attendee
+                    attendeeRef.update("attendeeEnableTrackingOrNot", enableTracking)
+                            .addOnSuccessListener(aVoid -> Log.d("UpdateTracking", "Updated tracking preference for attendee: " + attendeeId + " in event: " + eventName))
+                            .addOnFailureListener(e -> Log.e("UpdateTracking", "Error updating tracking preference for attendee: " + attendeeId + " in event: " + eventName, e));
+                }
+            } else {
+                Log.e("FetchEvents", "Error fetching events", task.getException());
+            }
         });
     }
 
