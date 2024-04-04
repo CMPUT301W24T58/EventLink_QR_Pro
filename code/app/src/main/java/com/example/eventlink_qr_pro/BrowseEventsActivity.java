@@ -21,7 +21,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
     private ListView eventsListView;
     private ArrayAdapter<String> adapter;
     private List<String> eventNameList = new ArrayList<>();
-
+    private Button back;
     private Attendee attendee;
 
     @Override
@@ -30,7 +30,8 @@ public class BrowseEventsActivity extends AppCompatActivity {
         setContentView(R.layout.attendee_browse_events);
 
 
-        eventsListView = findViewById(R.id.browse_events_list_view); // Your ListView ID
+        eventsListView = findViewById(R.id.browse_events_list_view);
+        back = findViewById(R.id.back_button);
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, eventNameList);
         eventsListView.setAdapter(adapter);
 
@@ -51,7 +52,12 @@ public class BrowseEventsActivity extends AppCompatActivity {
             startActivity(intent2);
         });
 
-
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     }
     private void fetchEvents() {
