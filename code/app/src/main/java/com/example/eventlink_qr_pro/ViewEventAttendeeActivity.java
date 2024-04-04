@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -27,6 +30,7 @@ public class ViewEventAttendeeActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private String eventName;
+    private Attendee attendee;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +48,55 @@ public class ViewEventAttendeeActivity extends AppCompatActivity {
 
 
         // Retrieve the event name from the intent
-        eventName = getIntent().getStringExtra("eventName");
+        Intent intent = getIntent();
+
+
+        attendee = (Attendee) intent.getSerializableExtra("attendee");
+        eventName = intent.getStringExtra("eventName");
 
         if (eventName != null) {
             loadEventData(eventName);
         }
 
         signupButton.setOnClickListener(view -> {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("events")
+                    .whereEqualTo("name", eventName)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                // Get the ID of the event document
+                                String eventId = document.getId();
 
-            finish();
+                                DocumentReference attendeeRef = db.collection("events").document(eventId)
+                                        .collection("Signed Up").document(attendee.getId());
+
+                                attendeeRef.get().addOnCompleteListener(attendeeTask -> {
+                                    if (attendeeTask.isSuccessful() && attendeeTask.getResult() != null) {
+                                        DocumentSnapshot attendeeDocument = attendeeTask.getResult();
+                                        if (attendeeDocument.exists()) {
+                                            // Document exists
+                                            Toast.makeText(ViewEventAttendeeActivity.this, "Already signed up for this event", Toast.LENGTH_SHORT).show();
+                                        } else {
+
+                                            attendeeRef.set(attendee);
+                                            Toast.makeText(ViewEventAttendeeActivity.this, "Successfully signed up for this event", Toast.LENGTH_SHORT).show();
+                                            finish();
+
+                                        }
+                                    } else {
+                                        // Handle errors or document does not exist scenarios
+                                        Toast.makeText(ViewEventAttendeeActivity.this, "Error fetching attendee data", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        } else {
+                            Toast.makeText(ViewEventAttendeeActivity.this, "Failed to find event", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+
         });
 
         cancelButton.setOnClickListener(view -> {

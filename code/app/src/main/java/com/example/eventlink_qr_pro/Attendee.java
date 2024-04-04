@@ -20,6 +20,11 @@ public class Attendee implements Serializable {
     private int checkInCount;
     private byte[] imageByteArray; // New attribute for storing image as byte array
     private String imageUrl; // New attribute for storing image URL
+    private String deviceId; // New attribute for storing device ID
+
+    public Attendee() {
+        // Required empty constructor for Firestore deserialization
+    }
 
     public Attendee(String id, String name, String phoneNumber, String email) {
         this.id = id;
@@ -95,6 +100,14 @@ public class Attendee implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public void find_location(Context context) {

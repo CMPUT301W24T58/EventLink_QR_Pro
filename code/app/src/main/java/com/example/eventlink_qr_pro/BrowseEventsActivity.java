@@ -22,6 +22,8 @@ public class BrowseEventsActivity extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     private List<String> eventNameList = new ArrayList<>();
 
+    private Attendee attendee;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,15 +35,20 @@ public class BrowseEventsActivity extends AppCompatActivity {
         eventsListView.setAdapter(adapter);
 
         fetchEvents();
+        Intent intent = getIntent();
+
+
+        attendee = (Attendee) intent.getSerializableExtra("attendee");
 
 
         eventsListView.setOnItemClickListener((parent, view, position, id) -> {
             // Get the selected event name
             String selectedEvent = eventNameList.get(position);
             // Start a new activity and pass the event name to it
-            Intent intent = new Intent(BrowseEventsActivity.this, ViewEventAttendeeActivity.class);
-            intent.putExtra("eventName", selectedEvent); // Pass the event name
-            startActivity(intent);
+            Intent intent2 = new Intent(BrowseEventsActivity.this, ViewEventAttendeeActivity.class);
+            intent2.putExtra("eventName", selectedEvent);// Pass the event name
+            intent2.putExtra("attendee", attendee);
+            startActivity(intent2);
         });
 
 
