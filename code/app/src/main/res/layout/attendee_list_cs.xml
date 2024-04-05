@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Event Attendees title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Event Attendees"
+        android:textSize="24sp"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Search bar -->
+    <EditText
+        android:id="@+id/search_attendees"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Search Attendees"
+        android:inputType="text"
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:drawablePadding="10dp"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- ListView for displaying currently checked-in attendees -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Currently Checked-in"
+        android:textSize="20sp"
+        android:layout_marginBottom="8dp"/>
+
+    <ListView
+        android:id="@+id/listview_checked_in_attendees"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Title for future sign-ups -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Future Sign-ups"
+        android:textSize="20sp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- ListView for displaying future sign-ups -->
+    <ListView
+        android:id="@+id/listview_future_sign_ups"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Back Button -->
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:background="#4CAF50"
+        android:textColor="#FFFFFF"
+        android:id="@+id/back" />
+
+</LinearLayout>
