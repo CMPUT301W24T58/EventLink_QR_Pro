@@ -21,7 +21,10 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class CreateEventDialogFragment extends DialogFragment {
@@ -41,6 +44,15 @@ public class CreateEventDialogFragment extends DialogFragment {
         final EditText eventLocationEditText = view.findViewById(R.id.eventLocation);
         final EditText eventDescriptionEditText = view.findViewById(R.id.eventDescription);
         final Switch switchGeolocation = view.findViewById(R.id.switchGeolocation);
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        String currentDate = dateFormat.format(calendar.getTime());
+        String currentTime = timeFormat.format(calendar.getTime());
+
+        eventDateEditText.setText(currentDate);
+        eventTimeEditText.setText(currentTime);
 
         builder.setView(view)
                 .setPositiveButton("OK", (dialog, id) -> {

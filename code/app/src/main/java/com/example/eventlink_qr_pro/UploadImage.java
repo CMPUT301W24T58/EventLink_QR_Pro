@@ -18,6 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -52,6 +53,7 @@ public class UploadImage extends AppCompatActivity {
 
         // Initialize Firebase Storage reference
         storageReference = FirebaseStorage.getInstance().getReference("event_images");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         imageToUpload = findViewById(R.id.imageToUpload);
         bUploadImage = findViewById(R.id.bUploadImage);
@@ -64,6 +66,22 @@ public class UploadImage extends AppCompatActivity {
             finish(); // Close the activity if no event name is provided
             return;
         }
+
+        db.collection("events").document(eventName).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                String imageUrl = task.getResult().getString("imageUrl");
+                if (imageUrl != null && !imageUrl.trim().isEmpty()) {
+                    // If imageUrl exists, load it into the ImageView
+                    Glide.with(this).load(imageUrl).into(imageToUpload);
+                } else {
+                    // If no imageUrl, set the default placeholder
+                    imageToUpload.setImageResource(R.drawable.default_placeholder);
+                }
+            } else {
+                // On failure or if document doesn't exist, set the default placeholder
+                imageToUpload.setImageResource(R.drawable.default_placeholder);
+            }
+        });
 
         // Set click listener for the ImageView to select an image
         imageToUpload.setOnClickListener(v -> mGetContent.launch("image/*"));
