@@ -102,6 +102,12 @@
         <activity
             android:name=".MyEventsActivity">
         </activity>
+        <activity
+            android:name=".ProQRCodeScannerActivity">
+        </activity>
+        <activity
+            android:name=".ShowProQRContent">
+        </activity>
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">

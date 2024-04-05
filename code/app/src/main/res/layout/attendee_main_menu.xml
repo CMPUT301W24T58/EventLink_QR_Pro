@@ -38,10 +38,19 @@
             android:id="@+id/btn_scan_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Scan Code"
+            android:text="Scan Check-in QR Code"
             android:background="#4CAF50"
             android:textColor="#FFFFFF"
             android:layout_marginTop="16dp" />
+
+        <Button
+            android:id="@+id/btn_scan_pro_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scan Promotion QR Code"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="8dp" />
 
         <Button
             android:id="@+id/btn_view_events_joined"

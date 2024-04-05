@@ -49,6 +49,7 @@ public class AttendeeActivity extends AppCompatActivity {
         Button editProfileButton = findViewById(R.id.btn_edit_profile);
         Button backButton = findViewById(R.id.back_button);
         Button viewMyEventsButton = findViewById(R.id.btn_view_my_events);
+        Button scanProQRCodeButton = findViewById(R.id.btn_scan_pro_code);
         Intent intent = getIntent();
 
         getDeviceId(getApplicationContext());
@@ -95,6 +96,15 @@ public class AttendeeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AttendeeActivity.this, QRCodeScannerActivity.class); // Assuming AttendeeActivity is the appropriate activity for attendees
+                intent.putExtra("attendee", attendee);
+                startActivity(intent);
+            }
+        });
+
+        scanProQRCodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AttendeeActivity.this, ProQRCodeScannerActivity.class); // Assuming AttendeeActivity is the appropriate activity for attendees
                 intent.putExtra("attendee", attendee);
                 startActivity(intent);
             }
