@@ -38,6 +38,13 @@
         android:dividerHeight="1dp"
         android:scrollbars="vertical" />
 
-
+    <Button
+        android:id="@+id/back_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Back"
+        android:background="#4CAF50"
+        android:textColor="#FFFFFF"/>
 
 </LinearLayout>

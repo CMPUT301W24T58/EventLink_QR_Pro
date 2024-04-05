@@ -28,6 +28,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         eventName = getIntent().getStringExtra("eventName");
         Button btnDisableTracking = findViewById(R.id.btn_disable_tracking);
         Button btnEnableTracking = findViewById(R.id.btn_enable_tracking);
+        Button back = findViewById(R.id.btn_back);
 
         if (eventName != null && !eventName.isEmpty()) {
             db.collection("events").document(eventName)
@@ -61,6 +62,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             } else {
                 Log.e("MapActivity", "Event name is null or empty.");
             }
+        });
+        back.setOnClickListener(view -> {
+            finish();
         });
     }
 

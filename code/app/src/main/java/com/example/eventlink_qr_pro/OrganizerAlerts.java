@@ -2,6 +2,8 @@ package com.example.eventlink_qr_pro;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -22,6 +24,7 @@ public class OrganizerAlerts extends AppCompatActivity {
     private AlertAdapter adapter;
     private List<Alert> alertsList;
     private String eventName;
+    private Button back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,7 @@ public class OrganizerAlerts extends AppCompatActivity {
         setContentView(R.layout.organizer_alerts);
 
         listView = findViewById(R.id.alerts_list_view);
+        back = findViewById(R.id.back_button);
         alertsList = new ArrayList<>();
         adapter = new AlertAdapter(this, alertsList);
         listView.setAdapter(adapter);
@@ -46,6 +50,10 @@ public class OrganizerAlerts extends AppCompatActivity {
 
         // Listen for changes in the number of attendees for the given event
         setupMilestoneListener(eventName);
+
+        back.setOnClickListener(view -> {
+            finish();
+        });
     }
 
 
