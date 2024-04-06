@@ -8,12 +8,26 @@ import android.widget.TextView;
 
 
 import androidx.appcompat.app.AppCompatActivity;
-
+/**
+ * The {@code AdminActivity} class extends {@link AppCompatActivity} and serves as a control center for administrators
+ * within the application. It provides UI elements that allow administrators to view and manage different aspects of
+ * the event link application, such as events, profiles, and images. This activity acts as a navigation hub to various
+ * functionalities specific to the administrative role.
+ */
 public class AdminActivity extends AppCompatActivity {
     Button viewEventsAdminButton;
     Button viewProfilesAdminButton;
     Button viewImagesAdminButton;
 
+    /**
+     * Called when the activity is starting. This method initializes the activity, its views, and event listeners.
+     * It sets up the UI components from the XML layout file and configures click listeners for navigation buttons,
+     * facilitating navigation to functionalities specific to administrators such as viewing events, profiles, and images.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Note: Otherwise it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,20 +38,6 @@ public class AdminActivity extends AppCompatActivity {
         TextView viewEventsAdminButton = findViewById(R.id.view_events_button);
         Button viewProfilesAdminButton = findViewById(R.id.view_profiles_button);
         
-
-        // Set up click listeners for the buttons
-        // Adapted from Cejiro's code in AttendeeActivity.java
-//        viewEventsAdminButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Handle "Edit Profile" action here
-//                Intent intent = new Intent(AdminActivity.this, EditProfileActivity.class); // TODO: change from editprofileactivity to view event activity
-//                //intent.putExtra("attendee", attendee);
-//                //startActivityForResult(intent, EDIT_PROFILE_REQUEST_CODE);
-//                startActivity(intent);
-//            }
-//        });
-
         viewProfilesAdminButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
