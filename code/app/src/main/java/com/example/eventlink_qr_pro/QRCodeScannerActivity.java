@@ -1,9 +1,11 @@
 package com.example.eventlink_qr_pro;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +15,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.firestore.FieldValue;
 import com.google.zxing.BinaryBitmap;
@@ -39,6 +43,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import android.Manifest;
 
 /**
  * An activity that enables users to scan QR codes from images for event check-ins.
@@ -49,6 +54,8 @@ public class QRCodeScannerActivity extends AppCompatActivity {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final int REQUEST_IMAGE_PICK = 1;
+    private static final int REQUEST_IMAGE_CAPTURE = 2;
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 3;
     private Button uploadImageButton;
     private Button takePictureButton;
     private String qrCodeData; // Attribute to store QR code data
@@ -83,7 +90,9 @@ public class QRCodeScannerActivity extends AppCompatActivity {
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(QRCodeScannerActivity.this, "Take Picture clicked", Toast.LENGTH_SHORT).show();
+
+                dispatchTakePictureIntent();
+
             }
         });
         backbutton.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +111,34 @@ public class QRCodeScannerActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_IMAGE_PICK);
+
+    }
+    private void dispatchTakePictureIntent() {
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+        } else {
+
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
+        }
+
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Camera permission granted, proceed with capturing image
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            } else {
+                // Camera permission denied, handle accordingly (e.g., show a message to the user)
+                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     /**
@@ -169,6 +206,55 @@ public class QRCodeScannerActivity extends AppCompatActivity {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+        }
+        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            qrCodeData = decodeQRCode(imageBitmap);
+
+            if (qrCodeData != null) {
+                try {
+                    JSONObject qrJson = new JSONObject(qrCodeData);
+                    String eventName = qrJson.getString("name");
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    DocumentReference eventRef = db.collection("events").document(eventName);
+
+                    eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful() && task.getResult().exists()) {
+                                DocumentSnapshot eventDocument = task.getResult();
+                                Number maxAttendees = eventDocument.getLong("maxAttendees");
+
+                                eventRef.collection("attendees").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> attendeesTask) {
+                                        if (attendeesTask.isSuccessful()) {
+                                            int currentAttendeesCount = attendeesTask.getResult().size();
+                                            if (maxAttendees == null || currentAttendeesCount < maxAttendees.intValue()) {
+                                                // Capacity check passed, proceed to sign in the attendee
+                                                signInAttendee(requestCode, resultCode, data);
+                                            } else {
+                                                Toast.makeText(QRCodeScannerActivity.this, "The event has reached its capacity.", Toast.LENGTH_LONG).show();
+                                            }
+                                        } else {
+                                            Toast.makeText(QRCodeScannerActivity.this, "Failed to check current number of attendees.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(QRCodeScannerActivity.this, "Event not found with provided QR code data.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } catch (JSONException e) {
+                    Toast.makeText(this, "Failed to parse QR code data", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            } else {
+                Toast.makeText(this, "Failed to decode QR code", Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
 
