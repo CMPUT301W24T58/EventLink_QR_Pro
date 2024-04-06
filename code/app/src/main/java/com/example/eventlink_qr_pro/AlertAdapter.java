@@ -10,12 +10,31 @@ import android.widget.ImageView;
 
 import java.util.List;
 
+/**
+ * An ArrayAdapter subclass for displaying {@link Alert} objects in a ListView or a similar view.
+ * This adapter is responsible for converting Alert objects into View items loaded into the list container.
+ * It inflates custom layout for each item based on the organizer_alerts_items.xml layout file.
+ */
 public class AlertAdapter extends ArrayAdapter<Alert> {
 
+    /**
+     * Constructs a new {@link AlertAdapter}.
+     *
+     * @param context The current context. Used to inflate the layout file.
+     * @param alerts A List of {@link Alert} objects to display in a list.
+     */
     public AlertAdapter(Context context, List<Alert> alerts) {
         super(context, 0, alerts);
     }
 
+    /**
+     * Provides a view for an AdapterView (ListView, GridView, etc.)
+     *
+     * @param position The position in the list of data that should be displayed in the list item view.
+     * @param convertView The recycled view to populate. If null, a new view is inflated.
+     * @param parent The parent ViewGroup that is used for inflation.
+     * @return The View for the position in the AdapterView.
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Check if an existing view is being reused, otherwise inflate the view
@@ -33,7 +52,6 @@ public class AlertAdapter extends ArrayAdapter<Alert> {
         // Populate the data into the template view using the data object
         alertMessage.setText(alert.getMessage());
         alertDate.setText(alert.getDate());
-        // You can also set icons if needed, or handle icon clicks
 
         // Return the completed view to render on screen
         return convertView;

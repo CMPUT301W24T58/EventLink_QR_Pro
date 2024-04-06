@@ -12,8 +12,22 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.InputStream;
 
+/**
+ * Activity for displaying and managing details of an event attendee within the admin context. It allows
+ * administrators to view and delete the profile image of an attendee. The activity fetches and displays
+ * the attendee's image from a provided URL and updates Firestore documents upon deletion of the image.
+ */
 public class AdminAttendeeDetailActivity extends AppCompatActivity {
 
+    /**
+     * Initializes the activity, its views, and sets up the functionality for buttons. It retrieves
+     * the image URL, attendee ID, and event name passed through intent extras and sets the image
+     * in the ImageView. If no image URL is provided, a default placeholder image is displayed.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +53,16 @@ public class AdminAttendeeDetailActivity extends AppCompatActivity {
         btnDeleteImage.setOnClickListener(view -> deleteAttendeeImage(attendeeId, eventName, imageView));
 
     }
+
+    /**
+     * Deletes the image URL of an attendee from Firestore documents. It updates the UI to display
+     * a placeholder image after successful deletion. This method handles Firestore operations for both
+     * the specific event's attendee document and the global attendee document.
+     *
+     * @param attendeeId The ID of the attendee whose image URL is to be deleted.
+     * @param eventName The name of the event associated with the attendee.
+     * @param imageView The ImageView where the attendee's profile image is displayed.
+     */
     private void deleteAttendeeImage(String attendeeId, String eventName, ImageView imageView) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -64,13 +88,28 @@ public class AdminAttendeeDetailActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("AdminAttendeeDetail", "Error deleting global attendee image url", e));
     }
 
+    /**
+     * An asynchronous task that downloads an image from a URL and sets it on an ImageView. This task
+     * ensures that image downloading does not block the main UI thread.
+     */
     public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
+        /**
+         * Constructs a new DownloadImageTask associated with a specific ImageView.
+         *
+         * @param bmImage The ImageView where the downloaded image will be displayed.
+         */
         public DownloadImageTask(ImageView bmImage) {
             this.bmImage = bmImage;
         }
 
+        /**
+         * Downloads an image from the provided URL in the background.
+         *
+         * @param urls The URL from which to download the image. Only the first URL is used if multiple are provided.
+         * @return The downloaded bitmap image, or null if downloading fails.
+         */
         protected Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
             Bitmap mIcon11 = null;
@@ -84,6 +123,11 @@ public class AdminAttendeeDetailActivity extends AppCompatActivity {
             return mIcon11;
         }
 
+        /**
+         * Sets the downloaded image on the ImageView after successful download.
+         *
+         * @param result The bitmap image downloaded in the background.
+         */
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
         }
