@@ -40,6 +40,11 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * An activity that enables users to scan QR codes from images for event check-ins.
+ * Users can select an image containing a QR code, which is then decoded to extract event information.
+ * Based on the decoded data, the activity handles attendee check-in by updating Firestore documents.
+ */
 public class QRCodeScannerActivity extends AppCompatActivity {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -50,6 +55,13 @@ public class QRCodeScannerActivity extends AppCompatActivity {
     private  Button backbutton;
     private Attendee attendee;
 
+    /**
+     * Initializes the activity. Sets up UI components and defines click listeners for the buttons.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,12 +95,24 @@ public class QRCodeScannerActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Opens the device's image picker allowing the user to select an image containing a QR code.
+     */
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_IMAGE_PICK);
     }
 
+    /**
+     * Handles the result from the image picker. Decodes the selected image to extract QR code data,
+     * then processes the QR code data for further action like event check-in.
+     *
+     * @param requestCode The integer request code originally supplied to startActivityForResult(),
+     *                    allowing you to identify who this result came from.
+     * @param resultCode  The integer result code returned by the child activity through its setResult().
+     * @param data        An Intent, which can return result data to the caller.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -102,7 +126,7 @@ public class QRCodeScannerActivity extends AppCompatActivity {
                 if (qrCodeData != null) {
                     try {
                         JSONObject qrJson = new JSONObject(qrCodeData);
-                        String eventName = qrJson.getString("name"); // Assuming eventName is used for document ID
+                        String eventName = qrJson.getString("name");
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
                         DocumentReference eventRef = db.collection("events").document(eventName);
 
@@ -148,7 +172,12 @@ public class QRCodeScannerActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * Decodes the QR code contained within a Bitmap image and returns the encoded data as a string.
+     *
+     * @param bitmap The Bitmap image containing the QR code to decode.
+     * @return The string representation of the QR code's data, or null if decoding fails.
+     */
     private String decodeQRCode(Bitmap bitmap) {
         try {
             int[] intArray = new int[bitmap.getWidth() * bitmap.getHeight()];
@@ -163,6 +192,11 @@ public class QRCodeScannerActivity extends AppCompatActivity {
             return null;
         }
     }
+    /**
+     * Setups up a Firestore snapshot listener for the specified event to track attendee check-ins and milestones.
+     *
+     * @param eventName The name of the event for which to listen for attendee updates.
+     */
     private void setupAttendeeListener(String eventName) {
         db.collection("events").document(eventName).collection("attendees")
                 .orderBy("timestamp")
@@ -184,7 +218,7 @@ public class QRCodeScannerActivity extends AppCompatActivity {
                                         if (task.isSuccessful()) {
                                             // Check if the query returned any documents
                                             if (task.getResult().isEmpty()) {
-                                                // No existing milestone found, so we can create a new one
+
                                                 DocumentSnapshot lastAttendee = snapshots.getDocuments().get(snapshots.size() - 1);
                                                 com.google.firebase.Timestamp timestamp = lastAttendee.getTimestamp("timestamp");
                                                 if (timestamp == null) {
@@ -199,7 +233,7 @@ public class QRCodeScannerActivity extends AppCompatActivity {
                                                         .add(milestone)
                                                         .addOnFailureListener(e -> Toast.makeText(QRCodeScannerActivity.this, "Error saving milestone.", Toast.LENGTH_SHORT).show());
                                             } else {
-                                                // Milestone for this count already exists, handle accordingly (e.g., log a message)
+
                                                 Log.d("OrganizerAlerts", "Milestone for " + currentCount + " attendees already exists.");
                                             }
                                         } else {
@@ -211,6 +245,14 @@ public class QRCodeScannerActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Signs in an attendee based on the QR code data extracted from an image. It validates the event existence
+     * and checks capacity before marking the attendee as checked-in or reporting an error.
+     *
+     * @param requestCode The request code passed to startActivityForResult().
+     * @param resultCode  The result code returned from the started activity.
+     * @param data        Additional data from the activity result.
+     */
     private void signInAttendee(int requestCode, int resultCode, @Nullable Intent data) {
 
         if (requestCode == REQUEST_IMAGE_PICK && resultCode == RESULT_OK && data != null) {
