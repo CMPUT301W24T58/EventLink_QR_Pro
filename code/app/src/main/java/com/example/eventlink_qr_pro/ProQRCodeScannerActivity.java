@@ -1,16 +1,20 @@
 package com.example.eventlink_qr_pro;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.RGBLuminanceSource;
@@ -26,8 +30,9 @@ import java.io.InputStream;
  * is displayed in another activity.
  */
 public class ProQRCodeScannerActivity extends AppCompatActivity {
+    private static final int REQUEST_IMAGE_CAPTURE = 2;
     private static final int IMAGE_PICKER_REQUEST = 1;
-    private Button backbutton, uploadImageButton;
+    private Button backbutton, uploadImageButton, takePictureButton;
     private Attendee attendee;
     /**
      * Sets up the activity's user interface. Initializes UI components and sets click listeners
@@ -45,6 +50,7 @@ public class ProQRCodeScannerActivity extends AppCompatActivity {
 
         backbutton = findViewById(R.id.back_to_attendee_menu_button);
         uploadImageButton = findViewById(R.id.upload_image_button);
+        takePictureButton = findViewById(R.id.take_picture_button);
 
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +65,13 @@ public class ProQRCodeScannerActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Open image picker
                 openImagePicker();
+            }
+        });
+
+        takePictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
             }
         });
     }
@@ -86,6 +99,23 @@ public class ProQRCodeScannerActivity extends AppCompatActivity {
             } else {
                 // Inform the user the QR code could not be decoded
                 Toast.makeText(this, "Failed to decode QR code. Please try a different image.", Toast.LENGTH_LONG).show();
+            }
+        }
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            if (imageBitmap != null) {
+                // Use the new decode method that accepts a Bitmap
+                String qrCodeContent = decodeQRCode2(imageBitmap);
+                if (qrCodeContent != null) {
+                    Intent intent = new Intent(this, ShowProQRContent.class);
+                    intent.putExtra("qrContent", qrCodeContent);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Failed to decode QR code. Please try again.", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(this, "Error retrieving image.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -127,4 +157,29 @@ public class ProQRCodeScannerActivity extends AppCompatActivity {
         intent.setType("image/*");
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMAGE_PICKER_REQUEST);
     }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+    private String decodeQRCode2(Bitmap bitmap) {
+        try {
+            int width = bitmap.getWidth(), height = bitmap.getHeight();
+            int[] pixels = new int[width * height];
+            // Get the pixels of the bitmap
+            bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+            RGBLuminanceSource source = new RGBLuminanceSource(width, height, pixels);
+            BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
+            QRCodeReader reader = new QRCodeReader();
+            Result result = reader.decode(binaryBitmap);
+            return result.getText();
+        } catch (Exception e) {
+            Log.e("DecodeQRCode2", "Error decoding QR code", e);
+            return null;
+        }
+    }
+
 }
+
