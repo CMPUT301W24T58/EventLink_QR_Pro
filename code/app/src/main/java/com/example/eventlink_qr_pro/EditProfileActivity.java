@@ -42,6 +42,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
+/**
+ * An activity that allows users to edit and update their profile information, including their name,
+ * email, phone number, and profile picture. The activity also handles uploading the profile image to Firebase Storage
+ * and updating the attendee's profile information in Firebase Firestore.
+ */
 public class EditProfileActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -55,6 +60,13 @@ public class EditProfileActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private Attendee attendee;
 
+    /**
+     * Sets up the activity's user interface and initializes Firebase Firestore. Retrieves the attendee
+     * object passed from the previous activity to populate the profile fields. Sets listeners for the
+     * profile image selection, removal, and profile information update actions.
+     *
+     * @param savedInstanceState Contains data of the activity's previously saved state. It is null the first time the activity is created.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,15 +88,14 @@ public class EditProfileActivity extends AppCompatActivity {
         // Retrieve Attendee object from intent
         attendee = (Attendee) getIntent().getSerializableExtra("attendee");
 
-        // Assuming 'attendeeId' is the ID of the attendee document in Firestore
-        String attendeeId = attendee.getId(); // Or however you get the attendee's ID
+        String attendeeId = attendee.getId();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference attendeeRef = db.collection("attendees").document(attendeeId);
 
         attendeeRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                // Assuming 'imageUrl' is the field name in Firestore where the image URL is stored
+
                 String imageUrl = documentSnapshot.getString("imageUrl");
                 if (imageUrl != null && !imageUrl.isEmpty()) {
                     // Use Glide to load the image from the URL
@@ -97,7 +108,6 @@ public class EditProfileActivity extends AppCompatActivity {
                                 protected void setResource(Bitmap resource) {
                                     // Use the Bitmap resource here
                                     imageView.setImageBitmap(resource);
-                                    // Assuming 'bitmap' is a Bitmap variable in your class
                                     bitmap = resource;
                                 }
                             });
@@ -156,9 +166,7 @@ public class EditProfileActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //if ((attendee.getImageUrl()) != null){
-                 //   uploadImageToStorage();
-                //}
+
                 saveProfile();
             }
         });
@@ -171,6 +179,9 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Initiates an intent to select an image from the device's storage for the profile picture.
+     */
     private void chooseImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -178,6 +189,15 @@ public class EditProfileActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
     }
 
+    /**
+     * Handles the result from the image selection activity, setting the chosen image as the profile picture
+     * and preparing it for upload.
+     *
+     * @param requestCode The integer request code originally supplied to startActivityForResult(),
+     *                    allowing you to identify who this result came from.
+     * @param resultCode  The integer result code returned by the child activity through its setResult().
+     * @param data        An Intent, which can return result data to the caller (various data can be attached as extras).
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -196,6 +216,10 @@ public class EditProfileActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Saves the updated profile information to Firebase Firestore and uploads the new profile picture
+     * to Firebase Storage if one was selected.
+     */
     private void saveProfile() {
         String name = nameEditText.getText().toString().trim();
         String email = emailEditText.getText().toString().trim();
@@ -232,6 +256,10 @@ public class EditProfileActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Uploads the selected profile image to Firebase Storage and updates the attendee's profile
+     * with the URL of the uploaded image.
+     */
     private void uploadImageToStorage() {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
         StorageReference imageRef = storageRef.child("images/" + attendee.getId() + ".jpg");
@@ -256,6 +284,11 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Updates the attendee document in Firestore with the provided Attendee object's information.
+     *
+     * @param attendee The Attendee object containing updated profile information.
+     */
     private void saveOrUpdateAttendee(Attendee attendee) {
         db.collection("attendees").document(attendee.getId())
                 .update("name", attendee.getName(), "email", attendee.getEmail(), "phoneNumber", attendee.getPhoneNumber(), "imageUrl", attendee.getImageUrl(), "attendeeEnableTrackingOrNot", attendee.isAttendeeEnableTrackingOrNot())
@@ -267,6 +300,13 @@ public class EditProfileActivity extends AppCompatActivity {
                     Toast.makeText(EditProfileActivity.this, "Failed to update profile: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+    /**
+     * Queries the Firestore database to find all events where the attendee is registered and updates their
+     * profile information in each event's attendees subcollection. This ensures that the attendee's
+     * profile is consistent across all event registrations.
+     *
+     * @param attendee The attendee whose profile information is being updated across all events.
+     */
     private void updateEventsCollection(Attendee attendee) {
         // Query events collection to find events where the attendee is registered
         db.collection("events")
@@ -285,6 +325,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Checks if the attendee is part of the specified event's attendees subcollection in Firestore.
+     * If the attendee is part of the event, their profile information is updated.
+     *
+     * @param eventId  The ID of the event to check the attendee's registration status.
+     * @param attendee The attendee whose presence in the event is being checked and potentially updated.
+     */
     private void checkAndUpdateAttendeeInEvent(String eventId, Attendee attendee) {
         DocumentReference attendeeRef = db.collection("events").document(eventId)
                 .collection("attendees")
@@ -306,6 +353,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Updates the attendee's profile information in the specified event's attendees subcollection in Firestore.
+     * This method is called after confirming the attendee's registration for the event.
+     *
+     * @param eventId  The ID of the event where the attendee's profile is being updated.
+     * @param attendee The attendee whose profile information is being updated.
+     */
     private void updateAttendeeInEvent(String eventId, Attendee attendee) {
         db.collection("events").document(eventId)
                 .collection("attendees")
@@ -317,13 +371,19 @@ public class EditProfileActivity extends AppCompatActivity {
                         "imageUrl", attendee.getImageUrl()
                 )
                 .addOnSuccessListener(aVoid -> {
-                    // Handle success if needed
+                    // Handle success
                 })
                 .addOnFailureListener(e -> {
                     Log.e("EditProfileActivity", "Failed to update profile in event " + eventId + ": " + e.getMessage());
                     // Handle failure
                 });
     }
+    /**
+     * Queries the Firestore database to find all events where the attendee has signed up for future participation.
+     * It then updates the attendee's profile information in each event's "Signed Up" subcollection.
+     *
+     * @param attendee The attendee whose profile information is being updated in future event sign-ups.
+     */
     private void updateSignupEventsCollection(Attendee attendee) {
         // Query events collection to find events where the attendee is registered
         db.collection("events")
@@ -342,6 +402,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Checks if the attendee is part of the specified event's "Signed Up" subcollection in Firestore.
+     * If the attendee has signed up for the event, their profile information is updated.
+     *
+     * @param eventId  The ID of the event to check the attendee's sign-up status.
+     * @param attendee The attendee whose sign-up status is being checked and potentially updated.
+     */
     private void checkAndUpdateAttendeeInEventSignup(String eventId, Attendee attendee) {
         DocumentReference attendeeRef = db.collection("events").document(eventId)
                 .collection("Signed Up")
@@ -363,6 +430,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Updates the attendee's profile information in the specified event's "Signed Up" subcollection in Firestore.
+     * This method is called after confirming the attendee's future participation in the event.
+     *
+     * @param eventId  The ID of the event where the attendee's profile information for future participation is being updated.
+     * @param attendee The attendee whose profile information for future participation is being updated.
+     */
     private void updateAttendeeInEventSignup(String eventId, Attendee attendee) {
         db.collection("events").document(eventId)
                 .collection("Signed Up")
@@ -374,7 +448,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         "imageUrl", attendee.getImageUrl()
                 )
                 .addOnSuccessListener(aVoid -> {
-                    // Handle success if needed
+                    // Handle success
                 })
                 .addOnFailureListener(e -> {
                     Log.e("EditProfileActivity", "Failed to update profile in event " + eventId + ": " + e.getMessage());
@@ -383,7 +457,12 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Generates a SHA-256 hash of the provided text. This is used in creating a unique identifier for the attendee.
+     *
+     * @param text The text to hash.
+     * @return A SHA-256 hash of the text.
+     */
     private String generateSHA256(String text) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -401,6 +480,13 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Generates a shape-based image from the provided hash. This method is used when the attendee does not select
+     * a profile picture, providing a unique, generated image instead.
+     *
+     * @param hash The hash from which to generate the image.
+     * @return A Bitmap image generated based on the hash.
+     */
     private Bitmap generateShapeBasedImageFromHash(String hash) {
         // Create a bitmap to draw on
         Bitmap bitmap = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888);
@@ -436,6 +522,13 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Uploads a generated Bitmap image to Firebase Storage under the attendee's ID and updates
+     * the attendee's Firestore document with the URL of the uploaded image.
+     *
+     * @param bitmap     The Bitmap image to upload.
+     * @param attendeeId The ID of the attendee for whom the image is being uploaded.
+     */
     private void uploadBitmapToStorage(Bitmap bitmap, String attendeeId) {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
         StorageReference imageRef = storageRef.child("images/" + attendeeId + ".jpg");
@@ -461,6 +554,12 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Updates the tracking preference for an attendee across all events they are associated with.
+     *
+     * @param attendeeId      The ID of the attendee whose tracking preference is to be updated.
+     * @param enableTracking  The new tracking preference.
+     */
     private void updateAttendeeTrackingPreferenceAcrossEvents(String attendeeId, boolean enableTracking) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 

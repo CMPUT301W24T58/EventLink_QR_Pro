@@ -18,6 +18,11 @@ import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Activity for displaying detailed information about an event to an admin user, with options to cancel or delete the event.
+ * It fetches event details from Firestore based on the event name passed via intent and displays them.
+ * Additionally, it handles the deletion of the event with confirmation.
+ */
 public class BrowseDeleteEventAdminDetail extends AppCompatActivity {
 
     private TextView EventName, eventDate, eventTime, eventLocation, eventDescription;
@@ -27,6 +32,13 @@ public class BrowseDeleteEventAdminDetail extends AppCompatActivity {
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 
+    /**
+     * Sets up the activity layout and initializes UI components. It fetches and displays the event details from Firestore.
+     * Provides options to cancel viewing the event or to delete the event with a confirmation dialog.
+     *
+     * @param savedInstanceState Bundle: If the activity is being re-initialized after previously being shut down, this
+     *                           Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,12 +76,17 @@ public class BrowseDeleteEventAdminDetail extends AppCompatActivity {
 
     }
 
+    /**
+     * Fetches the details of the event from Firestore using the event name and updates the UI elements with these details.
+     * If the event has an associated image URL, it attempts to load the image asynchronously.
+     *
+     * @param eventNameStr The name of the event for which details are to be fetched.
+     */
     private void fetchEventDetails(String eventNameStr) {
         if (eventNameStr == null) return;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events").document(eventNameStr).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                // Assuming you have fields named exactly like this in your Firestore document
                 EventName.setText(documentSnapshot.getString("name"));
                 eventDate.setText("Date: " + documentSnapshot.getString("date"));
                 eventTime.setText("Time: " + documentSnapshot.getString("time"));
@@ -91,6 +108,12 @@ public class BrowseDeleteEventAdminDetail extends AppCompatActivity {
             // Handle any errors
         });
     }
+    /**
+     * Asynchronously loads an image from a given URL and sets it on the event poster ImageView. If loading fails,
+     * sets a default placeholder image.
+     *
+     * @param url The URL of the image to load.
+     */
     private void loadImageFromUrl(String url) {
         executorService.execute(() -> {
             try {
@@ -103,6 +126,12 @@ public class BrowseDeleteEventAdminDetail extends AppCompatActivity {
             }
         });
     }
+    /**
+     * Deletes the event from Firestore after confirmation from the admin. Displays a toast message based on the outcome
+     * of the deletion operation.
+     *
+     * @param eventNameStr The name of the event to be deleted.
+     */
     private void deleteEvent(String eventNameStr) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events").document(eventNameStr)
