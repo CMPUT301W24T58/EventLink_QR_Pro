@@ -14,8 +14,20 @@ import com.bumptech.glide.Glide;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * An activity that displays the content decoded from a professional QR code. This includes showing
+ * a description and an image associated with the QR code content, typically representing event details.
+ */
 public class ShowProQRContent extends AppCompatActivity {
 
+    /**
+     * Called when the activity is starting. This method initializes the activity, inflates its UI layout,
+     * and sets up the content display based on the QR code data passed via an Intent.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null. This Bundle is not used, as no state is saved/restored in this implementation.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_pro_qr_code);

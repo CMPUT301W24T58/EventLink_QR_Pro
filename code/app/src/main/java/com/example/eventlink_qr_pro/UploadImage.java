@@ -24,6 +24,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+/**
+ * An activity that allows users to upload images associated with events to Firebase Storage.
+ * It provides functionality to select an image from the device's storage and upload it.
+ * The uploaded image's URL is then saved to a Firestore document corresponding to the event.
+ */
 public class UploadImage extends AppCompatActivity {
     private ImageView imageToUpload;
     private Button bUploadImage;
@@ -46,6 +51,14 @@ public class UploadImage extends AppCompatActivity {
             }
     );
 
+    /**
+     * Initializes the activity by setting up the layout, retrieving event name from the intent,
+     * initializing Firebase Storage reference, and setting click listeners for image selection and upload button.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null. Not used in this implementation.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,11 +110,13 @@ public class UploadImage extends AppCompatActivity {
         });
     }
 
+    /**
+     * Initiates the image upload process to Firebase Storage and updates the Firestore document
+     * with the new image URL upon successful upload.
+     */
     private void uploadImageToFirebase() {
         if (imageUri != null) {
-            // Use a consistent name for the image. For example, you can name the image file as the eventName itself.
-            // Ensure the eventName is suitable to be used in a file path (e.g., no forbidden characters).
-            // This example assumes eventName is valid. Consider adding checks or sanitization as necessary.
+
             final String imageName = eventName + "." + getFileExtension(imageUri); // This will overwrite the existing image with the same eventName.
 
             StorageReference fileReference = storageReference.child(eventName + "/" + imageName); // The path includes eventName for organization.
@@ -117,6 +132,11 @@ public class UploadImage extends AppCompatActivity {
         }
     }
 
+    /**
+     * Updates the Firestore document corresponding to the event with the new image URL.
+     *
+     * @param imageUrl The URL of the uploaded image to be saved in Firestore.
+     */
     private void saveImageInfoToFirestore(String imageUrl) {
         FirebaseFirestore.getInstance().collection("events").document(eventName)
                 .update("imageUrl", imageUrl)
@@ -124,6 +144,12 @@ public class UploadImage extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(UploadImage.this, "Failed to upload image details: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
 
+    /**
+     * Retrieves the file extension (e.g., "jpg", "png") of the selected image based on its URI.
+     *
+     * @param uri The URI of the selected image.
+     * @return The file extension of the selected image, or null if it cannot be determined.
+     */
     private String getFileExtension(Uri uri) {
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();

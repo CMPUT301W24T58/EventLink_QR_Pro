@@ -16,7 +16,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * An activity that allows attendees to view event details and sign up for the event.
+ * This activity displays information such as the event's name, date, location, and description.
+ * It also provides functionality for an attendee to sign up for the chosen event.
+ */
 public class ViewEventAttendeeActivity extends AppCompatActivity {
 
     private EditText eventNameEditText;
@@ -32,13 +36,22 @@ public class ViewEventAttendeeActivity extends AppCompatActivity {
     private String eventName;
     private Attendee attendee;
 
+    /**
+     * Initializes the activity, sets up the user interface, and retrieves event details from Firestore
+     * based on the event name passed through an Intent. It also sets up the signup functionality
+     * for the attendee to sign up for the event.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_view_event_details);
         db = FirebaseFirestore.getInstance();
 
-        // Initialize your views here
+
         eventNameEditText = findViewById(R.id.event_name_edit_text_attendee);
         eventDateEditText = findViewById(R.id.event_date_edit_text_attendee);
         eventLocationEditText = findViewById(R.id.event_location_edit_text_attendee);
@@ -109,6 +122,11 @@ public class ViewEventAttendeeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Loads the event data from Firestore and populates the UI with the retrieved values.
+     *
+     * @param eventName The name of the event to load data for, used as the document ID in Firestore.
+     */
     private void loadEventData(String eventName) {
         DocumentReference eventRef = db.collection("events").document(eventName);
 
@@ -120,7 +138,7 @@ public class ViewEventAttendeeActivity extends AppCompatActivity {
                 eventDescriptionEditText.setText(documentSnapshot.getString("description"));
             }
         }).addOnFailureListener(e -> {
-            // Handle the error here
+            // Handle the error
         });
     }
 
