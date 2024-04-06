@@ -46,9 +46,9 @@ import java.util.Map;
 import android.Manifest;
 
 /**
- * An activity that enables users to scan QR codes from images for event check-ins.
- * Users can select an image containing a QR code, which is then decoded to extract event information.
- * Based on the decoded data, the activity handles attendee check-in by updating Firestore documents.
+ * An activity designed to scan QR codes from images for event check-ins. It allows users to either select
+ * an image from their device or capture a new image using the camera. The activity decodes the QR code
+ * and processes the information to check the attendee into the event, updating Firestore documents accordingly.
  */
 public class QRCodeScannerActivity extends AppCompatActivity {
 
@@ -63,7 +63,9 @@ public class QRCodeScannerActivity extends AppCompatActivity {
     private Attendee attendee;
 
     /**
-     * Initializes the activity. Sets up UI components and defines click listeners for the buttons.
+     * Initializes the activity, setting up UI components and configuring event listeners for buttons.
+     * It retrieves an Attendee object from the intent extras and sets up listeners for uploading an image
+     * and taking a picture using the camera.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
      *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
@@ -113,6 +115,10 @@ public class QRCodeScannerActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_IMAGE_PICK);
 
     }
+    /**
+     * Launches an intent to capture an image using the camera. It checks for camera permissions
+     * and requests them if not already granted.
+     */
     private void dispatchTakePictureIntent() {
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -126,6 +132,14 @@ public class QRCodeScannerActivity extends AppCompatActivity {
         }
 
     }
+    /**
+     * Handles permission request results. Specifically, it checks camera permission to proceed with
+     * capturing an image using the camera.
+     *
+     * @param requestCode  The request code passed in requestPermissions().
+     * @param permissions  The requested permissions.
+     * @param grantResults The grant results for the corresponding permissions.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -142,13 +156,12 @@ public class QRCodeScannerActivity extends AppCompatActivity {
     }
 
     /**
-     * Handles the result from the image picker. Decodes the selected image to extract QR code data,
-     * then processes the QR code data for further action like event check-in.
+     * Processes the result from either selecting an image from the gallery or capturing a new one using the camera.
+     * It attempts to decode a QR code from the image and process the information for event check-in.
      *
-     * @param requestCode The integer request code originally supplied to startActivityForResult(),
-     *                    allowing you to identify who this result came from.
-     * @param resultCode  The integer result code returned by the child activity through its setResult().
-     * @param data        An Intent, which can return result data to the caller.
+     * @param requestCode The request code originally supplied to startActivityForResult(), allowing identification of the request.
+     * @param resultCode  The result code specified by the second activity.
+     * @param data        An Intent that carries the result data.
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -259,10 +272,11 @@ public class QRCodeScannerActivity extends AppCompatActivity {
     }
 
     /**
-     * Decodes the QR code contained within a Bitmap image and returns the encoded data as a string.
+     * Decodes a QR code from a Bitmap image. Utilizes the ZXing library to decode the QR code
+     * and extract the encoded information.
      *
-     * @param bitmap The Bitmap image containing the QR code to decode.
-     * @return The string representation of the QR code's data, or null if decoding fails.
+     * @param bitmap The Bitmap image containing the QR code.
+     * @return The decoded data from the QR code, or null if the decoding process fails.
      */
     private String decodeQRCode(Bitmap bitmap) {
         try {
@@ -279,7 +293,8 @@ public class QRCodeScannerActivity extends AppCompatActivity {
         }
     }
     /**
-     * Setups up a Firestore snapshot listener for the specified event to track attendee check-ins and milestones.
+     * Sets up a Firestore snapshot listener for updates to attendees in the specified event. This is used to
+     * track check-ins and create milestones.
      *
      * @param eventName The name of the event for which to listen for attendee updates.
      */
@@ -332,11 +347,11 @@ public class QRCodeScannerActivity extends AppCompatActivity {
     }
 
     /**
-     * Signs in an attendee based on the QR code data extracted from an image. It validates the event existence
-     * and checks capacity before marking the attendee as checked-in or reporting an error.
+     * Handles the check-in process for an attendee based on QR code data. It verifies event capacity and updates
+     * Firestore documents to reflect the attendee's check-in status.
      *
-     * @param requestCode The request code passed to startActivityForResult().
-     * @param resultCode  The result code returned from the started activity.
+     * @param requestCode The request code passed to startActivityForResult(), used for identifying the request.
+     * @param resultCode  The result code returned from the activity.
      * @param data        Additional data from the activity result.
      */
     private void signInAttendee(int requestCode, int resultCode, @Nullable Intent data) {

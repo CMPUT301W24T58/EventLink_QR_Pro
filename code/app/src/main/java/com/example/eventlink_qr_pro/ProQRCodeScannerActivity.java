@@ -26,8 +26,8 @@ import java.io.InputStream;
 
 /**
  * An activity that allows users to decode QR codes from images. It provides functionality to select an image
- * from the device's storage and decode any QR codes it contains. If a QR code is successfully decoded, the content
- * is displayed in another activity.
+ * from the device's storage or to capture an image using the device's camera, and decode any QR codes it contains.
+ * If a QR code is successfully decoded, the content is displayed in another activity.
  */
 public class ProQRCodeScannerActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 2;
@@ -36,8 +36,8 @@ public class ProQRCodeScannerActivity extends AppCompatActivity {
     private Attendee attendee;
     /**
      * Sets up the activity's user interface. Initializes UI components and sets click listeners
-     * for the back and upload buttons. The upload button opens the image picker to select an image
-     * for QR code decoding.
+     * for the back, upload, and take picture buttons. The upload button opens the image picker to select an image
+     * for QR code decoding, while the take picture button launches the camera to take a photo for QR code decoding.
      *
      * @param savedInstanceState Contains data of the activity's previously saved state. It's null the first time the activity is created.
      */
@@ -77,7 +77,7 @@ public class ProQRCodeScannerActivity extends AppCompatActivity {
     }
 
     /**
-     * Handles the result from the image picker. If an image is selected successfully, it attempts
+     * Handles the result from either the image picker or the camera capture. If an image is selected or captured successfully, it attempts
      * to decode a QR code from the image. On success, navigates to another activity to display the decoded content.
      * On failure, displays a toast message indicating that the QR code could not be decoded.
      *
@@ -121,7 +121,7 @@ public class ProQRCodeScannerActivity extends AppCompatActivity {
     }
 
     /**
-     * Decodes a QR code from an image URI. Extracts the bitmap from the URI and uses ZXing library to decode the QR code.
+     * Decodes a QR code from an image URI. Extracts the bitmap from the URI and uses the ZXing library to decode the QR code.
      *
      * @param imageUri The URI of the image selected by the user.
      * @return The content encoded in the QR code if successfully decoded; null otherwise.
@@ -158,12 +158,22 @@ public class ProQRCodeScannerActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMAGE_PICKER_REQUEST);
     }
 
+    /**
+     * Launches an intent to capture a photo with the camera.
+     */
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
+    /**
+     * Decodes a QR code from a bitmap image. This method is used for decoding QR codes from images
+     * captured directly with the device's camera.
+     *
+     * @param bitmap The bitmap image captured by the camera.
+     * @return The content encoded in the QR code if successfully decoded; null otherwise.
+     */
     private String decodeQRCode2(Bitmap bitmap) {
         try {
             int width = bitmap.getWidth(), height = bitmap.getHeight();
