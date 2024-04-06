@@ -16,11 +16,25 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.UUID;
 
+/**
+ * The main activity that acts as the entry point for the application. It allows users to navigate to different sections
+ * of the app based on their role: Attendee, Organizer, or Admin. Additionally, it retrieves the device's FCM token
+ * for push notifications.
+ */
 public class MainActivity extends AppCompatActivity {
 
 
     private FirebaseFirestore db;
 
+    /**
+     * Sets up the activity's user interface and initializes Firebase Firestore. Defines the behavior for each role's
+     * button (Attendee, Organizer, Admin) to navigate to the corresponding activity. Also, it retrieves and logs the
+     * device's FCM token.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +83,10 @@ public class MainActivity extends AppCompatActivity {
         getFMCToken();
     }
 
+    /**
+     * Retrieves the FCM token for the device and logs it. This token can be used for sending push notifications
+     * to this specific device.
+     */
     void getFMCToken() {
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
