@@ -151,6 +151,7 @@ public class QRCodeScannerActivity extends AppCompatActivity {
 
     private String decodeQRCode(Bitmap bitmap) {
         try {
+
             int[] intArray = new int[bitmap.getWidth() * bitmap.getHeight()];
             bitmap.getPixels(intArray, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
             RGBLuminanceSource source = new RGBLuminanceSource(bitmap.getWidth(), bitmap.getHeight(), intArray);
