@@ -16,12 +16,24 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Displays a list of events fetched from Firebase Firestore. Users can select an event to view its details
+ * or create a new event. This activity utilizes a ListView to display the events and a dialog fragment for
+ * creating new events.
+ */
 public class EventListActivity extends AppCompatActivity {
 
     private ListView eventsListView;
     private ArrayAdapter<String> adapter;
     private List<String> eventNameList = new ArrayList<>();
 
+    /**
+     * Initializes the activity, sets up the ListView and its adapter, and fetches the list of events from Firestore.
+     * It also sets up an onItemClickListener for the ListView to navigate to the detail view of the selected event and
+     * a click listener for the create event button to open the dialog fragment for event creation.
+     *
+     * @param savedInstanceState Contains data of the activity's previously saved state. It's null the first time the activity is created.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +65,10 @@ public class EventListActivity extends AppCompatActivity {
         });
 
     }
+    /**
+     * Fetches the list of event names from Firestore and updates the ListView adapter with this data.
+     * Attaches a snapshot listener to the events collection to ensure the displayed list remains up-to-date.
+     */
     private void fetchEvents() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         // Attaching a snapshot listener to the collection
@@ -65,7 +81,7 @@ public class EventListActivity extends AppCompatActivity {
             eventNameList.clear(); // Clear the existing list
             if (value != null) {
                 for (QueryDocumentSnapshot document : value) {
-                    eventNameList.add(document.getId()); // Or document.getString("eventNameField") if you use a specific field for the name
+                    eventNameList.add(document.getId());
                 }
                 adapter.notifyDataSetChanged(); // Notify the adapter of data changes
             } else {
