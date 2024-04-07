@@ -41,7 +41,7 @@ public class EventListActivity extends AppCompatActivity {
 
 
         eventsListView = findViewById(R.id.events_list_view);
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, eventNameList);
+        adapter = new ArrayAdapter<>(this, R.layout.custom_event_list_item, R.id.text_event_name, eventNameList);
         eventsListView.setAdapter(adapter);
 
         fetchEvents();
