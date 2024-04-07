@@ -16,7 +16,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * An activity for viewing and editing the details of an event.
+ * It allows users to modify the event's name, date, location, and description, and optionally set a limit on the number of attendees.
+ * Changes are saved to Firestore upon pressing the update button.
+ */
 public class ViewEditEventDetailsActivity extends AppCompatActivity {
 
     private EditText eventNameEditText;
@@ -34,13 +38,17 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
     private TextView maximumAttendeesLabel;
     private EditText maximumAttendeesEditText;
 
+    /**
+     * Initializes the activity, sets up the user interface, and loads existing event details from Firestore.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_edit_event_details);
         db = FirebaseFirestore.getInstance();
 
-        // Initialize your views here
+
         eventNameEditText = findViewById(R.id.event_name_edit_text);
         eventDateEditText = findViewById(R.id.event_date_edit_text);
         eventLocationEditText = findViewById(R.id.event_location_edit_text);
@@ -72,7 +80,7 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
 
         uploadButton.setOnClickListener(view -> {
             Intent intent = new Intent(ViewEditEventDetailsActivity.this, UploadImage.class);
-            intent.putExtra("eventName", eventName); // Ensure 'eventName' is the correct key and value you want to pass
+            intent.putExtra("eventName", eventName);
             startActivity(intent);
         });
 
@@ -86,6 +94,10 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Loads the event data from Firestore and populates the UI with the retrieved values.
+     * @param eventName The name of the event to load data for. Used as the document ID in Firestore.
+     */
     private void loadEventData(String eventName) {
         DocumentReference eventRef = db.collection("events").document(eventName);
 
@@ -111,6 +123,9 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Saves the user-edited event details back to Firestore. If the limit on attendees is enabled, it includes this value; otherwise, it removes any existing limit.
+     */
     private void saveEventDetails() {
         String name = eventNameEditText.getText().toString();
         String date = eventDateEditText.getText().toString();
@@ -134,7 +149,7 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
             eventDetails.put("maxAttendees", null); // Remove the limit
         }
 
-        // Update the event details in Firestore using update method
+
         DocumentReference eventDocRef = db.collection("events").document(eventName);
         eventDocRef.update(eventDetails)
                 .addOnSuccessListener(aVoid -> {

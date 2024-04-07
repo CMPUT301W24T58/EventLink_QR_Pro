@@ -19,7 +19,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-
+/**
+ * An activity that displays a list of attendees to an admin. The list is fetched from Firestore,
+ * and each item in the list can be clicked to view detailed information about the attendee.
+ * This class handles the retrieval of attendee data from Firestore and initializes the ListView
+ * adapter to display this data. It also sets up an item click listener for the ListView to handle
+ * navigation to the attendee's profile view.
+ */
 public class AdminAttendeeList extends AppCompatActivity {
     Button backButton;
     ListView attendeesListView;
@@ -27,6 +33,15 @@ public class AdminAttendeeList extends AppCompatActivity {
     ArrayAdapter<String> arrayAdapter;
     FirebaseFirestore db;
 
+    /**
+     * Initializes the activity, including the ListView, ArrayAdapter, and the Firestore instance.
+     * It sets up an OnClickListener for the ListView items to navigate to the {@link ViewProfileActivity}
+     * with the selected attendee's details.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,11 +78,6 @@ public class AdminAttendeeList extends AppCompatActivity {
                                 attendee.setImageByteArray((byte[]) imageBytes);
                                 intent.putExtra("attendee", attendee);
                                 intent.putExtra("imageUrl", imageUrl);
-//                                    intent.putExtra("name", name);
-//                                    intent.putExtra("email", email);
-//                                    intent.putExtra("phone", phone);
-//                                    Log.d("USERINFO", "Name: " + name);
-//                                    intent.putExtra("ID", userId);
                                 startActivity(intent);
                             }
                         });
@@ -78,17 +88,30 @@ public class AdminAttendeeList extends AppCompatActivity {
         setupListViewAdapter();
     }
 
+    /**
+     * Sets up the ArrayAdapter for the ListView. This adapter is responsible for converting
+     * the attendee details into view items within the ListView.
+     */
     private void setupListViewAdapter() {
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, attendeeDetails);
         attendeesListView.setAdapter(arrayAdapter);
     }
 
+    /**
+     * Refreshes the list of attendees every time the activity is resumed.
+     * It ensures the attendee list is always up to date.
+     */
     @Override
     protected void onResume() {
         super.onResume();
         adminFetchAttendees(); // Refresh the list every time the activity resumes
     }
 
+    /**
+     * Fetches the list of attendees from Firestore and updates the ListView adapter.
+     * It clears the current attendee details and refills them with fresh data from Firestore.
+     * Upon successful data retrieval, it notifies the ArrayAdapter to refresh the ListView.
+     */
     private void adminFetchAttendees() {
         attendeeDetails.clear();
         db.collection("attendees")

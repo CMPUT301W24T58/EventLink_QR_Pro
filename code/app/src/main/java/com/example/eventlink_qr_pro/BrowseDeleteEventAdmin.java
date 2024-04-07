@@ -13,6 +13,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * An activity designed for administrators to browse through a list of events. It provides functionalities
+ * to fetch and display event names from Firestore and navigate to a detailed view for each event where
+ * further actions (like deletion) can be performed.
+ */
 public class BrowseDeleteEventAdmin extends AppCompatActivity {
 
     private List<String> eventNameList = new ArrayList<>();
@@ -20,6 +25,14 @@ public class BrowseDeleteEventAdmin extends AppCompatActivity {
     private ListView listView;
 
 
+    /**
+     * Initializes the activity, sets up the ListView with an ArrayAdapter, and fetches the list of events from Firestore.
+     * It also defines behavior for list item clicks, leading to a detailed view of the selected event.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +43,7 @@ public class BrowseDeleteEventAdmin extends AppCompatActivity {
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, eventNameList);
         listView.setAdapter(adapter);
 
-        fetchEvents(); // Call your method to fetch events
+        fetchEvents();
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             String eventName = eventNameList.get(position); // Get the clicked event's name
@@ -45,6 +58,10 @@ public class BrowseDeleteEventAdmin extends AppCompatActivity {
 
     }
 
+    /**
+     * Fetches a list of event names from Firestore and updates the ListView adapter.
+     * It listens for real-time updates to the events collection to ensure the list remains up-to-date.
+     */
     private void fetchEvents() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events").addSnapshotListener((value, error) -> {
@@ -56,7 +73,7 @@ public class BrowseDeleteEventAdmin extends AppCompatActivity {
             eventNameList.clear(); // Clear the existing list
             if (value != null) {
                 for (QueryDocumentSnapshot document : value) {
-                    eventNameList.add(document.getId()); // Or use a field name
+                    eventNameList.add(document.getId());
                 }
                 adapter.notifyDataSetChanged(); // Notify the adapter of data changes
             } else {

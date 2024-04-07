@@ -17,8 +17,19 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * An administrative activity for viewing detailed information about an event, including its poster,
+ * and managing the list of attendees. Allows administrators to delete the event poster and view individual
+ * attendee details.
+ */
 public class EventDetailAdmin extends AppCompatActivity {
 
+    /**
+     * Sets up the activity layout, initializes UI components, and fetches event details and attendees from Firestore.
+     * It also sets up listeners for the delete and back actions.
+     *
+     * @param savedInstanceState Contains data of the activity's previously saved state. It's null the first time the activity is created.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,18 +48,29 @@ public class EventDetailAdmin extends AppCompatActivity {
         fetchEventDetails(eventName);
     }
 
+    /**
+     * Deletes the event poster from the Firestore document of the specified event by setting its imageUrl field to null.
+     * Updates the UI to reflect the deletion by displaying a placeholder image.
+     *
+     * @param eventName The name of the event whose poster is to be deleted.
+     */
     private void deleteEventPoster(String eventName) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events").document(eventName)
                 .update("imageUrl", null) // Set imageUrl to null to indicate deletion
                 .addOnSuccessListener(aVoid -> {
                     Log.d("EventDetailActivity", "Event poster successfully deleted");
-                    // Optionally, update the UI to remove the displayed image or show a placeholder
                     ImageView imageView = findViewById(R.id.eventPosterImageView);
                     imageView.setImageResource(R.drawable.default_placeholder); // Show a default or placeholder image
                 })
                 .addOnFailureListener(e -> Log.e("EventDetailActivity", "Error deleting event poster", e));
     }
+    /**
+     * Fetches and displays the event details from Firestore, including loading the event's poster if an imageUrl exists.
+     * Calls {@link #fetchAttendees(String)} to retrieve and display the list of attendees for the event.
+     *
+     * @param eventName The name of the event for which details are being fetched.
+     */
     private void fetchEventDetails(String eventName) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -68,7 +90,12 @@ public class EventDetailAdmin extends AppCompatActivity {
         }).addOnFailureListener(e -> Log.e("EventDetailAdmin", "Error fetching event details", e));
     }
 
-
+    /**
+     * Retrieves the list of attendees for the specified event from Firestore and updates the UI to display the names.
+     * Sets up a listener to handle clicks on attendee items, which navigates to a detail view for the selected attendee.
+     *
+     * @param eventName The name of the event for which attendees are being fetched.
+     */
     private void fetchAttendees(String eventName) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         List<String> attendeeNames = new ArrayList<>();
@@ -105,9 +132,9 @@ public class EventDetailAdmin extends AppCompatActivity {
             // Making list items clickable
             attendeesListView.setOnItemClickListener((parent, view, position, id) -> {
                 Intent intent = new Intent(EventDetailAdmin.this, AdminAttendeeDetailActivity.class);
-                intent.putExtra("IMAGE_URL", attendeeImageUrls.get(position)); // Already doing this
-                intent.putExtra("ATTENDEE_ID", attendeeIds.get(position)); // Add this
-                intent.putExtra("EVENT_NAME", eventName); // And this
+                intent.putExtra("IMAGE_URL", attendeeImageUrls.get(position));
+                intent.putExtra("ATTENDEE_ID", attendeeIds.get(position)); 
+                intent.putExtra("EVENT_NAME", eventName);
                 startActivity(intent);
             });
 
@@ -118,14 +145,26 @@ public class EventDetailAdmin extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Asynchronous task for downloading and displaying an image from a given URL.
+     * Used to load event posters and attendee profile images from their imageURLs.
+     */
     private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
-
+        /**
+         * Constructs a new DownloadImageTask associated with a specific ImageView.
+         *
+         * @param bmImage The ImageView where the downloaded image will be displayed.
+         */
         public DownloadImageTask(ImageView bmImage) {
             this.bmImage = bmImage;
         }
-
+        /**
+         * Downloads an image in the background thread from the provided URL.
+         *
+         * @param urls The URL from which to download the image. Only the first URL is used if multiple are provided.
+         * @return The downloaded bitmap image, or null if downloading fails.
+         */
         protected Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
             Bitmap mIcon11 = null;
@@ -138,7 +177,11 @@ public class EventDetailAdmin extends AppCompatActivity {
             }
             return mIcon11;
         }
-
+        /**
+         * Sets the downloaded image on the ImageView after successful download.
+         *
+         * @param result The bitmap image downloaded in the background.
+         */
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
         }

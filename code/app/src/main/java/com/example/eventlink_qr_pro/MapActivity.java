@@ -13,6 +13,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+/**
+ * A FragmentActivity that displays a map for a specific event, marking the locations of attendees who have
+ * enabled geolocation tracking. Provides functionality to enable or disable geolocation tracking for the event,
+ * and to navigate back to the previous activity.
+ */
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -20,6 +25,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private String eventName; // Event name passed to this activity
     private boolean geolocationEnabled;
 
+    /**
+     * Initializes the activity, retrieves the event name from the intent, sets up buttons for enabling/disabling
+     * geolocation tracking, and fetches event details to determine if geolocation is enabled.
+     *
+     * @param savedInstanceState Contains data of the activity's previously saved state. It's null the first time the activity is created.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +39,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         eventName = getIntent().getStringExtra("eventName");
         Button btnDisableTracking = findViewById(R.id.btn_disable_tracking);
         Button btnEnableTracking = findViewById(R.id.btn_enable_tracking);
+        Button back = findViewById(R.id.btn_back);
 
         if (eventName != null && !eventName.isEmpty()) {
             db.collection("events").document(eventName)
@@ -62,14 +74,26 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 Log.e("MapActivity", "Event name is null or empty.");
             }
         });
+        back.setOnClickListener(view -> {
+            finish();
+        });
     }
 
+    /**
+     * Sets up the map fragment asynchronously and displays it once ready.
+     */
     private void setupMapFragment() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
 
+    /**
+     * Callback method triggered when the map is ready to be used. It checks if geolocation is enabled for the event
+     * and fetches the attendees' locations to mark them on the map if so.
+     *
+     * @param googleMap The GoogleMap instance ready for use.
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -78,6 +102,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }
     }
 
+    /**
+     * Fetches the list of attendees who have enabled tracking for the specified event and marks their locations on the map.
+     *
+     * @param eventName The name of the event for which to fetch and display attendee locations.
+     */
     private void fetchAttendeesAndMarkThem(String eventName) {
         // First, check if geolocation is enabled for the event.
         db.collection("events").document(eventName)
@@ -118,7 +147,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .addOnFailureListener(e -> Log.e("MapActivity", "Error fetching event document", e));
     }
 
-
+    /**
+     * Disables geolocation tracking for the event in Firestore and clears any markers from the map.
+     */
     private void disableGeolocation() {
         // Update Firestore to set geolocationEnabled to false for the current event
         db.collection("events").document(eventName)
@@ -133,6 +164,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .addOnFailureListener(e -> Log.e("MapActivity", "Error disabling geolocation tracking", e));
     }
 
+    /**
+     * Enables geolocation tracking for the event in Firestore, sets up the map fragment, and fetches attendees'
+     * locations to mark them on the map.
+     */
     private void enableGeolocationAndShowAttendees() {
         // Update Firestore to set geolocationEnabled to true for the current event
         db.collection("events").document(eventName)

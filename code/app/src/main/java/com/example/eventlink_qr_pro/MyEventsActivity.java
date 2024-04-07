@@ -13,6 +13,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * Activity for displaying a list of events that an attendee is currently registered for and events they have signed up
+ * to attend in the future. It queries Firebase Firestore to retrieve the event information.
+ */
 public class MyEventsActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ListView currentEventsListView, futureEventsListView;
@@ -21,6 +25,11 @@ public class MyEventsActivity extends AppCompatActivity {
     private ArrayList<String> futureEventNames = new ArrayList<>();
     private Button backButton;
 
+    /**
+     * Initializes the activity, sets up UI components, and fetches both current and future events for the attendee.
+     *
+     * @param savedInstanceState Contains data of the activity's previously saved state. It's null the first time the activity is created.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +55,12 @@ public class MyEventsActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
     }
 
+    /**
+     * Fetches events that the attendee is currently registered for from Firestore and updates the list view
+     * to display these events.
+     *
+     * @param attendeeId The unique ID of the attendee whose current events are being fetched.
+     */
     private void fetchCurrentEvents(String attendeeId) {
         db.collection("/events")
                 .get()
@@ -67,6 +82,12 @@ public class MyEventsActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Fetches events that the attendee has signed up for future attendance from Firestore and updates the list view
+     * to display these events.
+     *
+     * @param attendeeId The unique ID of the attendee whose future events are being fetched.
+     */
     private void fetchFutureEvents(String attendeeId) {
         db.collection("/events")
                 .get()

@@ -5,35 +5,38 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Event Attendees title -->
+    <!-- Label for the Event Poster -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Event Attendees"
-        android:textSize="24sp"
-        android:gravity="center_horizontal"
+        android:text="Event Poster:"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
+
+    <!-- ImageView for Event Poster -->
+    <ImageView
+        android:id="@+id/eventPoster"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:scaleType="fitCenter"
         android:layout_marginBottom="16dp"/>
 
-    <!-- Search bar -->
-    <EditText
-        android:id="@+id/search_attendees"
+    <!-- Label for the Description -->
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search Attendees"
-        android:inputType="text"
-        android:drawableStart="@android:drawable/ic_menu_search"
-        android:drawablePadding="10dp"
-        android:padding="12dp"
-        android:layout_marginBottom="16dp"/>
+        android:text="Description:"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
 
-    <!-- ListView for displaying attendees -->
-    <ListView
-        android:id="@+id/listview_attendees"
+    <!-- Dynamic Event Description -->
+    <TextView
+        android:id="@+id/eventDescription"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_weight="1"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp" />
+        android:layout_height="wrap_content"
+        android:text="Null"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"/>
 
     <Button
         android:layout_width="match_parent"
@@ -45,3 +48,4 @@
         android:id="@+id/back" />
 
 </LinearLayout>
+

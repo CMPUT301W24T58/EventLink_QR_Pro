@@ -25,6 +25,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Displays the details of a specific event and provides functionalities like viewing and editing event details,
+ * registering for QR codes, viewing attendees, sending notifications, and displaying the event location on a map.
+ * Additionally, it handles QR code generation for the event using provided data.
+ */
 public class EventDetailActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ImageView qrCodeImageView;
@@ -34,6 +39,12 @@ public class EventDetailActivity extends AppCompatActivity {
 
     public Bitmap bitmap;
 
+    /**
+     * Initializes the activity, sets up UI components, and fetches event details from Firestore.
+     * Generates and displays QR codes for the event. Sets up listeners for various action buttons.
+     *
+     * @param savedInstanceState Contains data of the activity's previously saved state. It's null the first time the activity is created.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +79,7 @@ public class EventDetailActivity extends AppCompatActivity {
         btnViewEditDetails.setOnClickListener(view -> {
             // Create an Intent to start ViewEditEventDetailsActivity
             Intent intent = new Intent(EventDetailActivity.this, ViewEditEventDetailsActivity.class);
-            intent.putExtra("eventName", eventName); // Optional: Pass data if needed
+            intent.putExtra("eventName", eventName);
             startActivity(intent);
 
         });
@@ -115,8 +126,6 @@ public class EventDetailActivity extends AppCompatActivity {
         btnCheckInMap.setOnClickListener(view -> {
             Intent intent = new Intent(EventDetailActivity.this, MapActivity.class);
             intent.putExtra("eventName", eventName);
-            // You can add extra data to intent if needed, for example:
-            // intent.putExtra("location", location); // where location is a variable containing location data.
             startActivity(intent);
         });
 
@@ -133,6 +142,9 @@ public class EventDetailActivity extends AppCompatActivity {
 
 
     }
+    /**
+     * Refreshes event data and QR codes each time the activity resumes.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -142,6 +154,12 @@ public class EventDetailActivity extends AppCompatActivity {
         updateNumberOfAttendees(eventName);
     }
 
+    /**
+     * Fetches event data from Firestore and generates a QR code based on the event details.
+     * It transforms event details into a JSON string to encode it into a QR code.
+     *
+     * @param eventName The name of the event for which to fetch details and generate a QR code.
+     */
     private void fetchAndGenerateQRCode(String eventName) {
         db.collection("events").document(eventName).get().addOnSuccessListener(documentSnapshot -> {
             try {
@@ -169,7 +187,11 @@ public class EventDetailActivity extends AppCompatActivity {
         }).addOnFailureListener(e -> e.printStackTrace());
     }
 
-
+    /**
+     * Generates a QR code from a given string and sets it to an ImageView.
+     *
+     * @param eventData The string to encode in the QR code.
+     */
     private void generateQRCode(String eventData) {
         try {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
@@ -180,6 +202,11 @@ public class EventDetailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Generates a secondary QR code based on given event data and displays it in a second ImageView.
+     *
+     * @param eventData The string to encode in the second QR code.
+     */
     private void generateQRCode2(String eventData) {
         try {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
@@ -190,26 +217,37 @@ public class EventDetailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Fetches additional data for the event and generates a second QR code with different content, such as promotional information.
+     *
+     * @param eventName The name of the event for which to generate the second QR code.
+     */
     private void fetchAndGenerateQRCode2(String eventName) {
         db.collection("events").document(eventName).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 String description = documentSnapshot.getString("description");
-                String posterUrl = documentSnapshot.getString("imageUrl"); // Assuming 'imageUrl' is the field name
+                String posterUrl = documentSnapshot.getString("imageUrl");
 
                 JSONObject qrDataJson = new JSONObject();
                 try {
                     qrDataJson.put("description", description);
                     qrDataJson.put("posterUrl", posterUrl);
-                    // Include any other details as needed
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 String qrContent = qrDataJson.toString();
-                generateQRCode2(qrContent); // Your existing method to generate and display QR code
+                generateQRCode2(qrContent);
             }
         }).addOnFailureListener(e -> e.printStackTrace());
     }
 
+    /**
+     * Uploads the generated QR code data to Firestore, associating it with the specific event document.
+     *
+     * @param eventName The name of the event to which the QR code data is associated.
+     * @param qrData    The QR code data to upload.
+     */
     private void uploadQRCodeToFirestore(String eventName, String qrData) {
         DocumentReference eventDocRef = db.collection("events").document(eventName);
         Map<String, Object> qrDataMap = new HashMap<>();
@@ -224,6 +262,11 @@ public class EventDetailActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Updates the display with the current number of attendees registered for the event by querying the Firestore database.
+     *
+     * @param eventName The name of the event for which to count registered attendees.
+     */
     private void updateNumberOfAttendees(String eventName) {
         db.collection("events").document(eventName).collection("attendees")
                 .get()
@@ -235,7 +278,7 @@ public class EventDetailActivity extends AppCompatActivity {
                     tvNumberOfAttendees.setText(attendeesText);
                 })
                 .addOnFailureListener(e -> {
-                    // Handle any errors here
+                    // Handle any errors
                     e.printStackTrace();
                 });
     }
