@@ -32,6 +32,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A utility class that aids in the creation and management of notification channels and notifications
+ * within the application. It allows for sending notifications to the user from the application, specifically
+ * designed for messages from organizers to attendees.
+ */
 public class NotificationHelper {
 
     private final static String CHANNEL_ID = "EVENTLINK_QR_PRO_NOTIF_CHANNEL";

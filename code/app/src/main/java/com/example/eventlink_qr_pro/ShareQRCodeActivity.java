@@ -19,17 +19,31 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
 
+/**
+ * An activity that displays a QR code image and provides functionality to share it.
+ * The QR code bitmap is passed to this activity through an intent. The activity displays the QR code and
+ * allows the user to share it via other apps by creating a temporary file in the cache and sharing its URI.
+ */
 public class ShareQRCodeActivity extends AppCompatActivity {
     private ImageView qrCodeImageView;
     private Bitmap qrCodeBitmap;
+    private Button back;
 
+    /**
+     * Initializes the activity by setting the content view, retrieving the QR code bitmap from the intent,
+     * and setting up UI components. If the QR code bitmap is missing, it shows an error message and exits the activity.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_qr_code);
 
         qrCodeImageView = findViewById(R.id.qrCodeImageView);
-
+        back = findViewById(R.id.back);
         // Retrieve QR code bitmap from intent
         qrCodeBitmap = getIntent().getParcelableExtra("qrCodeBitmap");
 
@@ -51,8 +65,15 @@ public class ShareQRCodeActivity extends AppCompatActivity {
                 shareQRCodeImage(); // Call the method to share the QR code image
             }
         });
+        back.setOnClickListener(view -> {
+            finish();
+        });
     }
 
+    /**
+     * Shares the QR code image by creating a temporary file in the cache and sharing its URI through an intent.
+     * If the image cannot be saved or shared, it displays an error message.
+     */
     private void shareQRCodeImage() {
         try {
             // Save bitmap to cache
@@ -73,7 +94,13 @@ public class ShareQRCodeActivity extends AppCompatActivity {
         }
     }
 
-    // Method to save the QR code bitmap to cache
+    /**
+     * Saves the given bitmap to the device's external storage cache directory, making it accessible for sharing.
+     *
+     * @param bitmap The bitmap image to save.
+     * @return The URI of the saved image if successful, null otherwise.
+     * @throws IOException If an error occurs during saving the image.
+     */
     private Uri saveBitmapToCache(Bitmap bitmap) throws IOException {
         ContentValues cv = new ContentValues();
         cv.put(MediaStore.Images.Media.TITLE, "QR Code");

@@ -35,8 +35,8 @@ package com.example.eventlink_qr_pro;
         import java.io.Serializable;
 
 /**
- * Adapted from Cejiro's EditProfileActivity.java class
- * Similar layout but without the edit functionality, and with a delete functionality instead
+ * Activity for viewing an attendee's profile in detail, including their name, email, phone number,
+ * and profile image. This activity also provides functionality to delete the attendee's profile.
  */
 public class ViewProfileActivity extends AppCompatActivity {
 
@@ -51,6 +51,15 @@ public class ViewProfileActivity extends AppCompatActivity {
     private Attendee attendee;
     private String imageUrl;
 
+    /**
+     * Initializes the activity, sets up the user interface, and displays the attendee's profile information.
+     * It retrieves the Attendee object and image URL from the intent, populates the UI elements with the
+     * attendee's information, and sets up listeners for the delete and cancel actions.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +121,14 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         }));
     }
+    /**
+     * Deletes the attendee's profile from the Firestore database. This method also removes the
+     * attendee from all events' attendees and Signed Up subcollections. Upon successful deletion,
+     * it displays a confirmation message and finishes the activity. In case of failure, it shows
+     * an error message.
+     *
+     * @param attendeeId The unique ID of the attendee to be deleted.
+     */
     private void deleteAttendeeFromEvents(String attendeeId) {
         db.collection("events").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -120,7 +137,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot eventDocument : task.getResult()) {
                         String eventName = eventDocument.getId();
                         db.collection("events").document(eventName).collection("attendees")
-                                .whereEqualTo("id", attendeeId) // Assuming you store the attendee ID in the subcollection documents
+                                .whereEqualTo("id", attendeeId)
                                 .get()
                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
@@ -133,6 +150,18 @@ public class ViewProfileActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
+                        db.collection("events").document(eventName).collection("Signed Up")
+                                .whereEqualTo("id", attendeeId)
+                                .get()
+                                .addOnCompleteListener(signedUpTask -> {
+                                    if (signedUpTask.isSuccessful()) {
+                                        for (QueryDocumentSnapshot signedUpDocument : signedUpTask.getResult()) {
+                                            signedUpDocument.getReference().delete()
+                                                    .addOnSuccessListener(aVoid -> Log.d("DeleteAttendee", "Successfully deleted attendee from Signed Up in " + eventName))
+                                                    .addOnFailureListener(e -> Log.e("DeleteAttendee", "Error deleting attendee from Signed Up in " + eventName, e));
+                                        }
+                                    }
+                                });
                     }
                 } else {
                     Log.d("Event Fetch", "Error getting documents: ", task.getException());
@@ -141,13 +170,29 @@ public class ViewProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Asynchronous task for downloading and displaying an image from a URL. It is used here to load
+     * and display the attendee's profile image.
+     */
     public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
+        /**
+         * Constructs an instance of the DownloadImageTask with the specified ImageView.
+         *
+         * @param bmImage The ImageView where the downloaded image will be displayed.
+         */
         public DownloadImageTask(ImageView bmImage) {
             this.bmImage = bmImage;
         }
 
+        /**
+         * Downloads the image from the provided URL in the background. This method runs on a separate thread
+         * to prevent blocking the UI thread.
+         *
+         * @param urls The array of URLs to download the image from. Only the first URL in the array is used.
+         * @return The downloaded bitmap image, or {@code null} if the download fails.
+         */
         protected Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
             Bitmap mIcon11 = null;
@@ -161,6 +206,12 @@ public class ViewProfileActivity extends AppCompatActivity {
             return mIcon11;
         }
 
+        /**
+         * Runs on the UI thread after the background computation finishes. Sets the downloaded image bitmap
+         * to the ImageView provided in the constructor.
+         *
+         * @param result The bitmap image downloaded by doInBackground(String...).
+         */
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
         }

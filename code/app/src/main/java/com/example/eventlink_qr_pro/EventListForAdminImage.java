@@ -13,13 +13,25 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * An activity for administrators to view a list of all events. This list is fetched from Firebase Firestore
+ * and displayed in a ListView. Administrators can select an event to view its detailed information or manage the event.
+ */
 public class EventListForAdminImage extends AppCompatActivity {
 
     private List<String> eventNameList = new ArrayList<>();
     private ArrayAdapter<String> adapter;
     private ListView listView;
 
-
+    /**
+     * Sets up the activity's layout and UI components. Initializes the ListView adapter with event names
+     * fetched from Firestore. Sets up a listener for list item clicks, which navigates to the event's detailed view,
+     * and a listener for the back button.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +42,7 @@ public class EventListForAdminImage extends AppCompatActivity {
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, eventNameList);
         listView.setAdapter(adapter);
 
-        fetchEvents(); // Call your method to fetch events
+        fetchEvents(); 
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             String eventName = eventNameList.get(position); // Get the clicked event's name
@@ -45,6 +57,10 @@ public class EventListForAdminImage extends AppCompatActivity {
 
     }
 
+    /**
+     * Fetches a list of all events from Firebase Firestore and updates the ListView adapter.
+     * Utilizes a snapshot listener to ensure the list is updated in real-time with any changes.
+     */
     private void fetchEvents() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events").addSnapshotListener((value, error) -> {
@@ -56,7 +72,7 @@ public class EventListForAdminImage extends AppCompatActivity {
             eventNameList.clear(); // Clear the existing list
             if (value != null) {
                 for (QueryDocumentSnapshot document : value) {
-                    eventNameList.add(document.getId()); // Or use a field name
+                    eventNameList.add(document.getId());
                 }
                 adapter.notifyDataSetChanged(); // Notify the adapter of data changes
             } else {

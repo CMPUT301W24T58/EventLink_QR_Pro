@@ -15,13 +15,24 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-
+import com.google.firebase.messaging.FirebaseMessaging;
+/**
+ * An activity that allows users (typically organizers) to send notifications related to an event.
+ * Users can input a title and description for the notification, which is then stored in Firestore
+ * under the specific event's "messages" collection. This could be used for event updates, reminders,
+ * or other communications from the event organizers to the attendees.
+ */
 public class SendNotificationActivity extends AppCompatActivity {
     Button cancelButton, pushButton;
     EditText etToken, etMessageTitle, etMessageDescription;
     String eventName;
 
+    /**
+     * Initializes the activity with input fields for the notification's title and description,
+     * and buttons to push the notification or cancel the operation. Retrieves the event name from the intent.
+     *
+     * @param savedInstanceState Contains data of the activity's previously saved state. It's null the first time the activity is created.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +57,15 @@ public class SendNotificationActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Attempts to send a notification message by creating a {@link NotificationMessage} object and adding it
+     * to the Firestore under the specified event's "messages" collection. On success, it displays a toast indicating
+     * the successful push; on failure, it displays an error message.
+     *
+     * @param eventName The name of the event to which the notification is related.
+     * @param messageTitle The title of the notification message.
+     * @param messageDescription The description or body of the notification message.
+     */
     private void pushNotification(String eventName, String messageTitle, String messageDescription) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -62,18 +82,37 @@ public class SendNotificationActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Nested class to model the structure of a notification message, containing a title and description.
+     */
     static class NotificationMessage {
         String title, description;
 
+        /**
+         * Constructs a new NotificationMessage with the given title and description.
+         *
+         * @param title The title of the notification message.
+         * @param description The body content of the notification message.
+         */
         public NotificationMessage(String title, String description) {
             this.title = title;
             this.description = description;
         }
 
+        /**
+         * Gets the title of the notification message.
+         *
+         * @return The title of the message.
+         */
         public String getTitle() {
             return title;
         }
 
+        /**
+         * Gets the description of the notification message.
+         *
+         * @return The description of the message.
+         */
         public String getDescription() {
             return description;
         }

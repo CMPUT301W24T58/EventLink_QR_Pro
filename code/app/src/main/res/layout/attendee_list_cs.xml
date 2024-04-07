@@ -26,19 +26,45 @@
         android:padding="12dp"
         android:layout_marginBottom="16dp"/>
 
-    <!-- ListView for displaying attendees -->
-    <ListView
-        android:id="@+id/listview_attendees"
+    <!-- ListView for displaying currently checked-in attendees -->
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="wrap_content"
+        android:text="Currently Checked-in"
+        android:textSize="20sp"
+        android:layout_marginBottom="8dp"/>
+
+    <ListView
+        android:id="@+id/listview_checked_in_attendees"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp" />
+        android:dividerHeight="1dp"
+        android:layout_marginBottom="16dp"/>
 
+    <!-- Title for future sign-ups -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Future Sign-ups"
+        android:textSize="20sp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- ListView for displaying future sign-ups -->
+    <ListView
+        android:id="@+id/listview_future_sign_ups"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Back Button -->
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:text="Back"
         android:background="#4CAF50"
         android:textColor="#FFFFFF"

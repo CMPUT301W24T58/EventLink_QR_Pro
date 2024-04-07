@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,11 +21,30 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
+/**
+ * A DialogFragment that presents a form to the user for creating a new event. It collects details
+ * such as the event's name, date, time, location, and description, and an option to enable geolocation.
+ * Upon submission, it uploads the event data to Firebase Firestore, generates QR code data, and associates
+ * an FCM token with the event.
+ */
 public class CreateEventDialogFragment extends DialogFragment {
     private String qrDataString;
+    /**
+     * Constructs the dialog view with input fields for the event details, sets default values for date and time,
+     * and defines the behavior for the "OK" and "Cancel" buttons. On "OK", it attempts to create a new event
+     * with the provided details and upload it to Firestore, including generating and uploading QR code data
+     * and fetching and saving an FCM token for the event.
+     *
+     * @param savedInstanceState A Bundle containing saved instance state data if the fragment is being re-initialized,
+     *                           or null if there is no saved state.
+     * @return An AlertDialog instance ready to be displayed.
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -39,6 +59,16 @@ public class CreateEventDialogFragment extends DialogFragment {
         final EditText eventTimeEditText = view.findViewById(R.id.eventTime);
         final EditText eventLocationEditText = view.findViewById(R.id.eventLocation);
         final EditText eventDescriptionEditText = view.findViewById(R.id.eventDescription);
+        final Switch switchGeolocation = view.findViewById(R.id.switchGeolocation);
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        String currentDate = dateFormat.format(calendar.getTime());
+        String currentTime = timeFormat.format(calendar.getTime());
+
+        eventDateEditText.setText(currentDate);
+        eventTimeEditText.setText(currentTime);
 
         builder.setView(view)
                 .setPositiveButton("OK", (dialog, id) -> {
@@ -47,6 +77,7 @@ public class CreateEventDialogFragment extends DialogFragment {
                     String time = eventTimeEditText.getText().toString().trim();
                     String location = eventLocationEditText.getText().toString().trim();
                     String description = eventDescriptionEditText.getText().toString().trim();
+                    boolean geolocationEnabled = switchGeolocation.isChecked();
 
                     FirebaseMessaging.getInstance().getToken()
                             .addOnCompleteListener(task -> {
@@ -54,7 +85,7 @@ public class CreateEventDialogFragment extends DialogFragment {
                                     Log.w("FCMToken", "Fetching FCM registration token failed", task.getException());
                                     return;
                                 }
-                                // Once the event is created and we have the token
+
                                 String token = task.getResult();
                                 // Save the token to the event document
                                 saveTokenToEvent(name, token);
@@ -66,7 +97,7 @@ public class CreateEventDialogFragment extends DialogFragment {
                         return; // Optionally, show a message to the user
                     }
 
-                    Event event = new Event(name, date, time, location, description);
+                    Event event = new Event(name, date, time, location, description, geolocationEnabled);
                     uploadEvent(name, event);
 
                     JSONObject qrDataJson = new JSONObject();
@@ -90,6 +121,12 @@ public class CreateEventDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+    /**
+     * Uploads the event data to Firestore using the provided document ID (event name) and event object.
+     *
+     * @param documentId The document ID to use for the event in Firestore, typically the event name.
+     * @param event The Event object containing the event details.
+     */
     private void uploadEvent(String documentId, Event event) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -101,6 +138,12 @@ public class CreateEventDialogFragment extends DialogFragment {
 
     }
 
+    /**
+     * Uploads QR code data for the event to Firestore by merging it into the existing event document.
+     *
+     * @param eventName The name of the event for which QR code data is being uploaded.
+     * @param qrData The QR code data in String format.
+     */
     private void uploadQRCodeToFirestore(String eventName, String qrData) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -121,6 +164,13 @@ public class CreateEventDialogFragment extends DialogFragment {
                 });
     }
 
+    /**
+     * Saves the FCM token to the event's document in Firestore. This token can be used for sending
+     * notifications related to the event.
+     *
+     * @param eventId The ID of the event, typically the event name.
+     * @param token The FCM token to save.
+     */
     private void saveTokenToEvent(String eventId, String token) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference eventRef = db.collection("events").document(eventId);
