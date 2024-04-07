@@ -95,7 +95,6 @@ public class NotificationHelper {
         notificationManager.notify(getNewNotifID(), builder.build());
     }
 
-    @WorkerThread
     public static void findNewMessages(Attendee attendee, Context context) {
         ArrayList<String> storedMessageIDs = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
