@@ -14,57 +14,68 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="EVENT"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="34sp"
+            android:textStyle="bold"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Name:"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/event_name_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Event Name" />
+            android:hint="Event Name"
+            android:textSize="14sp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Date:"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/event_date_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="DD/MM/YYYY"
-            android:inputType="date" />
+            android:inputType="date"
+            android:textSize="14sp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Location:"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/event_location_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Location" />
+            android:hint="Location"
+            android:textSize="14sp"/>
 
         <Button
             android:id="@+id/upload_poster_button"
             android:layout_width="match_parent"
-            android:layout_height="66dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Upload Event Poster" />
+            android:text="Upload Event Poster"
+            android:background="@drawable/button_background"
+            android:textColor="#FFFFFF"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Description:"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/event_description_edit_text"
@@ -73,14 +84,16 @@
             android:layout_marginTop="16dp"
             android:gravity="top"
             android:hint="Event Description"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine"
+            android:textSize="14sp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Limit Number of Attendees:"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="bold"/>
 
         <Switch
             android:id="@+id/limit_attendees_switch"
@@ -121,6 +134,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
+                android:background="@drawable/back"
+                android:textColor="#FFFFFF"
                 android:layout_weight="1"
                 android:text="Cancel" />
 
@@ -130,6 +145,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginStart="8dp"
+                android:background="@drawable/button_background"
+                android:textColor="#FFFFFF"
                 android:layout_weight="1"
                 android:text="Update" />
         </LinearLayout>
