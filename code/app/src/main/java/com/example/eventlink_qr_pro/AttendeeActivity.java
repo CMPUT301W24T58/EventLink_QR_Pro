@@ -140,6 +140,10 @@ public class AttendeeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        
+        // Call notificationHelper to check for new messages
+        NotificationHelper.findNewMessages(attendee, this);
     }
     /**
      * Handles the result from started activities with startActivityForResult, specifically updating

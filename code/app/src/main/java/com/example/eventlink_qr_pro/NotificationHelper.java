@@ -5,15 +5,33 @@ package com.example.eventlink_qr_pro;
 // https://github.com/android/user-interface-samples/blob/main/People/app/src/main/java/com/example/android/people/data/NotificationHelper.kt
 // as a reference while creating this class
 
+import static android.content.ContentValues.TAG;
 import static androidx.core.content.ContextCompat.getSystemService;
 
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
+import android.util.Log;
+import android.widget.ArrayAdapter;
 
+import androidx.annotation.WorkerThread;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.ktx.Firebase;
+
+import org.checkerframework.checker.units.qual.A;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * A utility class that aids in the creation and management of notification channels and notifications
  * within the application. It allows for sending notifications to the user from the application, specifically
@@ -71,6 +89,98 @@ public class NotificationHelper {
                 .setAutoCancel(true);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify();
+        // adapted from https://stackoverflow.com/questions/16045722/android-notification-is-not-showing
+        // adapted version of android dev notification documentation at:
+        // https://developer.android.com/develop/ui/views/notifications/build-notification#notify
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            builder.setChannelId("EVENTLINK_QR_PRO_NOTIF_CHANNEL");
+        }
+
+        notificationManager.notify(getNewNotifID(), builder.build());
+    }
+
+    public static void findNewMessages(Attendee attendee, Context context) {
+        ArrayList<String> storedMessageIDs = new ArrayList<>();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Get all of the messages that the attendee already has
+        db.collection("attendees")
+                .document(attendee.getId())
+                .collection("messages")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            storedMessageIDs.add(document.getId());
+                        }
+                    } else {
+                        Log.w(TAG, "Error getting documents.", task.getException());
+                    }
+                });
+
+        // Get all of the events that the attendee is a part of
+        ArrayList<String> participatingEventIDs = new ArrayList<>();
+        db.collection("events")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot eventDoc : task.getResult()) {
+                            db.collection("events").document(eventDoc.getId())
+                                    .collection("attendees")
+                                    .get()
+                                    .addOnCompleteListener(task2 -> {
+                                        if (task2.isSuccessful()) {
+                                            for (QueryDocumentSnapshot document : task2.getResult()) {
+                                                if (document.getId().equals(attendee.getId())) {
+                                                    storedMessageIDs.add(eventDoc.getId());
+                                                }
+                                            }
+                                        } else {
+                                            Log.w(TAG, "Error getting documents.", task2.getException());
+                                        }
+                                    });
+                        }
+                    } else {
+                        Log.w(TAG, "Error getting documents.", task.getException());
+                    }
+                });
+
+        // Get all new messages
+        db.collection("events")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot eventDoc : task.getResult()) {
+                            db.collection("events").document(eventDoc.getId())
+                                    .collection("messages")
+                                    .get()
+                                    .addOnCompleteListener(task2 -> {
+                                        if (task2.isSuccessful()) {
+                                            for (QueryDocumentSnapshot document : task2.getResult()) {
+                                                if (!storedMessageIDs.contains(document.getId())) {
+                                                    // put message in attendee's collection
+                                                    storedMessageIDs.add(eventDoc.getId());
+                                                    Map<String, String> messageInfo = new HashMap<>();
+                                                    messageInfo.put("title", document.get("title").toString());
+                                                    messageInfo.put("description", document.get("description").toString());
+                                                    db.collection("attendees")
+                                                            .document(attendee.getId())
+                                                            .collection("messages")
+                                                            .document(document.getId())
+                                                            .set(messageInfo);
+                                                    // pop up the notification
+                                                    buildNotification(document.get("title").toString(), document.get("description").toString(), context);
+                                                }
+                                            }
+                                        } else {
+                                            Log.w(TAG, "Error getting documents.", task2.getException());
+                                        }
+                                    });
+                        }
+                    } else {
+                        Log.w(TAG, "Error getting documents.", task.getException());
+                    }
+                });
     }
 }
