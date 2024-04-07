@@ -237,6 +237,12 @@ public class AttendeeActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(AttendeeActivity.this, "Failed to check attendee existence", Toast.LENGTH_SHORT).show();
                     }
+
+
+                    // Call notificationHelper to check for new messages after waiting to make sure exists
+                    Log.d("notification", "getting notifications");
+                    NotificationHelper.setUpNotificationChannels(this);
+                    NotificationHelper.findNewMessages(attendee, this);
                 });
     }
     /**
