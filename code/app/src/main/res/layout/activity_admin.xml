@@ -7,11 +7,11 @@
 
     <ImageView
         android:id="@+id/profile_image"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="225dp"
+        android:layout_height="163dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="24dp"
-         />
+        android:src="@drawable/ic_profile_placeholder"/>
 
     <TextView
         android:id="@+id/welcome_text"
@@ -22,7 +22,16 @@
         android:layout_marginTop="16dp"
         android:text="Welcome Admin!"
         android:textSize="20sp"
-        android:textColor="#000000" />
+        android:textColor="#000000"
+        android:textStyle="bold"/>
+
+    <View
+        android:id="@+id/gray_separator"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@id/welcome_text"
+        android:layout_marginTop="8dp"
+        android:background="#ACA9A9"/>
 
     <Button
         android:id="@+id/view_events_button"
@@ -30,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/welcome_text"
         android:layout_marginTop="32dp"
-        android:background="@color/button_color"
+        android:background="@drawable/button_background"
         android:text="View Events"
         android:textColor="#FFFFFF"
         android:textSize="18sp"/>
@@ -41,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/view_events_button"
         android:layout_marginTop="16dp"
-        android:background="@color/button_color"
+        android:background="@drawable/button_background"
         android:text="View Profiles"
         android:textColor="#FFFFFF"
         android:textSize="18sp"/>
@@ -52,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/view_profiles_button"
         android:layout_marginTop="16dp"
-        android:background="@color/button_color"
+        android:background="@drawable/button_background"
         android:text="View Images"
         android:textColor="#FFFFFF"
         android:textSize="18sp"/>
