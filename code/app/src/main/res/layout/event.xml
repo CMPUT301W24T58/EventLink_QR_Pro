@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -15,8 +16,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Event Name"
-            android:textSize="24sp"
-            android:layout_gravity="center_horizontal" />
+            android:textSize="34sp"
+            android:textColor="#000000"
+            android:textStyle="bold"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="#ACA9A9"
+            android:layout_marginBottom="8dp"/>
+        <TextView
+            android:id="@+id/tv_number_of_attendees"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:text="Number of Attendees : 0"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
 
         <!-- Container for QR codes -->
         <LinearLayout
@@ -26,35 +42,53 @@
             android:gravity="center"
             android:layout_marginTop="16dp">
 
-            <!-- Original QR code ImageView -->
-            <ImageView
-                android:id="@+id/qrCodeImageView"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginRight="16dp" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginRight="16dp">
 
-            <!-- Promotional QR code ImageView -->
-            <ImageView
-                android:id="@+id/promoQrCodeImageView"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
+                <ImageView
+                    android:id="@+id/qrCodeImageView"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Check in code"
+                    android:textSize="14sp"
+                    android:textColor="#C5C2C2" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/promoQrCodeImageView"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Promotion code"
+                    android:textSize="14sp"
+                    android:textColor="#C5C2C2" />
+            </LinearLayout>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_number_of_attendees"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Number of Attendees : 0"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"/>
 
         <Button
             android:id="@+id/btn_view_edit_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="View/Edit Details"
-            android:background="#4CAF50"
+            android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
             android:layout_marginTop="16dp" />
 
@@ -63,7 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Register Existing QR code"
-            android:background="#4CAF50"
+            android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
             android:layout_marginTop="8dp" />
 
@@ -72,7 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Share QR code"
-            android:background="#4CAF50"
+            android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
             android:layout_marginTop="8dp" />
 
@@ -81,7 +115,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="View Attendees"
-            android:background="#4CAF50"
+            android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
             android:layout_marginTop="8dp" />
 
@@ -90,7 +124,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Send Notification"
-            android:background="#4CAF50"
+            android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
             android:layout_marginTop="8dp" />
 
@@ -99,7 +133,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Alerts"
-            android:background="#4CAF50"
+            android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
             android:layout_marginTop="8dp" />
 
@@ -108,16 +142,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Check in Map"
-            android:background="#4CAF50"
+            android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
             android:layout_marginTop="8dp" />
 
         <Button
             android:id="@+id/btn_back"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="31dp"
             android:text="Back"
-            android:background="#4CAF50"
+            android:background="@drawable/back"
             android:textColor="#FFFFFF"
             android:layout_marginTop="8dp" />
 
