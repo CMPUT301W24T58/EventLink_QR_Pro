@@ -12,6 +12,7 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
@@ -83,7 +84,15 @@ public class NotificationHelper {
                 .setAutoCancel(true);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify();
+        // adapted from https://stackoverflow.com/questions/16045722/android-notification-is-not-showing
+        // adapted version of android dev notification documentation at:
+        // https://developer.android.com/develop/ui/views/notifications/build-notification#notify
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            builder.setChannelId("EVENTLINK_QR_PRO_NOTIF_CHANNEL");
+        }
+
+        notificationManager.notify(getNewNotifID(), builder.build());
     }
 
     @WorkerThread
