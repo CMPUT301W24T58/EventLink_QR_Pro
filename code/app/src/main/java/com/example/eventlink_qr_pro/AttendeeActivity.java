@@ -98,6 +98,9 @@ public class AttendeeActivity extends AppCompatActivity {
             }
         });
 
+        // Call notificationHelper to check for new messages
+        NotificationHelper.findNewMessages(attendee, this);
+
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

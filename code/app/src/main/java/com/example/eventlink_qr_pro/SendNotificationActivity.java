@@ -13,8 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.messaging.FirebaseMessaging;
+
 
 public class SendNotificationActivity extends AppCompatActivity {
     Button cancelButton, pushButton;
@@ -32,6 +33,8 @@ public class SendNotificationActivity extends AppCompatActivity {
         cancelButton = findViewById(R.id.cancel);
         pushButton = findViewById(R.id.push);
 
+        FirebaseApp.initializeApp(this);
+
         cancelButton.setOnClickListener(view -> {
             finish();
         });
@@ -41,22 +44,6 @@ public class SendNotificationActivity extends AppCompatActivity {
             String messageDescription = etMessageDescription.getText().toString();
             pushNotification(eventName, messageTitle, messageDescription);
         });
-
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            System.out.println("Fetching FCM registration token failed");
-                            return;
-                        }
-
-                        // Get new FCM registration token
-                        String token = task.getResult();
-
-
-                    }
-                });
     }
 
     private void pushNotification(String eventName, String messageTitle, String messageDescription) {
