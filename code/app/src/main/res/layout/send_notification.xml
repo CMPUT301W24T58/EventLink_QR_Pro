@@ -9,31 +9,37 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CREATE NEW NOTIFICATION"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textAlignment="viewStart"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/notificationTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:hint="Notification Title"
-        android:layout_marginTop="8dp"/>
+        android:textSize="16sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Description"
-        android:layout_marginTop="16dp"/>
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:hint="Type here"
-        android:gravity="top"
+        android:layout_marginTop="8dp"
         android:background="@android:drawable/editbox_background"
+        android:gravity="top"
+        android:hint="Type here"
         android:inputType="textMultiLine"
-        android:layout_marginTop="8dp"/>
+        android:textSize="14sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,6 +54,8 @@
             android:layout_marginTop="50dp"
             android:layout_weight="1"
             android:text="Cancel"
+            android:background="@drawable/back"
+            android:textColor="#FFFFFF"
             android:id="@+id/cancel" />
 
 
@@ -58,6 +66,8 @@
             android:layout_marginTop="50dp"
             android:layout_weight="1"
             android:text="Push"
+            android:background="@drawable/button_background"
+            android:textColor="#FFFFFF"
             android:layout_marginLeft="16dp"/>
     </LinearLayout>
 

@@ -24,8 +24,10 @@
         android:layout_below="@id/qrCodeImageView"
         android:layout_centerHorizontal="true"
         android:text="Share"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/button_background"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -33,17 +35,20 @@
 
     <Button
         android:id="@+id/back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="83dp"
+        android:layout_height="31dp"
         android:layout_below="@id/qrCodeImageView"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/back"
+        android:textColor="#FFFFFF"
         android:text="Back"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.818" />
+        app:layout_constraintVertical_bias="0.023" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

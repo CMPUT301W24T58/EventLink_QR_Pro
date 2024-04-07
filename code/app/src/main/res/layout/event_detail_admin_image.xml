@@ -30,7 +30,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="Choose Attendees"
-                android:textAppearance="?attr/textAppearanceHeadline6" />
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <!-- Attendees ListView -->
             <ListView
@@ -47,6 +49,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Delete Event Poster"
+        android:background="@drawable/button_background"
+        android:textColor="#FFFFFF"
         android:layout_margin="16dp"
         android:clickable="true"
         android:focusable="true"/>
@@ -56,6 +60,8 @@
         android:layout_height="wrap_content"
         android:text="Back"
         android:layout_margin="16dp"
+        android:background="@drawable/back"
+        android:textColor="#FFFFFF"
         android:clickable="true"
         android:focusable="true"/>
 </LinearLayout>

@@ -18,14 +18,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/attendeeProfileImageView"
         android:layout_marginTop="24dp"
+        android:background="@drawable/button_background"
+        android:textColor="#FFFFFF"
         android:text="Delete Profile Image" />
 
     <Button
         android:id="@+id/back"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="83dp"
+        android:layout_height="28dp"
         android:layout_below="@id/attendeeProfileImageView"
-        android:layout_marginTop="74dp"
-        android:text="Back" />
+        android:layout_marginTop="-499dp"
+        android:background="@drawable/back"
+        android:text="Back"
+        android:textColor="#FFFFFF" />
 
 </RelativeLayout>

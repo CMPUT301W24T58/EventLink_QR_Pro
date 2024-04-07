@@ -13,14 +13,17 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="VIEW EVENT"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#000000"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/header_event_name_attendee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Event Name" />
+            android:text="Event Name"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/event_name_edit_text_attendee"
@@ -37,7 +40,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Date" />
+            android:text="Date"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/event_date_edit_text_attendee"
@@ -49,12 +53,14 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             />
+
         <TextView
             android:id="@+id/header_event_location_attendee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Location" />
+            android:text="Location"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/event_location_edit_text_attendee"
@@ -71,7 +77,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Description" />
+            android:text="Description"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/event_description_edit_text_attendee"
@@ -96,7 +103,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_weight="1"
-                android:text="back" />
+                android:background="@drawable/back"
+                android:text="back"
+                android:textColor="#FFFFFF"/>
 
             <Button
                 android:id="@+id/update_button_attendee"
@@ -105,7 +114,9 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:text="sign up" />
+                android:text="sign up"
+                android:background="@drawable/button_background"
+                android:textColor="#FFFFFF"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

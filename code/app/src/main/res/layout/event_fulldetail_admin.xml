@@ -9,7 +9,7 @@
         android:id="@+id/event_poster"
         android:layout_width="0dp"
         android:layout_height="200dp"
-        android:src="@drawable/default_placeholder"
+        android:src="@drawable/event_default"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -20,45 +20,50 @@
         android:layout_height="wrap_content"
         android:text="Null"
         android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@id/event_poster"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/event_poster" />
 
     <TextView
         android:id="@+id/event_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Date: Null"
-        app:layout_constraintTop_toBottomOf="@id/event_name"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/event_name" />
 
     <TextView
         android:id="@+id/event_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Time: Null"
-        app:layout_constraintTop_toBottomOf="@id/event_date"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/event_date" />
 
     <TextView
         android:id="@+id/event_location"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Location: Null"
-        app:layout_constraintTop_toBottomOf="@id/event_time"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/event_time" />
 
     <TextView
         android:id="@+id/event_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Description: Null"
-        app:layout_constraintTop_toBottomOf="@id/event_location"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/event_location" />
 
     <Button
         android:id="@+id/btn_cancel"
@@ -69,7 +74,9 @@
         app:layout_constraintEnd_toStartOf="@+id/btn_delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/event_description"
-        app:layout_constraintHorizontal_weight="1"/>
+        app:layout_constraintHorizontal_weight="1"
+        android:background="@drawable/back"
+        android:textColor="#FFFFFF"/>
 
     <Button
         android:id="@+id/btn_delete"
@@ -80,6 +87,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/event_description"
-        app:layout_constraintHorizontal_weight="1"/>
+        app:layout_constraintHorizontal_weight="1"
+        android:background="@drawable/button_background"
+        android:textColor="#FFFFFF"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

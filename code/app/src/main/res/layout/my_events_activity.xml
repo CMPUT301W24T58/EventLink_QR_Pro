@@ -9,9 +9,10 @@
         android:id="@+id/currentEventsLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="Current Events"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_marginBottom="8dp"/>
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/currentEventsListView"
@@ -25,10 +26,11 @@
         android:id="@+id/futureEventsLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
         android:text="Future Events"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"/>
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/futureEventsListView"
@@ -44,6 +46,8 @@
         android:layout_height="wrap_content"
         android:text="Back"
         android:layout_gravity="center_horizontal"
+        android:background="@drawable/back"
+        android:textColor="#FFFFFF"
         android:layout_marginTop="16dp"/>
 
 </LinearLayout>

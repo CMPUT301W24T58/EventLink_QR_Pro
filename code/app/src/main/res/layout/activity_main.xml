@@ -7,11 +7,11 @@
 
     <ImageView
         android:id="@+id/profile_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="225dp"
+        android:layout_height="163dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:src="@android:drawable/ic_menu_camera" />
+        android:layout_marginTop="32dp"
+        android:src="@drawable/ic_profile_placeholder" />
 
     <TextView
         android:id="@+id/welcome_text"
@@ -19,39 +19,53 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/profile_image"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="Welcome!"
+        android:textColor="#000000"
         android:textSize="24sp"
-        android:textColor="#000000" />
-
-    <Button
-        android:id="@+id/attendee_button"
-        android:layout_width="383dp"
-        android:layout_height="100dp"
+        android:textStyle="bold" />
+    <View
+        android:id="@+id/separator_view"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
         android:layout_below="@id/welcome_text"
-        android:layout_marginTop="72dp"
-        android:background="@color/button_color"
-        android:text="Attendee"
-        android:textColor="#FFFFFF" />
+        android:layout_marginTop="32dp"
+        android:background="#ACA9A9" />
 
     <Button
         android:id="@+id/organizer_button"
-        android:layout_width="385dp"
-        android:layout_height="100dp"
-        android:layout_below="@id/attendee_button"
-        android:layout_marginTop="16dp"
-        android:background="@color/button_color"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:layout_below="@id/welcome_text"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/rounded_button"
         android:text="Organizer"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/attendee_button"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:layout_below="@id/organizer_button"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/rounded_button"
+        android:text="Attendee"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/administrator_button"
-        android:layout_width="383dp"
-        android:layout_height="100dp"
-        android:layout_below="@id/organizer_button"
-        android:layout_marginTop="16dp"
-        android:background="@color/button_color"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:layout_below="@id/attendee_button"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/rounded_button"
         android:text="Administrator"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textAllCaps="false" />
 
 </RelativeLayout>

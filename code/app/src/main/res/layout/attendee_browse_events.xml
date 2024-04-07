@@ -14,9 +14,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:text="Events"
-            android:textSize="24sp"
-            android:layout_alignParentStart="true"/>
+            android:textColor="#000000"
+            android:textSize="34sp"
+            android:textStyle="bold" />
 
         <!-- android:src="@drawable/ic_calendar" -->
         <ImageView
@@ -32,11 +34,13 @@
         android:id="@+id/attendee_search_events"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search Events"
-
         android:drawablePadding="10dp"
+
+        android:hint="Search Events"
         android:inputType="text"
-        android:padding="12dp"/>
+        android:padding="12dp"
+        android:textAlignment="center"
+        android:textSize="12sp" />
 
     <!-- Events list (ListView) -->
     <ListView
@@ -53,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:text="Back"
-        android:background="#4CAF50"
+        android:background="@drawable/back"
         android:textColor="#FFFFFF"/>
 
 </LinearLayout>

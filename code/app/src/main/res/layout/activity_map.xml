@@ -14,31 +14,37 @@
             android:id="@+id/tv_check_in_map"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Check in Map"
+            android:layout_alignParentStart="true"
             android:drawableEnd="@android:drawable/ic_dialog_map"
             android:drawablePadding="10dp"
             android:gravity="center_vertical"
+            android:text="Check in Map"
             android:textAppearance="?attr/textAppearanceListItem"
-            android:layout_alignParentStart="true"/>
+            android:textSize="34sp"
+            android:textStyle="bold" />
 
 
         <Button
             android:id="@+id/btn_back"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Back"
-            android:layout_alignParentEnd="true"/>
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="0dp"
+            android:background="@drawable/back"
+            android:textColor="#FFFFFF"
+            android:text="Back" />
 
     </RelativeLayout>
 
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_below="@id/headerLayout"
+        android:layout_width="384dp"
+        android:layout_height="556dp"
         android:layout_above="@+id/layout_tracking_buttons"
-        android:layout_marginTop="8dp" />
+        android:layout_below="@id/headerLayout"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="39dp" />
 
     <LinearLayout
         android:id="@+id/layout_tracking_buttons"
@@ -53,6 +59,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Enable tracking"
+            android:background="@drawable/button_background"
+            android:textColor="#FFFFFF"
             android:layout_marginEnd="8dp"
             android:layout_weight="1" />
 
@@ -61,8 +69,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Disable tracking"
+            android:background="@drawable/button_background"
+            android:textColor="#FFFFFF"
             android:layout_marginStart="8dp"
             android:layout_weight="1" />
     </LinearLayout>
-
 </RelativeLayout>

@@ -9,22 +9,26 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Event Attendees"
-        android:textSize="24sp"
+        android:layout_marginBottom="16dp"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="16dp"/>
+        android:text="Event Attendees"
+        android:textColor="#000000"
+        android:textSize="34sp"
+        android:textStyle="bold" />
 
     <!-- Search bar -->
     <EditText
         android:id="@+id/search_attendees"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search Attendees"
-        android:inputType="text"
+        android:layout_marginBottom="16dp"
         android:drawableStart="@android:drawable/ic_menu_search"
         android:drawablePadding="10dp"
+        android:hint="Search Attendees"
+        android:inputType="text"
         android:padding="12dp"
-        android:layout_marginBottom="16dp"/>
+        android:textAlignment="viewStart"
+        android:textSize="12sp" />
 
     <!-- ListView for displaying attendees -->
     <ListView
@@ -40,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:text="Back"
-        android:background="#4CAF50"
+        android:background="@drawable/back"
         android:textColor="#FFFFFF"
         android:id="@+id/back" />
 

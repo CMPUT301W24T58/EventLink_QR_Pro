@@ -13,10 +13,12 @@
         <Button
             android:id="@+id/back_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Back"
+            android:layout_height="31dp"
             android:layout_gravity="start"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/back"
+            android:text="Back"
+            android:textColor="#FFFFFF" />
 
 
         <ImageView
@@ -24,14 +26,24 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_profile_placeholder"/>
+
         <TextView
             android:id="@+id/attendee_name_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:text="Welcome Attendee"
             android:textSize="24sp"
-            android:layout_gravity="center_horizontal" />
+            android:textStyle="bold" />
+        <View
+            android:id="@+id/separator_view"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_below="@id/welcome_text"
+            android:layout_marginTop="32dp"
+            android:background="#ACA9A9" />
 
 
         <Button
@@ -39,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Scan Check-in QR Code"
-            android:background="#4CAF50"
+            android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
             android:layout_marginTop="16dp" />
 
@@ -48,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Scan Promotion QR Code"
-            android:background="#4CAF50"
+            android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
             android:layout_marginTop="8dp" />
 
@@ -57,7 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Browse Events"
-            android:background="#4CAF50"
+            android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
             android:layout_marginTop="8dp" />
 
@@ -66,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="View My Events"
-            android:background="#4CAF50"
+            android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
             android:layout_marginTop="8dp" />
 
@@ -75,7 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Alerts"
-            android:background="#4CAF50"
+            android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
             android:layout_marginTop="8dp" />
 
@@ -84,7 +96,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Edit Profile"
-            android:background="#4CAF50"
+            android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
             android:layout_marginTop="8dp" />
 
