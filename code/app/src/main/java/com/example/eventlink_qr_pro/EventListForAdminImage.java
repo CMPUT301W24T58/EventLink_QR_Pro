@@ -11,7 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An activity for administrators to view a list of all events. This list is fetched from Firebase Firestore
@@ -22,6 +24,7 @@ public class EventListForAdminImage extends AppCompatActivity {
     private List<String> eventNameList = new ArrayList<>();
     private ArrayAdapter<String> adapter;
     private ListView listView;
+    private Map<String, String> eventIdToNameMap = new HashMap<>();
 
     /**
      * Sets up the activity's layout and UI components. Initializes the ListView adapter with event names
@@ -46,9 +49,14 @@ public class EventListForAdminImage extends AppCompatActivity {
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             String eventName = eventNameList.get(position); // Get the clicked event's name
-            Intent intent = new Intent(EventListForAdminImage.this, EventDetailAdmin.class);
-            intent.putExtra("EVENT_NAME", eventName); // Pass the event name to the detail activity
-            startActivity(intent);
+            String eventId = eventIdToNameMap.get(eventName);
+            if (eventId != null) {
+                Intent intent = new Intent(EventListForAdminImage.this, EventDetailAdmin.class);
+                intent.putExtra("EVENT_NAME", eventId); // Pass the event name to the detail activity
+                startActivity(intent);
+            } else {
+                Log.d("EventListForAdminImage", "Event ID not found for name: " + eventName);
+            }
         });
 
         btn_back.setOnClickListener(view -> {
@@ -70,9 +78,14 @@ public class EventListForAdminImage extends AppCompatActivity {
             }
 
             eventNameList.clear(); // Clear the existing list
+            eventIdToNameMap.clear();
             if (value != null) {
                 for (QueryDocumentSnapshot document : value) {
-                    eventNameList.add(document.getId());
+                    String eventName = document.getString("name"); // Extract the event name
+                    if (eventName != null) {
+                        eventNameList.add(eventName); // Add the name to the list for the adapter
+                        eventIdToNameMap.put(document.getId(), eventName); // Map event ID to name for lookup
+                    }
                 }
                 adapter.notifyDataSetChanged(); // Notify the adapter of data changes
             } else {
