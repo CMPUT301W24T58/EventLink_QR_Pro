@@ -84,7 +84,16 @@ public class EventDetailActivity extends AppCompatActivity {
 
         });
 
-        textView.setText(eventName);
+        db.collection("events").document(eventName).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String actualEventName = documentSnapshot.getString("name");
+                if (actualEventName != null && !actualEventName.isEmpty()) {
+                    textView.setText(actualEventName); // Set the actual name in the TextView
+                } else {
+                    textView.setText(eventName); // Fallback to the document ID if the name is not found
+                }
+            }
+        });
 
 
         fetchAndGenerateQRCode(eventName);
