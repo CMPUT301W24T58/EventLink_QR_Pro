@@ -245,6 +245,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         updateEventsCollection(attendee);
         updateAttendeeTrackingPreferenceAcrossEvents(attendee.getId(), enableTracking);
+        System.out.println(enableTracking);
         saveOrUpdateAttendee(attendee);
         updateSignupEventsCollection(attendee);
 
@@ -568,29 +569,26 @@ public class EditProfileActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 // Loop through all events
                 for (DocumentSnapshot eventDocument : task.getResult()) {
-                    // Retrieve the event's name
-                    String eventName = eventDocument.getString("name");
-                    if (eventName == null || eventName.isEmpty()) {
-                        Log.e("UpdateTracking", "Event name is missing for document: " + eventDocument.getId());
-                        continue; // Skip this iteration if the name is missing
-                    }
+                    // Use the document ID as the event ID
+                    String eventId = eventDocument.getId();
 
                     // Reference to the specific attendee in the current event
                     DocumentReference attendeeRef = db.collection("events")
-                            .document(eventName)
+                            .document(eventId) // Use eventId here
                             .collection("attendees")
                             .document(attendeeId);
 
                     // Update the attendeeEnableTrackingOrNot field for the attendee
                     attendeeRef.update("attendeeEnableTrackingOrNot", enableTracking)
-                            .addOnSuccessListener(aVoid -> Log.d("UpdateTracking", "Updated tracking preference for attendee: " + attendeeId + " in event: " + eventName))
-                            .addOnFailureListener(e -> Log.e("UpdateTracking", "Error updating tracking preference for attendee: " + attendeeId + " in event: " + eventName, e));
+                            .addOnSuccessListener(aVoid -> Log.d("UpdateTracking", "Updated tracking preference for attendee: " + attendeeId + " in event: " + eventId))
+                            .addOnFailureListener(e -> Log.e("UpdateTracking", "Error updating tracking preference for attendee: " + attendeeId + " in event: " + eventId, e));
                 }
             } else {
                 Log.e("FetchEvents", "Error fetching events", task.getException());
             }
         });
     }
+
 
 
 }
