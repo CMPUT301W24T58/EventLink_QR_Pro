@@ -17,41 +17,41 @@
         android:layout_alignParentStart="true"
         android:src="@drawable/ic_profile_placeholder" /> <!-- Replace with your image resource -->
 
-    <Button
-        android:id="@+id/chooseImageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/profPicImageView"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="4dp"
-        android:background="@drawable/button_background"
-        android:layout_toEndOf="@id/profPicImageView"
-        android:textColor="#FFFFFF"
-        android:text="Upload" />
+        <Button
+            android:id="@+id/chooseImageButton"
+            android:layout_width="194dp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/profPicImageView"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="6dp"
+            android:layout_toEndOf="@id/profPicImageView"
+            android:background="@drawable/button_background"
+            android:text="Upload Profile Image"
+            android:textColor="#FFFFFF" />
 
-    <Button
-        android:id="@+id/createImageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/chooseImageButton"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="2dp"
-        android:layout_toEndOf="@id/profPicImageView"
-        android:background="@drawable/button_background"
-        android:text="Generate"
-        android:textColor="#FFFFFF" />
+        <Button
+            android:id="@+id/createImageButton"
+            android:layout_width="193dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/chooseImageButton"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@id/profPicImageView"
+            android:background="@drawable/button_background"
+            android:text="Generate Profile Image"
+            android:textColor="#FFFFFF" />
 
-    <Button
-        android:id="@+id/removeImageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/createImageButton"
-        android:layout_marginStart="175dp"
-        android:layout_marginTop="-97dp"
-        android:background="@drawable/back"
-        android:layout_toEndOf="@id/profPicImageView"
-        android:textColor="#FFFFFF"
-        android:text="Delete" />
+        <Button
+            android:id="@+id/removeImageButton"
+            android:layout_width="76dp"
+            android:layout_height="102dp"
+            android:layout_below="@id/createImageButton"
+            android:layout_marginStart="203dp"
+            android:layout_marginTop="-102dp"
+            android:layout_toEndOf="@id/profPicImageView"
+            android:background="@drawable/back"
+            android:text="Remove Profile Image"
+            android:textColor="#FFFFFF" />
     </RelativeLayout>
 
 
