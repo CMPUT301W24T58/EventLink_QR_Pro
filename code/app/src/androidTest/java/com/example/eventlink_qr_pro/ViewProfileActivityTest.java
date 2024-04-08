@@ -14,10 +14,20 @@ import android.graphics.BitmapFactory;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-
+/**
+ * Tests the functionality within {@link ViewProfileActivity} of the EventLink QR Pro application.
+ * This class leverages the AndroidJUnit4 runner and Espresso for UI interaction, focusing on testing
+ * specific user actions and their effects on the activity, such as button clicks leading to expected
+ * outcomes.
+ */
 @RunWith(AndroidJUnit4.class)
 public class ViewProfileActivityTest {
-
+    /**
+     * Simulates a click on the delete button in {@link ViewProfileActivity} to test its functionality. A mock {@link Attendee}
+     * and a dummy profile picture are passed to the activity via an {@link Intent}. This setup tests the button's
+     * expected behavior, such as profile deletion or confirmation dialog activation, using {@link ActivityScenario}
+     * for a realistic activity launch and interaction.
+     */
     @Test
     public void deleteButton_clickPerformsAction() {
         // Prepare a dummy Attendee object
