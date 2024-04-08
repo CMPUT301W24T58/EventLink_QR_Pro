@@ -99,6 +99,15 @@ public class ViewProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //TODO: database delete profile
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("attendees").document(attendee.getId()).collection("messages")
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    document.getReference().delete(); // Delete each document in the "messages" subcollection
+                                }
+                            }
+                        });
                 db.collection("attendees")
                         .document(attendee.getId())
                         .delete()
