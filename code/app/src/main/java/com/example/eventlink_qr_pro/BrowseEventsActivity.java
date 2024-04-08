@@ -70,7 +70,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
                     break;
                 }
             }
-            System.out.println("Event ID: " + selectedEventId);
+            
             if (selectedEventId != null) {
                 Intent intent2 = new Intent(BrowseEventsActivity.this, ViewEventAttendeeActivity.class);
                 intent2.putExtra("eventName", selectedEventId);// Pass the event name
