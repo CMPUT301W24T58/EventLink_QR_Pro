@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:text="Back"
-        android:background="#4CAF50"
+        android:background="@drawable/back"
         android:textColor="#FFFFFF"
         android:id="@+id/back" />
 

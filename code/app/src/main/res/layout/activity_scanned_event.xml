@@ -9,9 +9,9 @@
         android:id="@+id/scannedDataTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:padding="8dp" />
+        android:textSize="24sp"
+        android:padding="8dp"
+        android:textStyle="bold"/>
 
-    <!-- Add other UI elements as needed -->
 
 </LinearLayout>

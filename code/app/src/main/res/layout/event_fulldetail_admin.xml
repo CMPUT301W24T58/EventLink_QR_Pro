@@ -9,7 +9,7 @@
         android:id="@+id/event_poster"
         android:layout_width="0dp"
         android:layout_height="200dp"
-        android:src="@drawable/default_placeholder"
+        android:src="@drawable/event_default"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -22,7 +22,8 @@
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/event_poster"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/event_date"
@@ -31,7 +32,8 @@
         android:text="Date: Null"
         app:layout_constraintTop_toBottomOf="@id/event_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/event_time"
@@ -40,7 +42,8 @@
         android:text="Time: Null"
         app:layout_constraintTop_toBottomOf="@id/event_date"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/event_location"
@@ -49,7 +52,8 @@
         android:text="Location: Null"
         app:layout_constraintTop_toBottomOf="@id/event_time"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/event_description"
@@ -58,7 +62,8 @@
         android:text="Description: Null"
         app:layout_constraintTop_toBottomOf="@id/event_location"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textStyle="bold"/>
 
     <Button
         android:id="@+id/btn_cancel"
@@ -69,7 +74,9 @@
         app:layout_constraintEnd_toStartOf="@+id/btn_delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/event_description"
-        app:layout_constraintHorizontal_weight="1"/>
+        app:layout_constraintHorizontal_weight="1"
+        android:background="@drawable/back"
+        android:textColor="#FFFFFF"/>
 
     <Button
         android:id="@+id/btn_delete"
@@ -80,6 +87,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/event_description"
-        app:layout_constraintHorizontal_weight="1"/>
+        app:layout_constraintHorizontal_weight="1"
+        android:background="@drawable/button_background"
+        android:textColor="#FFFFFF"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,9 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Event Attendees"
-        android:textSize="24sp"
+        android:textSize="34sp"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:textColor="#000000"
+        android:textStyle="bold"/>
 
     <!-- Search bar -->
     <EditText
@@ -24,7 +26,8 @@
         android:drawableStart="@android:drawable/ic_menu_search"
         android:drawablePadding="10dp"
         android:padding="12dp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:textSize="12sp"/>
 
     <!-- ListView for displaying currently checked-in attendees -->
     <TextView
@@ -32,7 +35,8 @@
         android:layout_height="wrap_content"
         android:text="Currently Checked-in"
         android:textSize="20sp"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"
+        android:textStyle="bold"/>
 
     <ListView
         android:id="@+id/listview_checked_in_attendees"
@@ -49,7 +53,8 @@
         android:layout_height="wrap_content"
         android:text="Future Sign-ups"
         android:textSize="20sp"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"
+        android:textStyle="bold"/>
 
     <!-- ListView for displaying future sign-ups -->
     <ListView
@@ -66,7 +71,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Back"
-        android:background="#4CAF50"
+        android:background="@drawable/back"
         android:textColor="#FFFFFF"
         android:id="@+id/back" />
 

@@ -16,6 +16,8 @@
             android:id="@+id/bUploadImage"
             android:text="Upload Image"
             android:layout_width="match_parent"
+            android:background="@drawable/button_background"
+            android:textColor="#FFFFFF"
             android:layout_height="wrap_content" />
     </LinearLayout>
 </ScrollView>
