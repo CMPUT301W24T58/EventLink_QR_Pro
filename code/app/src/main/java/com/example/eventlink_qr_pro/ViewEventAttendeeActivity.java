@@ -32,7 +32,7 @@ public class ViewEventAttendeeActivity extends AppCompatActivity {
     private EditText eventDescriptionEditText;
     private Button signupButton;
     private Button cancelButton;
-
+    private Button posterbutton;
 
     private String qrdata;
     private FirebaseFirestore db;
@@ -61,6 +61,7 @@ public class ViewEventAttendeeActivity extends AppCompatActivity {
         eventDescriptionEditText = findViewById(R.id.event_description_edit_text_attendee);
         signupButton = findViewById(R.id.update_button_attendee);
         cancelButton = findViewById(R.id.cancel_button_attendee);
+        posterbutton = findViewById(R.id.view_poster_button);
 
 
         // Retrieve the event name from the intent
@@ -122,6 +123,27 @@ public class ViewEventAttendeeActivity extends AppCompatActivity {
             finish();
         });
 
+        posterbutton.setOnClickListener(view ->{
+            // Check if the event in Firestore has an 'imageUrl' field
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference eventRef = db.collection("events").document(eventName);
+
+            eventRef.get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists() && documentSnapshot.contains("imageUrl")) {
+                    // Event has an 'imageUrl' field, launch the activity to view the event poster
+                    Intent intent2 = new Intent(ViewEventAttendeeActivity.this, ViewEventPosterActivity.class);
+                    intent2.putExtra("eventName", eventName); // Pass the event name to the poster view activity
+                    startActivity(intent2);
+                } else {
+                    // Event does not have an 'imageUrl' field
+                    Toast.makeText(ViewEventAttendeeActivity.this, "Event poster not available", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(e -> {
+                // Handle failure to retrieve document
+                Toast.makeText(ViewEventAttendeeActivity.this, "Failed to check event poster availability", Toast.LENGTH_SHORT).show();
+            });
+
+        });
 
 
 
