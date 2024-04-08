@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.InputStream;
@@ -138,6 +140,10 @@ public class BrowseDeleteEventAdminDetail extends AppCompatActivity {
                 .delete()
                 .addOnSuccessListener(aVoid -> {
                     // Document successfully deleted
+                    deleteSubCollectionDocuments(eventNameStr, "attendees");
+                    deleteSubCollectionDocuments(eventNameStr, "Signed Up");
+                    deleteSubCollectionDocuments(eventNameStr, "messages");
+                    deleteSubCollectionDocuments(eventNameStr, "milestones");
                     Log.d("DeleteEvent", "DocumentSnapshot successfully deleted!");
                     Toast.makeText(BrowseDeleteEventAdminDetail.this, "Event successfully deleted", Toast.LENGTH_SHORT).show();
                     finish(); // Close the current activity
@@ -148,5 +154,32 @@ public class BrowseDeleteEventAdminDetail extends AppCompatActivity {
                     Toast.makeText(BrowseDeleteEventAdminDetail.this, "Error deleting event", Toast.LENGTH_SHORT).show();
                 });
     }
+    /**
+     * Deletes all documents in a specified subcollection for an event in Firestore.
+     *
+     * This method asynchronously fetches and deletes each document within the given subcollection of an event.
+     * Logs success or error messages for each deletion attempt.
+     *
+     * @param eventNameStr The name of the event document in the 'events' collection.
+     * @param subCollectionName The name of the subcollection to delete documents from.
+     */
+    private void deleteSubCollectionDocuments(String eventNameStr, String subCollectionName) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("events").document(eventNameStr).collection(subCollectionName)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot document : task.getResult()) {
+                            db.collection("events").document(eventNameStr).collection(subCollectionName).document(document.getId())
+                                    .delete()
+                                    .addOnSuccessListener(aVoid -> Log.d("DeleteSubCollection", "Document successfully deleted"))
+                                    .addOnFailureListener(e -> Log.w("DeleteSubCollection", "Error deleting document", e));
+                        }
+                    } else {
+                        Log.d("DeleteSubCollection", "Error getting subcollection documents: ", task.getException());
+                    }
+                });
+    }
+
 
 }
