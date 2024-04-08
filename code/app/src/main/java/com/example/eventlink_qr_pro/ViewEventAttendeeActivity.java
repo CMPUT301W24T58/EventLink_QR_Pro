@@ -2,6 +2,7 @@ package com.example.eventlink_qr_pro;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -12,6 +13,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +34,7 @@ public class ViewEventAttendeeActivity extends AppCompatActivity {
     private Button cancelButton;
 
 
-
+    private String qrdata;
     private FirebaseFirestore db;
     private String eventName;
     private Attendee attendee;
@@ -72,44 +75,46 @@ public class ViewEventAttendeeActivity extends AppCompatActivity {
         }
 
         signupButton.setOnClickListener(view -> {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("events")
-                    .whereEqualTo("name", eventName)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                            for (DocumentSnapshot document : task.getResult()) {
-                                // Get the ID of the event document
-                                String eventId = document.getId();
+            fetchEventCheckInQRData(eventName, qrData -> {
+                this.qrdata = qrData;
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("events")
+                        .whereEqualTo("checkinqrdata", this.qrdata)
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                                for (DocumentSnapshot document : task.getResult()) {
+                                    // Get the ID of the event document
+                                    String eventId = document.getId();
 
-                                DocumentReference attendeeRef = db.collection("events").document(eventId)
-                                        .collection("Signed Up").document(attendee.getId());
+                                    DocumentReference attendeeRef = db.collection("events").document(eventId)
+                                            .collection("Signed Up").document(attendee.getId());
 
-                                attendeeRef.get().addOnCompleteListener(attendeeTask -> {
-                                    if (attendeeTask.isSuccessful() && attendeeTask.getResult() != null) {
-                                        DocumentSnapshot attendeeDocument = attendeeTask.getResult();
-                                        if (attendeeDocument.exists()) {
-                                            // Document exists
-                                            Toast.makeText(ViewEventAttendeeActivity.this, "Already signed up for this event", Toast.LENGTH_SHORT).show();
+                                    attendeeRef.get().addOnCompleteListener(attendeeTask -> {
+                                        if (attendeeTask.isSuccessful() && attendeeTask.getResult() != null) {
+                                            DocumentSnapshot attendeeDocument = attendeeTask.getResult();
+                                            if (attendeeDocument.exists()) {
+                                                // Document exists
+                                                Toast.makeText(ViewEventAttendeeActivity.this, "Already signed up for this event", Toast.LENGTH_SHORT).show();
+                                            } else {
+
+                                                attendeeRef.set(attendee);
+                                                Toast.makeText(ViewEventAttendeeActivity.this, "Successfully signed up for this event", Toast.LENGTH_SHORT).show();
+                                                finish();
+
+                                            }
                                         } else {
-
-                                            attendeeRef.set(attendee);
-                                            Toast.makeText(ViewEventAttendeeActivity.this, "Successfully signed up for this event", Toast.LENGTH_SHORT).show();
-                                            finish();
-
+                                            // Handle errors or document does not exist scenarios
+                                            Toast.makeText(ViewEventAttendeeActivity.this, "Error fetching attendee data", Toast.LENGTH_SHORT).show();
                                         }
-                                    } else {
-                                        // Handle errors or document does not exist scenarios
-                                        Toast.makeText(ViewEventAttendeeActivity.this, "Error fetching attendee data", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                                    });
+                                }
+                            } else {
+                                Toast.makeText(ViewEventAttendeeActivity.this, "Failed to find event", Toast.LENGTH_SHORT).show();
                             }
-                        } else {
-                            Toast.makeText(ViewEventAttendeeActivity.this, "Failed to find event", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                        });
 
-
+            });
         });
 
         cancelButton.setOnClickListener(view -> {
@@ -141,7 +146,44 @@ public class ViewEventAttendeeActivity extends AppCompatActivity {
             // Handle the error
         });
     }
+    /**
+     * A callback interface to handle the QR data fetched from Firestore.
+     */
+    private interface QRDataCallback {
+        /**
+         * Called when QR data is successfully fetched.
+         *
+         * @param qrData The QR data string fetched from the Firestore document.
+         */
+        void onCallback(String qrData);
+    }
+    /**
+     * Fetches the 'checkinqrdata' field for a specific event from Firestore and invokes the provided callback with the fetched data.
+     * This method asynchronously retrieves the event document based on the provided {@code eventId}. If the document exists and contains
+     * the 'checkinqrdata' field, the {@link QRDataCallback#onCallback(String)} method of the provided {@code callback} is called with the
+     * fetched QR data string. If the document does not exist or does not contain the 'checkinqrdata' field, appropriate log messages are generated.
+     *
+     * @param eventId The ID of the event document to fetch from Firestore.
+     * @param callback The {@link QRDataCallback} instance to be invoked after fetching the QR data.
+     */
+    private void fetchEventCheckInQRData(String eventId, QRDataCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference eventRef = db.collection("events").document(eventId);
 
+        eventRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String qrData = documentSnapshot.getString("checkinqrdata");
+                if (qrData != null) {
+                    Log.d("FetchQRData", "QR Data: " + qrData);
+                    callback.onCallback(qrData); // Trigger the callback with the fetched qrData
+                } else {
+                    Log.d("FetchQRData", "Document does not contain 'checkinqrdata'");
+                }
+            } else {
+                Log.d("FetchQRData", "No such document");
+            }
+        }).addOnFailureListener(e -> Log.d("FetchQRData", "Failed to fetch document", e));
+    }
 
 
 }
