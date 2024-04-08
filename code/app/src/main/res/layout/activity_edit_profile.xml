@@ -22,24 +22,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/profPicImageView"
-            android:layout_marginStart="76dp"
-            android:layout_marginTop="4dp"
-            android:background="@drawable/button_background"
+            android:layout_marginStart="19dp"
+            android:layout_marginTop="6dp"
             android:layout_toEndOf="@id/profPicImageView"
+            android:background="@drawable/button_background"
+            android:text="Upload Profile picture"
             android:textColor="#FFFFFF"
-            android:text="Upload" />
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/createImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/chooseImageButton"
-            android:layout_marginStart="76dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginStart="19dp"
+            android:layout_marginTop="5dp"
             android:layout_toEndOf="@id/profPicImageView"
             android:background="@drawable/button_background"
-            android:text="Generate"
-            android:textColor="#FFFFFF" />
+            android:text="Generate Profile Picture"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/removeImageButton"
@@ -47,11 +49,12 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/createImageButton"
             android:layout_marginStart="175dp"
-            android:layout_marginTop="-97dp"
-            android:background="@drawable/back"
+            android:layout_marginTop="-103dp"
             android:layout_toEndOf="@id/profPicImageView"
+            android:background="@drawable/back"
+            android:text="remove profile picture"
             android:textColor="#FFFFFF"
-            android:text="Delete" />
+            android:textSize="12sp" />
     </RelativeLayout>
 
     <EditText
