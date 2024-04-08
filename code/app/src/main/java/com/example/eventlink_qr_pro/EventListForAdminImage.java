@@ -84,7 +84,7 @@ public class EventListForAdminImage extends AppCompatActivity {
                     String eventName = document.getString("name"); // Extract the event name
                     if (eventName != null) {
                         eventNameList.add(eventName); // Add the name to the list for the adapter
-                        eventIdToNameMap.put(document.getId(), eventName); // Map event ID to name for lookup
+                        eventIdToNameMap.put(eventName, document.getId()); // Map event ID to name for lookup
                     }
                 }
                 adapter.notifyDataSetChanged(); // Notify the adapter of data changes
