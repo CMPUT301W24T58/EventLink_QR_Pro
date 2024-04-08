@@ -19,13 +19,26 @@ import android.widget.Button;
 
 
 /**
- * An activity to display the poster of an event.
+ * {@code ViewEventPosterActivity} displays the event poster for a specific event.
+ * It retrieves the event's name passed via intent, then queries Firestore to get the event's
+ * poster image URL. The image is then loaded and displayed using Glide. If the event details
+ * are not found or the event does not have a poster, the user is informed via a Toast message.
+ * This activity also includes a back button to return to the previous screen.
  */
 public class ViewEventPosterActivity extends AppCompatActivity {
 
     private ImageView eventPosterImageView;
     private Button backButton;
-
+    /**
+     * Initializes the activity, setting its content view and finding views by ID.
+     * Retrieves the event name from the intent, queries Firestore for the event's poster URL,
+     * and uses Glide to load and display the image. If no image URL is found or if the Firestore
+     * document does not exist, displays a relevant Toast message. Sets up the back button to
+     * finish the activity when clicked.
+     *
+     * @param savedInstanceState Contains data of the activity's previously saved state, or null if
+     *                           this is the first time the activity is created.
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
