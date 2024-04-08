@@ -11,7 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An activity designed for administrators to browse through a list of events. It provides functionalities
@@ -24,7 +26,7 @@ public class BrowseDeleteEventAdmin extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     private ListView listView;
 
-
+    private Map<String, String> eventIdToNameMap = new HashMap<>();
     /**
      * Initializes the activity, sets up the ListView with an ArrayAdapter, and fetches the list of events from Firestore.
      * It also defines behavior for list item clicks, leading to a detailed view of the selected event.
@@ -47,8 +49,16 @@ public class BrowseDeleteEventAdmin extends AppCompatActivity {
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             String eventName = eventNameList.get(position); // Get the clicked event's name
+            String eventId = null;
+            // Find the event ID corresponding to the event name
+            for (Map.Entry<String, String> entry : eventIdToNameMap.entrySet()) {
+                if (entry.getValue().equals(eventName)) {
+                    eventId = entry.getKey();
+                    break;
+                }
+            }
             Intent intent = new Intent(BrowseDeleteEventAdmin.this, BrowseDeleteEventAdminDetail.class);
-            intent.putExtra("EVENT_NAME", eventName); // Pass the event name to the detail activity
+            intent.putExtra("EVENT_NAME", eventId); // Pass the event name to the detail activity
             startActivity(intent);
         });
 
@@ -71,9 +81,14 @@ public class BrowseDeleteEventAdmin extends AppCompatActivity {
             }
 
             eventNameList.clear(); // Clear the existing list
+            eventIdToNameMap.clear();
             if (value != null) {
                 for (QueryDocumentSnapshot document : value) {
-                    eventNameList.add(document.getId());
+                    String eventName = document.getString("name");
+                    if (eventName != null && !eventName.isEmpty()) {
+                        eventNameList.add(eventName);
+                        eventIdToNameMap.put(document.getId(), eventName);
+                    }
                 }
                 adapter.notifyDataSetChanged(); // Notify the adapter of data changes
             } else {

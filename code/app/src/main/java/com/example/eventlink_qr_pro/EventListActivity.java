@@ -14,7 +14,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Displays a list of events fetched from Firebase Firestore. Users can select an event to view its details
@@ -26,6 +28,7 @@ public class EventListActivity extends AppCompatActivity {
     private ListView eventsListView;
     private ArrayAdapter<String> adapter;
     private List<String> eventNameList = new ArrayList<>();
+    private Map<String, String> eventNameToIdMap = new HashMap<>();
 
     /**
      * Initializes the activity, sets up the ListView and its adapter, and fetches the list of events from Firestore.
@@ -49,12 +52,19 @@ public class EventListActivity extends AppCompatActivity {
 
         eventsListView.setOnItemClickListener((parent, view, position, id) -> {
             // Get the selected event name
-            String selectedEvent = eventNameList.get(position);
-            // Start a new activity and pass the event name to it
-            Intent intent = new Intent(EventListActivity.this, EventDetailActivity.class);
-            intent.putExtra("eventName", selectedEvent); // Pass the event name
-            startActivity(intent);
+            String selectedEventName = eventNameList.get(position);
+            // Retrieve the event ID associated with this name
+            String eventId = eventNameToIdMap.get(selectedEventName);
+            if (eventId != null) {
+                // Start a new activity and pass the event ID to it
+                Intent intent = new Intent(EventListActivity.this, EventDetailActivity.class);
+                intent.putExtra("eventName", eventId); // Pass the event ID
+                startActivity(intent);
+            } else {
+                Log.d("EventListActivity", "No ID found for selected event name: " + selectedEventName);
+            }
         });
+
 
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +81,6 @@ public class EventListActivity extends AppCompatActivity {
      */
     private void fetchEvents() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        // Attaching a snapshot listener to the collection
         db.collection("events").addSnapshotListener((value, error) -> {
             if (error != null) {
                 Log.w("EventListActivity", "Listen failed.", error);
@@ -79,9 +88,14 @@ public class EventListActivity extends AppCompatActivity {
             }
 
             eventNameList.clear(); // Clear the existing list
+            eventNameToIdMap.clear(); // Clear the map for fresh data
             if (value != null) {
                 for (QueryDocumentSnapshot document : value) {
-                    eventNameList.add(document.getId());
+                    String eventName = document.getString("name");
+                    if (eventName != null) { // Ensure the name is not null
+                        eventNameList.add(eventName);
+                        eventNameToIdMap.put(eventName, document.getId()); // Map event name to its ID
+                    }
                 }
                 adapter.notifyDataSetChanged(); // Notify the adapter of data changes
             } else {
@@ -89,5 +103,6 @@ public class EventListActivity extends AppCompatActivity {
             }
         });
     }
+
 }
 

@@ -412,7 +412,41 @@ public class QRCodeScannerActivity extends AppCompatActivity {
                                         });
                                     }
                                 } else {
-                                    Toast.makeText(QRCodeScannerActivity.this, "Failed to find event with matching QR code data", Toast.LENGTH_SHORT).show();
+                                    db.collection("events")
+                                            .whereEqualTo("qrData", qrCodeData)
+                                            .get()
+                                            .addOnCompleteListener(secondtask -> {
+                                                if (secondtask.isSuccessful() && !secondtask.getResult().isEmpty()) {
+                                                    for (DocumentSnapshot document : secondtask.getResult()) {
+                                                        // Get the ID of the event document
+                                                        String eventId = document.getId();
+
+                                                        DocumentReference attendeeRef = db.collection("events").document(eventId)
+                                                                .collection("attendees").document(attendee.getId());
+
+                                                        attendeeRef.get().addOnCompleteListener(attendeeTask -> {
+                                                            if (attendeeTask.isSuccessful() && attendeeTask.getResult() != null) {
+                                                                DocumentSnapshot attendeeDocument = attendeeTask.getResult();
+                                                                if (attendeeDocument.exists()) {
+                                                                    // Document exists, increment check-in count
+                                                                    long currentCheckInCount = attendeeDocument.getLong("checkInCount") != null ? attendeeDocument.getLong("checkInCount") : 0;
+                                                                    attendeeRef.update("checkInCount", currentCheckInCount + 1);
+                                                                } else {
+                                                                    // Document does not exist, create it with check-in count set to 1
+                                                                    attendee.setCheckInCount(1);
+                                                                    attendeeRef.set(attendee);
+                                                                    attendeeRef.update("timestamp", FieldValue.serverTimestamp());
+                                                                }
+                                                            } else {
+                                                                // Handle errors or document does not exist scenarios
+                                                                Toast.makeText(QRCodeScannerActivity.this, "Error fetching attendee data", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                                    }
+                                                } else {
+                                                    Toast.makeText(QRCodeScannerActivity.this, "Failed to find event with matching QR code data", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
                                 }
                             });
                 } else {
