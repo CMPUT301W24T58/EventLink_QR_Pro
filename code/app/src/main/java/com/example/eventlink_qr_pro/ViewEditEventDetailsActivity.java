@@ -13,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +30,7 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
     private EditText eventDateEditText;
     private EditText eventLocationEditText;
     private EditText eventDescriptionEditText;
+    private EditText eventTimeEditText;
     private Button updateButton;
     private Button cancelButton;
 
@@ -59,6 +63,7 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
         limitAttendeesSwitch = findViewById(R.id.limit_attendees_switch);
         maximumAttendeesLabel = findViewById(R.id.maximum_attendees_label);
         maximumAttendeesEditText = findViewById(R.id.maximum_attendees_edit_text);
+        eventTimeEditText = findViewById(R.id.event_time_edit_text);
 
 
         // Retrieve the event name from the intent
@@ -105,6 +110,7 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
             if (documentSnapshot.exists()) {
                 eventNameEditText.setText(documentSnapshot.getString("name"));
                 eventDateEditText.setText(documentSnapshot.getString("date"));
+                eventTimeEditText.setText(documentSnapshot.getString("time"));
                 eventLocationEditText.setText(documentSnapshot.getString("location"));
                 eventDescriptionEditText.setText(documentSnapshot.getString("description"));
 
@@ -129,6 +135,7 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
     private void saveEventDetails() {
         String name = eventNameEditText.getText().toString();
         String date = eventDateEditText.getText().toString();
+        String time = eventTimeEditText.getText().toString();
         String location = eventLocationEditText.getText().toString();
         String description = eventDescriptionEditText.getText().toString();
 
@@ -136,6 +143,7 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
         Map<String, Object> eventDetails = new HashMap<>();
         eventDetails.put("name", name);
         eventDetails.put("date", date);
+        eventDetails.put("time", time);
         eventDetails.put("location", location);
         eventDetails.put("description", description);
 
@@ -149,6 +157,23 @@ public class ViewEditEventDetailsActivity extends AppCompatActivity {
             eventDetails.put("maxAttendees", null); // Remove the limit
         }
 
+        JSONObject qrDataJson = new JSONObject();
+        try {
+            qrDataJson.put("name", eventName);
+            qrDataJson.put("date", date);
+            qrDataJson.put("time", time);
+            qrDataJson.put("location", location);
+            qrDataJson.put("description", description);
+            // Optionally, include other relevant event details
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // Convert JSON to string for uploading
+        String qrDataString = qrDataJson.toString();
+
+        // Add QR data string to the event details map
+        eventDetails.put("checkinqrdata", qrDataString);
 
         DocumentReference eventDocRef = db.collection("events").document(eventName);
         eventDocRef.update(eventDetails)

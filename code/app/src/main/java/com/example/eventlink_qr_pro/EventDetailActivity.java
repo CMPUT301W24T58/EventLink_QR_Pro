@@ -66,7 +66,7 @@ public class EventDetailActivity extends AppCompatActivity {
         db.collection("events").document(eventName).get().addOnSuccessListener(documentSnapshot -> {
             try {
                 JSONObject qrDataJson = new JSONObject();
-                qrDataJson.put("name", documentSnapshot.getString("name"));
+                qrDataJson.put("name", eventName);
                 qrDataJson.put("date", documentSnapshot.getString("date"));
                 qrDataJson.put("time", documentSnapshot.getString("time"));
                 qrDataJson.put("location", documentSnapshot.getString("location"));
@@ -164,7 +164,7 @@ public class EventDetailActivity extends AppCompatActivity {
         db.collection("events").document(eventName).get().addOnSuccessListener(documentSnapshot -> {
             try {
                 JSONObject qrDataJson = new JSONObject();
-                qrDataJson.put("name", documentSnapshot.getString("name"));
+                qrDataJson.put("name", eventName);
                 qrDataJson.put("date", documentSnapshot.getString("date"));
                 qrDataJson.put("time", documentSnapshot.getString("time"));
                 qrDataJson.put("location", documentSnapshot.getString("location"));
