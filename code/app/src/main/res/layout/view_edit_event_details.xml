@@ -51,13 +51,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Time:"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/event_time_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Event Time" />
+            android:hint="Event Time"
+            android:textSize="14sp"/>
 
         <TextView
             android:layout_width="wrap_content"
